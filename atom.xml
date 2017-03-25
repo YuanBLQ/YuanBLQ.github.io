@@ -4,9 +4,9 @@
   
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://yoursite.com/"/>
+  <link href="https://yuanblq.github.io/"/>
   <updated>2017-03-25T13:09:29.143Z</updated>
-  <id>http://yoursite.com/</id>
+  <id>https://yuanblq.github.io/</id>
   
   <author>
     <name>Yuan</name>
@@ -17,8 +17,8 @@
   
   <entry>
     <title>三门问题</title>
-    <link href="http://yoursite.com/2017/03/25/%E4%B8%89%E9%97%A8%E9%97%AE%E9%A2%98/"/>
-    <id>http://yoursite.com/2017/03/25/三门问题/</id>
+    <link href="https://yuanblq.github.io/2017/03/25/%E4%B8%89%E9%97%A8%E9%97%AE%E9%A2%98/"/>
+    <id>https://yuanblq.github.io/2017/03/25/三门问题/</id>
     <published>2017-03-25T12:07:45.000Z</published>
     <updated>2017-03-25T13:09:29.143Z</updated>
     
@@ -46,12 +46,12 @@
     
     </summary>
     
-      <category term="小练习" scheme="http://yoursite.com/categories/%E5%B0%8F%E7%BB%83%E4%B9%A0/"/>
+      <category term="小练习" scheme="https://yuanblq.github.io/categories/%E5%B0%8F%E7%BB%83%E4%B9%A0/"/>
     
     
-      <category term="python" scheme="http://yoursite.com/tags/python/"/>
+      <category term="python" scheme="https://yuanblq.github.io/tags/python/"/>
     
-      <category term="三门问题" scheme="http://yoursite.com/tags/%E4%B8%89%E9%97%A8%E9%97%AE%E9%A2%98/"/>
+      <category term="三门问题" scheme="https://yuanblq.github.io/tags/%E4%B8%89%E9%97%A8%E9%97%AE%E9%A2%98/"/>
     
   </entry>
   
