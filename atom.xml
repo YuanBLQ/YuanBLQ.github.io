@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2017-03-25T14:36:58.240Z</updated>
+  <updated>2017-03-25T15:12:14.336Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="https://yuanblq.github.io/2017/03/25/%E4%B8%89%E9%97%A8%E9%97%AE%E9%A2%98/"/>
     <id>https://yuanblq.github.io/2017/03/25/三门问题/</id>
     <published>2017-03-25T12:07:45.000Z</published>
-    <updated>2017-03-25T14:36:58.240Z</updated>
+    <updated>2017-03-25T15:12:14.336Z</updated>
     
     <content type="html"><![CDATA[<div class="note info"><p>三门问题（Monty Hall problem）亦称为蒙提霍尔问题、蒙特霍问题或蒙提霍尔悖论，大致出自美国的电视游戏节目Let’s Make a Deal。问题名字来自该节目的主持人蒙提·霍尔（Monty Hall）。参赛者会看见三扇关闭了的门，其中一扇的后面有一辆汽车，选中后面有车的那扇门可赢得该汽车，另外两扇门后面则各藏有一只山羊。当参赛者选定了一扇门，但未去开启它的时候，节目主持人开启剩下两扇门的其中一扇，露出其中一只山羊。主持人其后会问参赛者要不要换另一扇仍然关上的门。问题是：换另一扇门会否增加参赛者赢得汽车的机率？</p>
 </div>
@@ -37,7 +37,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">total = <span class="number">100000</span></div><div class="line">bingo_change = <span class="number">0</span></div><div class="line">bingo_not_change = <span class="number">0</span></div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(total):</div><div class="line">    reward = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>]</div><div class="line">    car = random.randint(<span class="number">0</span>, <span class="number">2</span>)</div><div class="line">    my_choice = random.randint(<span class="number">0</span>, <span class="number">2</span>)</div><div class="line">    host_choice = reward[random.randint(<span class="number">0</span>, <span class="number">1</span>)]</div><div class="line">    <span class="keyword">if</span> host_choice != car:</div><div class="line">        <span class="comment"># 选手不换，成功</span></div><div class="line">        <span class="keyword">if</span> my_choice == car:</div><div class="line">            bingo_not_change += <span class="number">1</span></div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            bingo_change += <span class="number">1</span></div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        <span class="comment"># 如果主持人打开的门后有汽车，则换与不换都+1</span></div><div class="line">        bingo_not_change += <span class="number">1</span></div><div class="line">        bingo_change += <span class="number">1</span></div><div class="line">print(<span class="string">"选手更换，选对的次数：%d，即选中的概率为：%.2f"</span> % (bingo_change, bingo_change / total))</div><div class="line">print(<span class="string">"选手不更换，选对的次数：%d，即选中的概率为：%.2f"</span> % (bingo_not_change, bingo_not_change / total))</div></pre></td></tr></table></figure>
 <pre><code>选手更换，选对的次数：77926，即选中的概率为：0.78
 选手不更换，选对的次数：55435，即选中的概率为：0.55
-</code></pre>]]></content>
+</code></pre><h5 id="通过暴力计算，可见三门问题的结论就一个字：换。"><a href="#通过暴力计算，可见三门问题的结论就一个字：换。" class="headerlink" title="通过暴力计算，可见三门问题的结论就一个字：换。"></a>通过暴力计算，可见三门问题的结论就一个字：换。</h5><h5 id="知乎上有个-知友”刑可”的答案-描述得很形象。"><a href="#知乎上有个-知友”刑可”的答案-描述得很形象。" class="headerlink" title="知乎上有个 知友”刑可”的答案 描述得很形象。"></a>知乎上有个<a href="https://www.zhihu.com/question/26709273/answer/65418012?utm_source=com.samsung.android.app.memo&utm_medium=social" target="_blank" rel="external"> 知友”刑可”的答案 </a>描述得很形象。</h5>]]></content>
     
     <summary type="html">
     
