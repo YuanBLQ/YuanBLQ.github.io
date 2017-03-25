@@ -106,7 +106,7 @@
   var CONFIG = {
     root: '/',
     scheme: 'Mist',
-    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
     fancybox: true,
     motion: true,
     duoshuo: {
@@ -383,11 +383,6 @@
         
           <div class="note info"><p>三门问题（Monty Hall problem）亦称为蒙提霍尔问题、蒙特霍问题或蒙提霍尔悖论，大致出自美国的电视游戏节目Let’s Make a Deal。问题名字来自该节目的主持人蒙提·霍尔（Monty Hall）。参赛者会看见三扇关闭了的门，其中一扇的后面有一辆汽车，选中后面有车的那扇门可赢得该汽车，另外两扇门后面则各藏有一只山羊。当参赛者选定了一扇门，但未去开启它的时候，节目主持人开启剩下两扇门的其中一扇，露出其中一只山羊。主持人其后会问参赛者要不要换另一扇仍然关上的门。问题是：换另一扇门会否增加参赛者赢得汽车的机率？</p>
 </div>
-<h6 id="1、首先假设只是从三扇门中选，没有交换，则："><a href="#1、首先假设只是从三扇门中选，没有交换，则：" class="headerlink" title="1、首先假设只是从三扇门中选，没有交换，则："></a>1、首先假设只是从三扇门中选，没有交换，则：</h6><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> random</div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">total = <span class="number">100000</span></div><div class="line">bingo = <span class="number">0</span></div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(total):</div><div class="line">    my_choice = random.randint(<span class="number">0</span>, <span class="number">2</span>)</div><div class="line">    car = random.randint(<span class="number">0</span>, <span class="number">2</span>)</div><div class="line">    <span class="keyword">if</span> my_choice == car:</div><div class="line">        bingo += <span class="number">1</span></div><div class="line">print(<span class="string">"一共选中 %d 次"</span> % bingo)</div><div class="line">print(<span class="string">"选中概率为：%.2f"</span> %(bingo / total))</div></pre></td></tr></table></figure>
-<pre><code>一共选中 33164 次
-选中概率为：0.33
-</code></pre>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/03/25/三门问题/#more" rel="contents">
@@ -575,6 +570,26 @@
 
 
         
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"> 本站访客数 </i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"> 本站总访问量 </i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
 
         
       </div>
