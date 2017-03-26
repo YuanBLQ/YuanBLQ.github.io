@@ -95,7 +95,7 @@
 <meta property="og:url" content="https://yuanblq.github.io/2017/03/25/三门问题/index.html">
 <meta property="og:site_name" content="YuanBLQ">
 <meta property="og:description" content="三门问题（Monty Hall problem）亦称为蒙提霍尔问题、蒙特霍问题或蒙提霍尔悖论，大致出自美国的电视游戏节目Let’s Make a Deal。问题名字来自该节目的主持人蒙提·霍尔（Monty Hall）。参赛者会看见三扇关闭了的门，其中一扇的后面有一辆汽车，选中后面有车的那扇门可赢得该汽车，另外两扇门后面则各藏有一只山羊。当参赛者选定了一扇门，但未去开启它的时候，节目主持人开启剩下两">
-<meta property="og:updated_time" content="2017-03-25T15:12:14.336Z">
+<meta property="og:updated_time" content="2017-03-26T02:33:11.925Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="三门问题">
 <meta name="twitter:description" content="三门问题（Monty Hall problem）亦称为蒙提霍尔问题、蒙特霍问题或蒙提霍尔悖论，大致出自美国的电视游戏节目Let’s Make a Deal。问题名字来自该节目的主持人蒙提·霍尔（Monty Hall）。参赛者会看见三扇关闭了的门，其中一扇的后面有一辆汽车，选中后面有车的那扇门可赢得该汽车，另外两扇门后面则各藏有一只山羊。当参赛者选定了一扇门，但未去开启它的时候，节目主持人开启剩下两">
@@ -388,10 +388,10 @@
 <li>然后主持人在剩下的两扇门中选一个打开</li>
 <li>询问是否更换：</li>
 </ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">total = <span class="number">100000</span></div><div class="line">bingo_change = <span class="number">0</span></div><div class="line">bingo_not_change = <span class="number">0</span></div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(total):</div><div class="line">    reward = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>]</div><div class="line">    car = random.randint(<span class="number">0</span>, <span class="number">2</span>)</div><div class="line">    my_choice = random.randint(<span class="number">0</span>, <span class="number">2</span>)</div><div class="line">    host_choice = reward[random.randint(<span class="number">0</span>, <span class="number">1</span>)]</div><div class="line">    <span class="keyword">if</span> host_choice != car:</div><div class="line">        <span class="comment"># 选手不换，成功</span></div><div class="line">        <span class="keyword">if</span> my_choice == car:</div><div class="line">            bingo_not_change += <span class="number">1</span></div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            bingo_change += <span class="number">1</span></div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        <span class="comment"># 如果主持人打开的门后有汽车，则换与不换都+1</span></div><div class="line">        bingo_not_change += <span class="number">1</span></div><div class="line">        bingo_change += <span class="number">1</span></div><div class="line">print(<span class="string">"选手更换，选对的次数：%d，即选中的概率为：%.2f"</span> % (bingo_change, bingo_change / total))</div><div class="line">print(<span class="string">"选手不更换，选对的次数：%d，即选中的概率为：%.2f"</span> % (bingo_not_change, bingo_not_change / total))</div></pre></td></tr></table></figure>
-<pre><code>选手更换，选对的次数：77926，即选中的概率为：0.78
-选手不更换，选对的次数：55435，即选中的概率为：0.55
-</code></pre><h5 id="通过暴力计算，可见三门问题的结论就一个字：换。"><a href="#通过暴力计算，可见三门问题的结论就一个字：换。" class="headerlink" title="通过暴力计算，可见三门问题的结论就一个字：换。"></a>通过暴力计算，可见三门问题的结论就一个字：换。</h5><h5 id="知乎上有个-知友”刑可”的答案-描述得很形象。"><a href="#知乎上有个-知友”刑可”的答案-描述得很形象。" class="headerlink" title="知乎上有个 知友”刑可”的答案 描述得很形象。"></a>知乎上有个<a href="https://www.zhihu.com/question/26709273/answer/65418012?utm_source=com.samsung.android.app.memo&utm_medium=social" target="_blank" rel="external"> 知友”刑可”的答案 </a>描述得很形象。</h5>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">total = <span class="number">100000</span></div><div class="line">bingo_change = <span class="number">0</span></div><div class="line">change = <span class="number">0</span></div><div class="line">bingo_not_change = <span class="number">0</span></div><div class="line">not_change = <span class="number">0</span></div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(total):</div><div class="line">    car = random.randint(<span class="number">0</span>, <span class="number">2</span>)</div><div class="line">    my_choice = random.randint(<span class="number">0</span>, <span class="number">2</span>)</div><div class="line">    is_switch = random.choice([<span class="keyword">True</span>, <span class="keyword">False</span>])</div><div class="line">    <span class="keyword">if</span> is_switch:</div><div class="line">        change += <span class="number">1</span></div><div class="line">        <span class="keyword">if</span> my_choice != car:</div><div class="line">            bingo_change += <span class="number">1</span></div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        not_change += <span class="number">1</span></div><div class="line">        <span class="keyword">if</span> my_choice == car:</div><div class="line">            bingo_not_change += <span class="number">1</span></div><div class="line">print(<span class="string">"选手更换了 %d 次，选对的次数：%d，即选中的概率为：%.2f"</span> % (change, bingo_change, bingo_change / change))</div><div class="line">print(<span class="string">"选手不更换 %d 次，选对的次数：%d，即选中的概率为：%.2f"</span> % (not_change, bingo_not_change, bingo_not_change / not_change))</div></pre></td></tr></table></figure>
+<pre><code>选手更换了 49956 次，选对的次数：33180，即选中的概率为：0.66
+选手不更换 50044 次，选对的次数：16677，即选中的概率为：0.33
+</code></pre><h5 id="通过暴力计算，可见三门问题的结论就一个字：换。"><a href="#通过暴力计算，可见三门问题的结论就一个字：换。" class="headerlink" title="通过暴力计算，可见三门问题的结论就一个字：换。"></a>通过暴力计算，可见三门问题的结论就一个字：换。</h5><h5 id="有位知友-“邢可”-的答案把三门问题解释得很形象。"><a href="#有位知友-“邢可”-的答案把三门问题解释得很形象。" class="headerlink" title="有位知友 “邢可” 的答案把三门问题解释得很形象。"></a>有位知友<a href="https://www.zhihu.com/question/26709273/answer/65418012?utm_source=com.samsung.android.app.memo&utm_medium=social" target="_blank" rel="external"> “邢可” </a>的答案把三门问题解释得很形象。</h5>
       
     </div>
 
@@ -597,7 +597,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#如果假设只是从三扇门中选，没有交换，则："><span class="nav-number">1.</span> <span class="nav-text">如果假设只是从三扇门中选，没有交换，则：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#加上询问交换这一流程后："><span class="nav-number">2.</span> <span class="nav-text">加上询问交换这一流程后：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#通过暴力计算，可见三门问题的结论就一个字：换。"><span class="nav-number">3.</span> <span class="nav-text">通过暴力计算，可见三门问题的结论就一个字：换。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#知乎上有个-知友”刑可”的答案-描述得很形象。"><span class="nav-number">4.</span> <span class="nav-text">知乎上有个 知友”刑可”的答案 描述得很形象。</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#如果假设只是从三扇门中选，没有交换，则："><span class="nav-number">1.</span> <span class="nav-text">如果假设只是从三扇门中选，没有交换，则：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#加上询问交换这一流程后："><span class="nav-number">2.</span> <span class="nav-text">加上询问交换这一流程后：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#通过暴力计算，可见三门问题的结论就一个字：换。"><span class="nav-number">3.</span> <span class="nav-text">通过暴力计算，可见三门问题的结论就一个字：换。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#有位知友-“邢可”-的答案把三门问题解释得很形象。"><span class="nav-number">4.</span> <span class="nav-text">有位知友 “邢可” 的答案把三门问题解释得很形象。</span></a></li></ol></div>
             
 
           </div>
@@ -646,9 +646,9 @@
 
   
     <span class="site-uv">
-      <i class="fa fa-user"> 您是本站的第 </i>
+      <i class="fa fa-user"> 本站访问量 </i>
       <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
-      位访客
+      人次
     </span>
   
 
