@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2017-03-26T02:33:11.925Z</updated>
+  <updated>2017-03-26T14:17:44.297Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -14,6 +14,55 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>WordCloud</title>
+    <link href="https://yuanblq.github.io/2017/03/26/WordCloud/"/>
+    <id>https://yuanblq.github.io/2017/03/26/WordCloud/</id>
+    <published>2017-03-26T12:55:52.000Z</published>
+    <updated>2017-03-26T14:17:44.297Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Wordcloud-的-API-Reference-分三部分："><a href="#Wordcloud-的-API-Reference-分三部分：" class="headerlink" title="Wordcloud 的 API Reference 分三部分："></a>Wordcloud 的 API Reference 分三部分：</h2><ul>
+<li>WordCloud([font_path, width, height, …])&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Word cloud对象，用于生成以及绘制</li>
+<li>ImageColorGenerator(image)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;基于一个彩色图片的颜色生成器</li>
+<li>random_color_func([word, font_size, …])&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;随机色调生成器</li>
+</ul>
+<a id="more"></a>
+<h3 id="wordcloud-WordCloud"><a href="#wordcloud-WordCloud" class="headerlink" title="wordcloud.WordCloud"></a>wordcloud.WordCloud</h3><p><table><tr><td bgcolor="#EEE8AA">class <font color="red"><b>wordcloud.WordCloud </b></font>(font_path=None, width=400, height=200, margin=2, ranks_only=None, prefer_horizontal=0.9, mask=None, scale=1, color_func=None, max_words=200, min_font_size=4, stopwords=None, random_state=None, background_color=’black’, max_font_size=None, font_step=1, mode=’RGB’, relative_scaling=0.5, regexp=None, collocations=True, colormap=None, normalize_plurals=True)<br></td></tr></table></p>
+<h4 id="Parameters"><a href="#Parameters" class="headerlink" title="Parameters:"></a>Parameters:</h4><h5 id="font-path-sting"><a href="#font-path-sting" class="headerlink" title="font_path : sting"></a>font_path : sting</h5><div class="note default"><p>字体的路径（OTF 或者 TTF 字体）。在Linux上默认为 DroidSansMono 路径，如果没有这个字体或者其它的 OS 操作系统，那就需要手动调整路径。</p>
+</div>
+<h5 id="width-int-default-400"><a href="#width-int-default-400" class="headerlink" title="width : int (default=400)"></a>width : int (default=400)</h5><div class="note default"><p>画布的宽度。</p>
+</div>
+<h5 id="height-int-default-200"><a href="#height-int-default-200" class="headerlink" title="height : int (default=200)"></a>height : int (default=200)</h5><div class="note default"><p>画布的高度。</p>
+</div>
+<h5 id="prefer-horizontal-float-default-0-9"><a href="#prefer-horizontal-float-default-0-9" class="headerlink" title="prefer_horizontal : float (default=0.9)"></a>prefer_horizontal : float (default=0.9)</h5><div class="note default"><p>水平词语占的比例，即最后词云图中以水平方式展现的词语占的比例。</p>
+</div>
+<h5 id="mask-nd-array-or-None-default-None"><a href="#mask-nd-array-or-None-default-None" class="headerlink" title="mask : nd-array or None (default=None)"></a>mask : nd-array or None (default=None)</h5><div class="note default"><p>如果不为None，那么就在这给定的二进制文件的mask上绘制词云，并且忽略 width 和 height 。<br>所有的白色区域（#FF 或者 #FFFFFF）都视为在mask外部，也就是不绘制词云。</p>
+</div>
+<h5 id="scale-float-default-1"><a href="#scale-float-default-1" class="headerlink" title="scale : float (default=1)"></a>scale : float (default=1)</h5><div class="note default"></div>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Wordcloud-的-API-Reference-分三部分：&quot;&gt;&lt;a href=&quot;#Wordcloud-的-API-Reference-分三部分：&quot; class=&quot;headerlink&quot; title=&quot;Wordcloud 的 API Reference 分三部分：&quot;&gt;&lt;/a&gt;Wordcloud 的 API Reference 分三部分：&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;WordCloud([font_path, width, height, …])&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Word cloud对象，用于生成以及绘制&lt;/li&gt;
+&lt;li&gt;ImageColorGenerator(image)&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;基于一个彩色图片的颜色生成器&lt;/li&gt;
+&lt;li&gt;random_color_func([word, font_size, …])&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;随机色调生成器&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+      <category term="模块文档" scheme="https://yuanblq.github.io/categories/%E6%A8%A1%E5%9D%97%E6%96%87%E6%A1%A3/"/>
+    
+    
+      <category term="python" scheme="https://yuanblq.github.io/tags/python/"/>
+    
+      <category term="doc" scheme="https://yuanblq.github.io/tags/doc/"/>
+    
+      <category term="词云" scheme="https://yuanblq.github.io/tags/%E8%AF%8D%E4%BA%91/"/>
+    
+      <category term="wordcloud" scheme="https://yuanblq.github.io/tags/wordcloud/"/>
+    
+  </entry>
   
   <entry>
     <title>三门问题</title>
