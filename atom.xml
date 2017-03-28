@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2017-03-27T08:23:53.785Z</updated>
+  <updated>2017-03-28T01:51:56.985Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -16,11 +16,60 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>词云小例子</title>
+    <link href="https://yuanblq.github.io/2017/03/27/%E8%AF%8D%E4%BA%91%E5%B0%8F%E4%BE%8B%E5%AD%90/"/>
+    <id>https://yuanblq.github.io/2017/03/27/词云小例子/</id>
+    <published>2017-03-27T14:52:09.000Z</published>
+    <updated>2017-03-28T01:51:56.985Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="使用默认参数从文本中生成矩形词云"><a href="#使用默认参数从文本中生成矩形词云" class="headerlink" title="使用默认参数从文本中生成矩形词云"></a>使用默认参数从文本中生成矩形词云</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span> WordCloud</div></pre></td></tr></table></figure>
+<h3 id="读取文件"><a href="#读取文件" class="headerlink" title="读取文件"></a>读取文件</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">with</span> open(<span class="string">'JaneEyre.txt'</span>) <span class="keyword">as</span> f:</div><div class="line">    text = f.read()</div></pre></td></tr></table></figure>
+<h3 id="生成词云图"><a href="#生成词云图" class="headerlink" title="生成词云图"></a>生成词云图</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">wordcloud = WordCloud().generate(text)</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<h3 id="展示生成的图片"><a href="#展示生成的图片" class="headerlink" title="展示生成的图片"></a>展示生成的图片</h3><h4 id="matplotlib-方式："><a href="#matplotlib-方式：" class="headerlink" title="matplotlib 方式："></a>matplotlib 方式：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</div><div class="line">plt.imshow(wordcloud, interpolation=<span class="string">'bilinear'</span>)</div><div class="line">plt.axis(<span class="string">'off'</span>)</div><div class="line">plt.show()</div></pre></td></tr></table></figure>
+<p><img src="/2017/03/27/词云小例子/output_8_0.png" alt="png"></p>
+<h5 id="把最大字体尺寸改小点"><a href="#把最大字体尺寸改小点" class="headerlink" title="把最大字体尺寸改小点"></a>把最大字体尺寸改小点</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">wordcloud = WordCloud(max_font_size=<span class="number">40</span>).generate(text)</div><div class="line">plt.figure()</div><div class="line">plt.imshow(wordcloud, interpolation=<span class="string">'bilinear'</span>)</div><div class="line">plt.axis(<span class="string">'off'</span>)</div><div class="line">plt.show()</div></pre></td></tr></table></figure>
+<p><img src="/2017/03/27/词云小例子/output_10_0.png" alt="png"></p>
+<h4 id="用PIL方式（这种方式需要有管理员权限才可以运行）："><a href="#用PIL方式（这种方式需要有管理员权限才可以运行）：" class="headerlink" title="用PIL方式（这种方式需要有管理员权限才可以运行）："></a>用PIL方式（这种方式需要有管理员权限才可以运行）：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 运行之后会自动打开生成的图片文件</span></div><div class="line">image = wordcloud.to_image()</div><div class="line">image.show()</div></pre></td></tr></table></figure>
+<h2 id="在mask中生成词云图"><a href="#在mask中生成词云图" class="headerlink" title="在mask中生成词云图"></a>在mask中生成词云图</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</div><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div><div class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</div><div class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span> WordCloud, STOPWORDS</div></pre></td></tr></table></figure>
+<h3 id="读取文本文件"><a href="#读取文本文件" class="headerlink" title="读取文本文件"></a>读取文本文件</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">with</span> open(<span class="string">'JaneEyre.txt'</span>) <span class="keyword">as</span> f:</div><div class="line">    text = f.read()</div></pre></td></tr></table></figure>
+<h3 id="读取用作mask的图片"><a href="#读取用作mask的图片" class="headerlink" title="读取用作mask的图片"></a>读取用作mask的图片</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">with</span> Image.open(<span class="string">'mask.jpg'</span>) <span class="keyword">as</span> p:</div><div class="line">    mask = np.array(p)</div></pre></td></tr></table></figure>
+<h3 id="生成词云"><a href="#生成词云" class="headerlink" title="生成词云"></a>生成词云</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">wc = WordCloud(background_color=<span class="string">'white'</span>, max_words=<span class="number">2000</span>, mask=mask)</div><div class="line">wc.generate(text)</div></pre></td></tr></table></figure>
+<pre><code>&lt;wordcloud.wordcloud.WordCloud at 0x7c849b0&gt;
+</code></pre><h3 id="存储到文件中"><a href="#存储到文件中" class="headerlink" title="存储到文件中"></a>存储到文件中</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">wc.to_file(<span class="string">'wc.png'</span>)</div></pre></td></tr></table></figure>
+<pre><code>&lt;wordcloud.wordcloud.WordCloud at 0x7c849b0&gt;
+</code></pre><h3 id="或者直接显示出来"><a href="#或者直接显示出来" class="headerlink" title="或者直接显示出来"></a>或者直接显示出来</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">plt.imshow(wc, interpolation=<span class="string">'bilinear'</span>)</div><div class="line">plt.axis(<span class="string">'off'</span>)</div><div class="line">plt.figure()</div><div class="line">plt.imshow(mask, cmap=plt.cm.gray, interpolation=<span class="string">'bilinear'</span>)</div><div class="line">plt.axis(<span class="string">'off'</span>)</div><div class="line">plt.show()</div></pre></td></tr></table></figure>
+<p><img src="/2017/03/27/词云小例子/output_11_0.png" alt="png"></p>
+<p><img src="/2017/03/27/词云小例子/output_11_1.png" alt="png"></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;使用默认参数从文本中生成矩形词云&quot;&gt;&lt;a href=&quot;#使用默认参数从文本中生成矩形词云&quot; class=&quot;headerlink&quot; title=&quot;使用默认参数从文本中生成矩形词云&quot;&gt;&lt;/a&gt;使用默认参数从文本中生成矩形词云&lt;/h2&gt;&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; wordcloud &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; WordCloud&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h3 id=&quot;读取文件&quot;&gt;&lt;a href=&quot;#读取文件&quot; class=&quot;headerlink&quot; title=&quot;读取文件&quot;&gt;&lt;/a&gt;读取文件&lt;/h3&gt;&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;with&lt;/span&gt; open(&lt;span class=&quot;string&quot;&gt;&#39;JaneEyre.txt&#39;&lt;/span&gt;) &lt;span class=&quot;keyword&quot;&gt;as&lt;/span&gt; f:&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    text = f.read()&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h3 id=&quot;生成词云图&quot;&gt;&lt;a href=&quot;#生成词云图&quot; class=&quot;headerlink&quot; title=&quot;生成词云图&quot;&gt;&lt;/a&gt;生成词云图&lt;/h3&gt;&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;wordcloud = WordCloud().generate(text)&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+    
+    </summary>
+    
+      <category term="小练习" scheme="https://yuanblq.github.io/categories/%E5%B0%8F%E7%BB%83%E4%B9%A0/"/>
+    
+    
+      <category term="python" scheme="https://yuanblq.github.io/tags/python/"/>
+    
+      <category term="词云" scheme="https://yuanblq.github.io/tags/%E8%AF%8D%E4%BA%91/"/>
+    
+      <category term="wordcloud" scheme="https://yuanblq.github.io/tags/wordcloud/"/>
+    
+      <category term="mask" scheme="https://yuanblq.github.io/tags/mask/"/>
+    
+  </entry>
+  
+  <entry>
     <title>WordCloud</title>
     <link href="https://yuanblq.github.io/2017/03/26/WordCloud/"/>
     <id>https://yuanblq.github.io/2017/03/26/WordCloud/</id>
     <published>2017-03-26T12:55:52.000Z</published>
-    <updated>2017-03-27T08:23:53.785Z</updated>
+    <updated>2017-03-27T08:39:58.677Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Wordcloud-的-API-Reference-分三部分："><a href="#Wordcloud-的-API-Reference-分三部分：" class="headerlink" title="Wordcloud 的 API Reference 分三部分："></a>Wordcloud 的 API Reference 分三部分：</h2><ul>
 <li>WordCloud([font_path, width, height, …])&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Word cloud对象，用于生成以及绘制</li>
@@ -67,7 +116,13 @@
 </div>
 <h5 id="Notes"><a href="#Notes" class="headerlink" title="Notes"></a>Notes</h5><div class="note default"><p>大尺寸的画布会使代码运行缓慢。如果需要一个大的词云图，那就用”小尺寸画布”和”scale参数”。</p>
 </div>
-<h4 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h4><h5 id="words"><a href="#words" class="headerlink" title="words_"></a>words_</h5><h5 id="layout"><a href="#layout" class="headerlink" title="layout_"></a>layout_</h5><h4 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h4><h5 id="init-font-path-None-width-400-height-200-margin-2-ranks-only-None-prefer-horizontal-0-9-mask-None-scale-1-color-func-None-max-words-200-min-font-size-4-stopwords-None-random-state-None-background-color-’black’-max-font-size-None-font-step-1-mode-’RGB’-relative-scaling-0-5-regexp-None-collocations-True-colormap-None-normalize-plurals-True"><a href="#init-font-path-None-width-400-height-200-margin-2-ranks-only-None-prefer-horizontal-0-9-mask-None-scale-1-color-func-None-max-words-200-min-font-size-4-stopwords-None-random-state-None-background-color-’black’-max-font-size-None-font-step-1-mode-’RGB’-relative-scaling-0-5-regexp-None-collocations-True-colormap-None-normalize-plurals-True" class="headerlink" title="init(font_path=None, width=400, height=200, margin=2, ranks_only=None, prefer_horizontal=0.9, mask=None, scale=1, color_func=None, max_words=200, min_font_size=4, stopwords=None, random_state=None, background_color=’black’, max_font_size=None, font_step=1, mode=’RGB’, relative_scaling=0.5, regexp=None, collocations=True, colormap=None, normalize_plurals=True)"></a><strong>init</strong>(font_path=None, width=400, height=200, margin=2, ranks_only=None, prefer_horizontal=0.9, mask=None, scale=1, color_func=None, max_words=200, min_font_size=4, stopwords=None, random_state=None, background_color=’black’, max_font_size=None, font_step=1, mode=’RGB’, relative_scaling=0.5, regexp=None, collocations=True, colormap=None, normalize_plurals=True)</h5><h5 id="fit-words-frequencies"><a href="#fit-words-frequencies" class="headerlink" title="fit_words (frequencies)"></a>fit_words (frequencies)</h5><div class="note default"><p>通过 words 和 frequencies 创建 word_cloud。<br>generate_from_frequencies 的别名。</p>
+<h4 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h4><h5 id="words-list-of-tuples-string-float"><a href="#words-list-of-tuples-string-float" class="headerlink" title="words_ : list of tuples (string, float)"></a>words_ : list of tuples (string, float)</h5><div class="note default"><p>带有频率的词语</p>
+</div>
+<h5 id="layout-list-of-tuples-string-int-int-int-int-color"><a href="#layout-list-of-tuples-string-int-int-int-int-color" class="headerlink" title="layout_ : list of tuples (string, int, (int, int), int ,color)"></a>layout_ : list of tuples (string, int, (int, int), int ,color)</h5><div class="note default"><p>编码拟合好的词云。每个词语的字符串、字号、位置、方向和颜色的编码。</p>
+</div>
+<h4 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h4><h5 id="init-font-path-None-width-400-…"><a href="#init-font-path-None-width-400-…" class="headerlink" title="init(font_path=None, width=400, …)"></a><strong>init</strong>(font_path=None, width=400, …)</h5><div class="note default"><p>Parameters :<br>font_path=None, width=400, height=200, margin=2, ranks_only=None, prefer_horizontal=0.9, mask=None, scale=1, color_func=None, max_words=200, min_font_size=4, stopwords=None, random_state=None, background_color=’black’, max_font_size=None, font_step=1, mode=’RGB’, relative_scaling=0.5, regexp=None, collocations=True, colormap=None, normalize_plurals=True</p>
+</div>
+<h5 id="fit-words-frequencies"><a href="#fit-words-frequencies" class="headerlink" title="fit_words (frequencies)"></a>fit_words (frequencies)</h5><div class="note default"><p>通过 words 和 frequencies 创建 word_cloud。<br>generate_from_frequencies 的别名。</p>
 <p>Parameters : </p>
 <ul>
 <li>frequencies : tuples 数组 （一个包含 word 和 frequency 的 tuple）。</li>
