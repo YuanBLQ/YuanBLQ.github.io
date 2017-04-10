@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2017-03-28T01:51:56.985Z</updated>
+  <updated>2017-03-28T09:10:40.658Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -20,9 +20,10 @@
     <link href="https://yuanblq.github.io/2017/03/27/%E8%AF%8D%E4%BA%91%E5%B0%8F%E4%BE%8B%E5%AD%90/"/>
     <id>https://yuanblq.github.io/2017/03/27/词云小例子/</id>
     <published>2017-03-27T14:52:09.000Z</published>
-    <updated>2017-03-28T01:51:56.985Z</updated>
+    <updated>2017-03-28T09:10:40.658Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="使用默认参数从文本中生成矩形词云"><a href="#使用默认参数从文本中生成矩形词云" class="headerlink" title="使用默认参数从文本中生成矩形词云"></a>使用默认参数从文本中生成矩形词云</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span> WordCloud</div></pre></td></tr></table></figure>
+    <content type="html"><![CDATA[<p><font size="4">在<a href="/2017/03/26/WordCloud/" title="&nbsp;上一篇&nbsp;">&nbsp;上一篇&nbsp;</a>中介绍了 word cloud 的一些用法，下面是几个实战小例子。</font></p>
+<h2 id="使用默认参数从文本中生成矩形词云"><a href="#使用默认参数从文本中生成矩形词云" class="headerlink" title="使用默认参数从文本中生成矩形词云"></a>使用默认参数从文本中生成矩形词云</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span> WordCloud</div></pre></td></tr></table></figure>
 <h3 id="读取文件"><a href="#读取文件" class="headerlink" title="读取文件"></a>读取文件</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">with</span> open(<span class="string">'JaneEyre.txt'</span>) <span class="keyword">as</span> f:</div><div class="line">    text = f.read()</div></pre></td></tr></table></figure>
 <h3 id="生成词云图"><a href="#生成词云图" class="headerlink" title="生成词云图"></a>生成词云图</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">wordcloud = WordCloud().generate(text)</div></pre></td></tr></table></figure>
 <a id="more"></a>
@@ -45,7 +46,8 @@
     
     <summary type="html">
     
-      &lt;h2 id=&quot;使用默认参数从文本中生成矩形词云&quot;&gt;&lt;a href=&quot;#使用默认参数从文本中生成矩形词云&quot; class=&quot;headerlink&quot; title=&quot;使用默认参数从文本中生成矩形词云&quot;&gt;&lt;/a&gt;使用默认参数从文本中生成矩形词云&lt;/h2&gt;&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; wordcloud &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; WordCloud&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+      &lt;p&gt;&lt;font size=&quot;4&quot;&gt;在&lt;a href=&quot;/2017/03/26/WordCloud/&quot; title=&quot;&amp;nbsp;上一篇&amp;nbsp;&quot;&gt;&amp;nbsp;上一篇&amp;nbsp;&lt;/a&gt;中介绍了 word cloud 的一些用法，下面是几个实战小例子。&lt;/font&gt;&lt;/p&gt;
+&lt;h2 id=&quot;使用默认参数从文本中生成矩形词云&quot;&gt;&lt;a href=&quot;#使用默认参数从文本中生成矩形词云&quot; class=&quot;headerlink&quot; title=&quot;使用默认参数从文本中生成矩形词云&quot;&gt;&lt;/a&gt;使用默认参数从文本中生成矩形词云&lt;/h2&gt;&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; wordcloud &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; WordCloud&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
 &lt;h3 id=&quot;读取文件&quot;&gt;&lt;a href=&quot;#读取文件&quot; class=&quot;headerlink&quot; title=&quot;读取文件&quot;&gt;&lt;/a&gt;读取文件&lt;/h3&gt;&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;with&lt;/span&gt; open(&lt;span class=&quot;string&quot;&gt;&#39;JaneEyre.txt&#39;&lt;/span&gt;) &lt;span class=&quot;keyword&quot;&gt;as&lt;/span&gt; f:&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    text = f.read()&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
 &lt;h3 id=&quot;生成词云图&quot;&gt;&lt;a href=&quot;#生成词云图&quot; class=&quot;headerlink&quot; title=&quot;生成词云图&quot;&gt;&lt;/a&gt;生成词云图&lt;/h3&gt;&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;wordcloud = WordCloud().generate(text)&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
     
@@ -69,70 +71,72 @@
     <link href="https://yuanblq.github.io/2017/03/26/WordCloud/"/>
     <id>https://yuanblq.github.io/2017/03/26/WordCloud/</id>
     <published>2017-03-26T12:55:52.000Z</published>
-    <updated>2017-03-27T08:39:58.677Z</updated>
+    <updated>2017-03-28T13:59:25.124Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="Wordcloud-的-API-Reference-分三部分："><a href="#Wordcloud-的-API-Reference-分三部分：" class="headerlink" title="Wordcloud 的 API Reference 分三部分："></a>Wordcloud 的 API Reference 分三部分：</h2><ul>
+    <content type="html"><![CDATA[<h1 id="Wordcloud-的-API-Reference-分三部分："><a href="#Wordcloud-的-API-Reference-分三部分：" class="headerlink" title="Wordcloud 的 API Reference 分三部分："></a>Wordcloud 的 API Reference 分三部分：</h1><ul>
 <li>WordCloud([font_path, width, height, …])&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Word cloud对象，用于生成以及绘制</li>
 <li>ImageColorGenerator(image)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;基于一个彩色图片的颜色生成器</li>
-<li>random_color_func([word, font_size, …])&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;随机色调生成器</li>
+<li>random_color_func([word, font_size, …])&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;随机色相生成器</li>
 </ul>
 <a id="more"></a>
-<h3 id="wordcloud-WordCloud"><a href="#wordcloud-WordCloud" class="headerlink" title="wordcloud.WordCloud"></a>wordcloud.WordCloud</h3><p><table><tr><td bgcolor="#EEE8AA">class <font color="red"><b>wordcloud.WordCloud </b></font>(font_path=None, width=400, height=200, margin=2, ranks_only=None, prefer_horizontal=0.9, mask=None, scale=1, color_func=None, max_words=200, min_font_size=4, stopwords=None, random_state=None, background_color=’black’, max_font_size=None, font_step=1, mode=’RGB’, relative_scaling=0.5, regexp=None, collocations=True, colormap=None, normalize_plurals=True)<br></td></tr></table></p>
-<h4 id="参数"><a href="#参数" class="headerlink" title="参数:"></a>参数:</h4><h5 id="font-path-sting"><a href="#font-path-sting" class="headerlink" title="font_path : sting"></a>font_path : sting</h5><div class="note default"><p>字体的路径（OTF 或者 TTF 字体）。在Linux上默认为 DroidSansMono 路径，如果没有这个字体或者其它的 OS 操作系统，那就需要手动调整路径。</p>
+<h2 id="wordcloud-WordCloud"><a href="#wordcloud-WordCloud" class="headerlink" title="wordcloud.WordCloud"></a>wordcloud.WordCloud</h2><p><table><tr><td bgcolor="#EEE8AA">class <font color="red"><b>wordcloud.WordCloud </b></font>(font_path=None, width=400, height=200, margin=2, ranks_only=None, prefer_horizontal=0.9, mask=None, scale=1, color_func=None, max_words=200, min_font_size=4, stopwords=None, random_state=None, background_color=’black’, max_font_size=None, font_step=1, mode=’RGB’, relative_scaling=0.5, regexp=None, collocations=True, colormap=None, normalize_plurals=True)<br></td></tr></table></p>
+<h3 id="参数"><a href="#参数" class="headerlink" title="参数:"></a>参数:</h3><h4 id="font-path-sting"><a href="#font-path-sting" class="headerlink" title="font_path : sting"></a>font_path : sting</h4><div class="note default"><p>字体的路径（OTF 或者 TTF 字体）。在Linux上默认为 DroidSansMono 路径，如果没有这个字体或者其它的 OS 操作系统，那就需要手动调整路径。</p>
 </div>
-<h5 id="width-int-default-400"><a href="#width-int-default-400" class="headerlink" title="width : int (default=400)"></a>width : int (default=400)</h5><div class="note default"><p>画布的宽度。</p>
+<h4 id="width-int-default-400"><a href="#width-int-default-400" class="headerlink" title="width : int (default=400)"></a>width : int (default=400)</h4><div class="note default"><p>画布的宽度。</p>
 </div>
-<h5 id="height-int-default-200"><a href="#height-int-default-200" class="headerlink" title="height : int (default=200)"></a>height : int (default=200)</h5><div class="note default"><p>画布的高度。</p>
+<h4 id="height-int-default-200"><a href="#height-int-default-200" class="headerlink" title="height : int (default=200)"></a>height : int (default=200)</h4><div class="note default"><p>画布的高度。</p>
 </div>
-<h5 id="prefer-horizontal-float-default-0-9"><a href="#prefer-horizontal-float-default-0-9" class="headerlink" title="prefer_horizontal : float (default=0.9)"></a>prefer_horizontal : float (default=0.9)</h5><div class="note default"><p>水平词语占的比例，即最后词云图中以水平方式展现的词语占的比例。</p>
+<h4 id="prefer-horizontal-float-default-0-9"><a href="#prefer-horizontal-float-default-0-9" class="headerlink" title="prefer_horizontal : float (default=0.9)"></a>prefer_horizontal : float (default=0.9)</h4><div class="note default"><p>水平词语占的比例，即最后词云图中以水平方式展现的词语占的比例。</p>
 </div>
-<h5 id="mask-nd-array-or-None-default-None"><a href="#mask-nd-array-or-None-default-None" class="headerlink" title="mask : nd-array or None (default=None)"></a>mask : nd-array or None (default=None)</h5><div class="note default"><p>如果不为None，那么就在这给定的二进制文件的mask上绘制词云，并且忽略 width 和 height 。<br>所有的白色区域（#FF 或者 #FFFFFF）都视为在mask外部，也就是不绘制词云。</p>
+<h4 id="mask-nd-array-or-None-default-None"><a href="#mask-nd-array-or-None-default-None" class="headerlink" title="mask : nd-array or None (default=None)"></a>mask : nd-array or None (default=None)</h4><div class="note default"><p>如果不为None，那么就在这给定的二进制文件的mask上绘制词云，并且忽略 width 和 height 。<br>所有的白色区域（#FF 或者 #FFFFFF）都视为在mask外部，也就是不绘制词云。</p>
 </div>
-<h5 id="scale-float-default-1"><a href="#scale-float-default-1" class="headerlink" title="scale : float (default=1)"></a>scale : float (default=1)</h5><div class="note default"><p>当词云图片比较大时，不要使用大画布而是使用 scale 缩放。</p>
+<h4 id="scale-float-default-1"><a href="#scale-float-default-1" class="headerlink" title="scale : float (default=1)"></a>scale : float (default=1)</h4><div class="note default"><p>当词云图片比较大时，不要使用大画布而是使用 scale 缩放。</p>
 </div>
-<h5 id="min-font-size-int-default-4"><a href="#min-font-size-int-default-4" class="headerlink" title="min_font_size : int (default=4)"></a>min_font_size : int (default=4)</h5><div class="note default"><p>所使用的最小尺寸的字体。当没有空间能容纳此尺寸的字体时，停止绘制词云。</p>
+<h4 id="min-font-size-int-default-4"><a href="#min-font-size-int-default-4" class="headerlink" title="min_font_size : int (default=4)"></a>min_font_size : int (default=4)</h4><div class="note default"><p>所使用的最小尺寸的字体。当没有空间能容纳此尺寸的字体时，停止绘制词云。</p>
 </div>
-<h5 id="font-step-int-default-1"><a href="#font-step-int-default-1" class="headerlink" title="font_step : int (default=1)"></a>font_step : int (default=1)</h5><div class="note default"><p>字体大小渐变步长。</p>
+<h4 id="font-step-int-default-1"><a href="#font-step-int-default-1" class="headerlink" title="font_step : int (default=1)"></a>font_step : int (default=1)</h4><div class="note default"><p>字体大小渐变步长。</p>
 </div>
-<h5 id="max-words-number-default-200"><a href="#max-words-number-default-200" class="headerlink" title="max_words : number (default=200)"></a>max_words : number (default=200)</h5><div class="note default"><p>最大词数。</p>
+<h4 id="max-words-number-default-200"><a href="#max-words-number-default-200" class="headerlink" title="max_words : number (default=200)"></a>max_words : number (default=200)</h4><div class="note default"><p>最大词数。</p>
 </div>
-<h5 id="stopwords-set-of-strings-or-None"><a href="#stopwords-set-of-strings-or-None" class="headerlink" title="stopwords : set of strings or None"></a>stopwords : set of strings or None</h5><div class="note default"><p>不计入的词语集合。</p>
+<h4 id="stopwords-set-of-strings-or-None"><a href="#stopwords-set-of-strings-or-None" class="headerlink" title="stopwords : set of strings or None"></a>stopwords : set of strings or None</h4><div class="note default"><p>不计入的词语集合。</p>
 </div>
-<h5 id="background-color-color-value-default-”back”"><a href="#background-color-color-value-default-”back”" class="headerlink" title="background_color : color value (default=”back”)"></a>background_color : color value (default=”back”)</h5><div class="note default"><p>词云图的背景颜色。</p>
+<h4 id="background-color-color-value-default-”black”"><a href="#background-color-color-value-default-”black”" class="headerlink" title="background_color : color value (default=”black”)"></a>background_color : color value (default=”black”)</h4><div class="note default"><p>词云图的背景颜色。</p>
 </div>
-<h5 id="max-font-size-int-or-None-default-None"><a href="#max-font-size-int-or-None-default-None" class="headerlink" title="max_font_size : int or None (default=None)"></a>max_font_size : int or None (default=None)</h5><div class="note default"><p>最大词语的字体大小。如果为 None，则使用图片的 height。</p>
+<h4 id="max-font-size-int-or-None-default-None"><a href="#max-font-size-int-or-None-default-None" class="headerlink" title="max_font_size : int or None (default=None)"></a>max_font_size : int or None (default=None)</h4><div class="note default"><p>最大词语的字体大小。如果为 None，则使用图片的 height。</p>
 </div>
-<h5 id="mode-string-default-”RGB”"><a href="#mode-string-default-”RGB”" class="headerlink" title="mode : string (default=”RGB”)"></a>mode : string (default=”RGB”)</h5><div class="note default"><p>当模式为 “RGBA” 时，可以生成透明背景，background_color 可以为 None。</p>
+<h4 id="mode-string-default-”RGB”"><a href="#mode-string-default-”RGB”" class="headerlink" title="mode : string (default=”RGB”)"></a>mode : string (default=”RGB”)</h4><div class="note default"><p>当模式为 “RGBA” 时，可以生成透明背景，background_color 可以为 None。</p>
 </div>
-<h5 id="relative-scaling-float-default-0-5"><a href="#relative-scaling-float-default-0-5" class="headerlink" title="relative_scaling : float (default=0.5)"></a>relative_scaling : float (default=0.5)</h5><div class="note default"></div>
-<h5 id="color-func-callable-default-None"><a href="#color-func-callable-default-None" class="headerlink" title="color_func : callable (default=None)"></a>color_func : callable (default=None)</h5><div class="note default"></div>
-<h5 id="regexp-string-or-None-optional"><a href="#regexp-string-or-None-optional" class="headerlink" title="regexp : string or None (optional)"></a>regexp : string or None (optional)</h5><div class="note default"><p>正则表达式，把 input text 分割成 process_text 的标记。如果为 None ，则使用 r”\w[\w’]+”。</p>
+<h4 id="relative-scaling-float-default-0-5"><a href="#relative-scaling-float-default-0-5" class="headerlink" title="relative_scaling : float (default=0.5)"></a>relative_scaling : float (default=0.5)</h4><div class="note default"><p>为 0 时，字体大小只考虑词的频率排名。<br>为 1 时，某个词频率为其它词频率 2 倍时，该字体的大小也是它的 2 倍。<br>一般设为 0.5 比较合适。</p>
 </div>
-<h5 id="collocations-bool-default-True"><a href="#collocations-bool-default-True" class="headerlink" title="collocations : bool (default=True)"></a>collocations : bool (default=True)</h5><div class="note default"><p>是否需要包括两个词组成的词语。</p>
+<h4 id="color-func-callable-default-None"><a href="#color-func-callable-default-None" class="headerlink" title="color_func : callable (default=None)"></a>color_func : callable (default=None)</h4><div class="note default"><p>带有 word, font_size, position, orientation, font_path, random_state 参数，给每个词返回 PIL 颜色的调用对象。<br>会覆盖 “colormap”。</p>
 </div>
-<h5 id="colormap-string-or-matplotlib-colormap-default-”viridis”"><a href="#colormap-string-or-matplotlib-colormap-default-”viridis”" class="headerlink" title="colormap : string or matplotlib colormap (default=”viridis”)"></a>colormap : string or matplotlib colormap (default=”viridis”)</h5><div class="note default"><p>从中任意选取颜色来绘制每个词。如果 “color_func” 指定的话，则忽略此参数。</p>
+<h4 id="regexp-string-or-None-optional"><a href="#regexp-string-or-None-optional" class="headerlink" title="regexp : string or None (optional)"></a>regexp : string or None (optional)</h4><div class="note default"><p>分词规则。如果为 None ，则使用 r”\w[\w’]+”。</p>
 </div>
-<h5 id="normalize-plurals-bool-default-True"><a href="#normalize-plurals-bool-default-True" class="headerlink" title="normalize_plurals : bool (default=True)"></a>normalize_plurals : bool (default=True)</h5><div class="note default"><p>是否需要把词语的 ‘s’ 后缀移除，并将其加入没有 ‘s’ 后缀的词的统计中。</p>
+<h4 id="collocations-bool-default-True"><a href="#collocations-bool-default-True" class="headerlink" title="collocations : bool (default=True)"></a>collocations : bool (default=True)</h4><div class="note default"><p>是否需要包括两个词组成的词语。</p>
 </div>
-<h5 id="Notes"><a href="#Notes" class="headerlink" title="Notes"></a>Notes</h5><div class="note default"><p>大尺寸的画布会使代码运行缓慢。如果需要一个大的词云图，那就用”小尺寸画布”和”scale参数”。</p>
+<h4 id="colormap-string-or-matplotlib-colormap-default-”viridis”"><a href="#colormap-string-or-matplotlib-colormap-default-”viridis”" class="headerlink" title="colormap : string or matplotlib colormap (default=”viridis”)"></a>colormap : string or matplotlib colormap (default=”viridis”)</h4><div class="note default"><p>从中任意选取颜色来绘制每个词。如果 “color_func” 指定的话，则忽略此参数。</p>
 </div>
-<h4 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h4><h5 id="words-list-of-tuples-string-float"><a href="#words-list-of-tuples-string-float" class="headerlink" title="words_ : list of tuples (string, float)"></a>words_ : list of tuples (string, float)</h5><div class="note default"><p>带有频率的词语</p>
+<h4 id="normalize-plurals-bool-default-True"><a href="#normalize-plurals-bool-default-True" class="headerlink" title="normalize_plurals : bool (default=True)"></a>normalize_plurals : bool (default=True)</h4><div class="note default"><p>是否需要把词语的 ‘s’ 后缀移除，并将其加入没有 ‘s’ 后缀的词的统计中。</p>
 </div>
-<h5 id="layout-list-of-tuples-string-int-int-int-int-color"><a href="#layout-list-of-tuples-string-int-int-int-int-color" class="headerlink" title="layout_ : list of tuples (string, int, (int, int), int ,color)"></a>layout_ : list of tuples (string, int, (int, int), int ,color)</h5><div class="note default"><p>编码拟合好的词云。每个词语的字符串、字号、位置、方向和颜色的编码。</p>
+<h4 id="Notes"><a href="#Notes" class="headerlink" title="Notes"></a>Notes</h4><div class="note default"><p>大尺寸的画布会使代码运行缓慢。如果需要一个大的词云图，那就用”小尺寸画布”和”scale参数”。</p>
 </div>
-<h4 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h4><h5 id="init-font-path-None-width-400-…"><a href="#init-font-path-None-width-400-…" class="headerlink" title="init(font_path=None, width=400, …)"></a><strong>init</strong>(font_path=None, width=400, …)</h5><div class="note default"><p>Parameters :<br>font_path=None, width=400, height=200, margin=2, ranks_only=None, prefer_horizontal=0.9, mask=None, scale=1, color_func=None, max_words=200, min_font_size=4, stopwords=None, random_state=None, background_color=’black’, max_font_size=None, font_step=1, mode=’RGB’, relative_scaling=0.5, regexp=None, collocations=True, colormap=None, normalize_plurals=True</p>
+<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><h4 id="words-list-of-tuples-string-float"><a href="#words-list-of-tuples-string-float" class="headerlink" title="words_ : list of tuples (string, float)"></a>words_ : list of tuples (string, float)</h4><div class="note default"><p>带有频率的词语</p>
 </div>
-<h5 id="fit-words-frequencies"><a href="#fit-words-frequencies" class="headerlink" title="fit_words (frequencies)"></a>fit_words (frequencies)</h5><div class="note default"><p>通过 words 和 frequencies 创建 word_cloud。<br>generate_from_frequencies 的别名。</p>
+<h4 id="layout-list-of-tuples-string-int-int-int-int-color"><a href="#layout-list-of-tuples-string-int-int-int-int-color" class="headerlink" title="layout_ : list of tuples (string, int, (int, int), int ,color)"></a>layout_ : list of tuples (string, int, (int, int), int ,color)</h4><div class="note default"><p>编码拟合好的词云。每个词语的字符串、字号、位置、方向和颜色的编码。</p>
+</div>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><h4 id="init-font-path-None-width-400-…"><a href="#init-font-path-None-width-400-…" class="headerlink" title="init(font_path=None, width=400, …)"></a><strong>init</strong>(font_path=None, width=400, …)</h4><div class="note default"><p>Parameters :<br>font_path=None, width=400, height=200, margin=2, ranks_only=None, prefer_horizontal=0.9, mask=None, scale=1, color_func=None, max_words=200, min_font_size=4, stopwords=None, random_state=None, background_color=’black’, max_font_size=None, font_step=1, mode=’RGB’, relative_scaling=0.5, regexp=None, collocations=True, colormap=None, normalize_plurals=True</p>
+</div>
+<h4 id="fit-words-frequencies"><a href="#fit-words-frequencies" class="headerlink" title="fit_words (frequencies)"></a>fit_words (frequencies)</h4><div class="note default"><p>通过 words 和 frequencies 创建 word_cloud。<br>generate_from_frequencies 的别名。</p>
 <p>Parameters : </p>
 <ul>
 <li>frequencies : tuples 数组 （一个包含 word 和 frequency 的 tuple）。</li>
 </ul>
 <p>Returns : self</p>
 </div>
-<h5 id="generate-text"><a href="#generate-text" class="headerlink" title="generate (text)"></a>generate (text)</h5><div class="note default"><p>通过 text 生成 wordcloud<br>generate_from_text 的别名。<br>调用了 process_text 和 generate_from_frequencies。</p>
+<h4 id="generate-text"><a href="#generate-text" class="headerlink" title="generate (text)"></a>generate (text)</h4><div class="note default"><p>通过 text 生成 wordcloud<br>generate_from_text 的别名。<br>调用了 process_text 和 generate_from_frequencies。</p>
 <p>Returns : self</p>
 </div>
-<h5 id="generate-from-frequencies-frequencies-…"><a href="#generate-from-frequencies-frequencies-…" class="headerlink" title="generate_from_frequencies (frequencies[, …])"></a>generate_from_frequencies (frequencies[, …])</h5><div class="note default"><p>通过 words 和 frequencies 创建 word_cloud。</p>
+<h4 id="generate-from-frequencies-frequencies-…"><a href="#generate-from-frequencies-frequencies-…" class="headerlink" title="generate_from_frequencies (frequencies[, …])"></a>generate_from_frequencies (frequencies[, …])</h4><div class="note default"><p>通过 words 和 frequencies 创建 word_cloud。</p>
 <p>Parameters : </p>
 <ul>
 <li>frequencies : 一个 string to float 的词典 （包含 words 和相关的频率）。</li>
@@ -140,11 +144,11 @@
 </ul>
 <p>Returns : self</p>
 </div>
-<h5 id="generate-from-text-text"><a href="#generate-from-text-text" class="headerlink" title="generate_from_text (text)"></a>generate_from_text (text)</h5><div class="note default"><p>通过 text 生成 wordcloud。<br>调用了 process_text 和 generate_from_frequencies。</p>
+<h4 id="generate-from-text-text"><a href="#generate-from-text-text" class="headerlink" title="generate_from_text (text)"></a>generate_from_text (text)</h4><div class="note default"><p>通过 text 生成 wordcloud。<br>调用了 process_text 和 generate_from_frequencies。</p>
 <p><b> 版本变化(1.2.2)： </b><br>generate_from_frequencies() 的参数不再返回 process_text()。</p>
 <p>Returns : self</p>
 </div>
-<h5 id="process-text-text"><a href="#process-text-text" class="headerlink" title="process_text (text)"></a>process_text (text)</h5><div class="note default"><p>把长文本分割成词语，移除 stopwords。</p>
+<h4 id="process-text-text"><a href="#process-text-text" class="headerlink" title="process_text (text)"></a>process_text (text)</h4><div class="note default"><p>把长文本分割成词语，移除 stopwords。</p>
 <p>Parameters : </p>
 <ul>
 <li>text : string （要处理的文本）。</li>
@@ -155,33 +159,50 @@
 <li><b>版本变化(1.2.2)：</b>返回类型从 tuples 的 list 变为 dict。</li>
 </ul>
 </div>
-<h5 id="recolor-random-state-color-func-colormap"><a href="#recolor-random-state-color-func-colormap" class="headerlink" title="recolor ([random_state, color_func, colormap])"></a>recolor ([random_state, color_func, colormap])</h5><div class="note default"><p>给已存在的布局重新上色。</p>
+<h4 id="recolor-random-state-color-func-colormap"><a href="#recolor-random-state-color-func-colormap" class="headerlink" title="recolor ([random_state, color_func, colormap])"></a>recolor ([random_state, color_func, colormap])</h4><div class="note default"><p>给已存在的布局重新上色。</p>
 <p>Parameters : </p>
 <ul>
-<li>random_state : RandomState, int or None, default=None（如果不为 None 而使用了 fixed random state ，那么给的 int 值即为 random 的 seed）。</li>
+<li>random_state : RandomState, int or None, default=None（如果不为 None 即使用了确定的随机状态 ，那么给的 int 值即为 random 的 seed）。</li>
 <li>color_func : function or None, default=None （从 word count, font size, position 和 orientation 生成新颜色的 function, 如果为 None 则使用 self.color_func ）。</li>
 <li>colormap : string or matplotlib colormap, default=None （使用这个 colormap 生成新的 colors. 如果 color_func 指定了则忽略此参数。如果为 None 则使用 self.color_func 或者 self.color_map ）。</li>
 </ul>
 <p>Returns : self</p>
 </div>
-<h5 id="to-array"><a href="#to-array" class="headerlink" title="to_array ()"></a>to_array ()</h5><div class="note default"><p>转换成 numpy 数组。</p>
+<h4 id="to-array"><a href="#to-array" class="headerlink" title="to_array ()"></a>to_array ()</h4><div class="note default"><p>转换成 numpy 数组。</p>
 <p>Returns : </p>
 <ul>
 <li>image : nd-array size (width, height, 3) （numpy 矩阵的词云图）。</li>
 </ul>
 </div>
-<h5 id="to-file-filename"><a href="#to-file-filename" class="headerlink" title="to_file (filename)"></a>to_file (filename)</h5><div class="note default"><p>导出为图片文件。</p>
+<h4 id="to-file-filename"><a href="#to-file-filename" class="headerlink" title="to_file (filename)"></a>to_file (filename)</h4><div class="note default"><p>导出为图片文件。</p>
 <p>Parameters : filename : string （写入位置）。</p>
 <p>Returns : self</p>
 </div>
-<h5 id="to-html"><a href="#to-html" class="headerlink" title="to_html ()"></a>to_html ()</h5><h5 id="to-image"><a href="#to-image" class="headerlink" title="to_image ()"></a>to_image ()</h5>]]></content>
+<h4 id="to-html"><a href="#to-html" class="headerlink" title="to_html ()"></a>to_html ()</h4><h4 id="to-image"><a href="#to-image" class="headerlink" title="to_image ()"></a>to_image ()</h4><h2 id="wordcloud-ImageColorGenerator"><a href="#wordcloud-ImageColorGenerator" class="headerlink" title="wordcloud.ImageColorGenerator"></a>wordcloud.ImageColorGenerator</h2><p><table><tr><td bgcolor="#EEE8AA">class <font color="red"><b>wordcloud.ImageColorGenerator </b></font>(image)<br></td></tr></table><br>颜色生成器基于一张 RGB 颜色的图片。词的颜色由它所在图片中附近的颜色的均值决定。<br>生成之后，该对象可以作为 color_func 传入 wordcloud 构造器中，或者 recolor 方法中。</p>
+<p>Parameters : </p>
+<ul>
+<li>image : nd-array, shape (height, width, 3)<div class="note default"><p>image 是用来生成词的颜色。忽略 Alpha 通道。 image应与画布大小尺寸一致。</p>
+</div>
+</li>
+</ul>
+<h3 id="方法-1"><a href="#方法-1" class="headerlink" title="方法"></a>方法</h3><h4 id="call-word-font-size-font-path-…"><a href="#call-word-font-size-font-path-…" class="headerlink" title="call (word, font_size, font_path, …)"></a><strong>call</strong> (word, font_size, font_path, …)</h4><p>使用固定的图片给指定的词生成颜色。</p>
+<h4 id="init-image"><a href="#init-image" class="headerlink" title="init (image)"></a><strong>init</strong> (image)</h4><h2 id="wordcloud-random-color-func"><a href="#wordcloud-random-color-func" class="headerlink" title="wordcloud.random_color_func"></a>wordcloud.random_color_func</h2><p><table><tr><td bgcolor="#EEE8AA"><font color="red"><b>wordcloud.random_color_func </b></font>(word=None, font_size=None, position=None, orientation=None, font_path=None, random_state=None)<br></td></tr></table><br>随机色相生成器。<br>默认的上色方法。该方法采取 80% 的色相和 50% 的亮度。</p>
+<p>Parameters : </p>
+<ul>
+<li>word</li>
+<li>font_size</li>
+<li>position</li>
+<li>orientation : ignored</li>
+<li>random_state : random.Random 对象或者 None，默认为 None（如果指定了 random 对象，则使用此生成随机数）</li>
+</ul>
+]]></content>
     
     <summary type="html">
     
-      &lt;h2 id=&quot;Wordcloud-的-API-Reference-分三部分：&quot;&gt;&lt;a href=&quot;#Wordcloud-的-API-Reference-分三部分：&quot; class=&quot;headerlink&quot; title=&quot;Wordcloud 的 API Reference 分三部分：&quot;&gt;&lt;/a&gt;Wordcloud 的 API Reference 分三部分：&lt;/h2&gt;&lt;ul&gt;
+      &lt;h1 id=&quot;Wordcloud-的-API-Reference-分三部分：&quot;&gt;&lt;a href=&quot;#Wordcloud-的-API-Reference-分三部分：&quot; class=&quot;headerlink&quot; title=&quot;Wordcloud 的 API Reference 分三部分：&quot;&gt;&lt;/a&gt;Wordcloud 的 API Reference 分三部分：&lt;/h1&gt;&lt;ul&gt;
 &lt;li&gt;WordCloud([font_path, width, height, …])&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Word cloud对象，用于生成以及绘制&lt;/li&gt;
 &lt;li&gt;ImageColorGenerator(image)&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;基于一个彩色图片的颜色生成器&lt;/li&gt;
-&lt;li&gt;random_color_func([word, font_size, …])&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;随机色调生成器&lt;/li&gt;
+&lt;li&gt;random_color_func([word, font_size, …])&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;随机色相生成器&lt;/li&gt;
 &lt;/ul&gt;
     
     </summary>
@@ -191,11 +212,11 @@
     
       <category term="python" scheme="https://yuanblq.github.io/tags/python/"/>
     
-      <category term="doc" scheme="https://yuanblq.github.io/tags/doc/"/>
-    
       <category term="词云" scheme="https://yuanblq.github.io/tags/%E8%AF%8D%E4%BA%91/"/>
     
       <category term="wordcloud" scheme="https://yuanblq.github.io/tags/wordcloud/"/>
+    
+      <category term="doc" scheme="https://yuanblq.github.io/tags/doc/"/>
     
   </entry>
   

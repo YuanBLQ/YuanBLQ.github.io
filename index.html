@@ -381,7 +381,8 @@
 
       
         
-          <h2 id="使用默认参数从文本中生成矩形词云"><a href="#使用默认参数从文本中生成矩形词云" class="headerlink" title="使用默认参数从文本中生成矩形词云"></a>使用默认参数从文本中生成矩形词云</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span> WordCloud</div></pre></td></tr></table></figure>
+          <p><font size="4">在<a href="/2017/03/26/WordCloud/" title="&nbsp;上一篇&nbsp;">&nbsp;上一篇&nbsp;</a>中介绍了 word cloud 的一些用法，下面是几个实战小例子。</font></p>
+<h2 id="使用默认参数从文本中生成矩形词云"><a href="#使用默认参数从文本中生成矩形词云" class="headerlink" title="使用默认参数从文本中生成矩形词云"></a>使用默认参数从文本中生成矩形词云</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span> WordCloud</div></pre></td></tr></table></figure>
 <h3 id="读取文件"><a href="#读取文件" class="headerlink" title="读取文件"></a>读取文件</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">with</span> open(<span class="string">'JaneEyre.txt'</span>) <span class="keyword">as</span> f:</div><div class="line">    text = f.read()</div></pre></td></tr></table></figure>
 <h3 id="生成词云图"><a href="#生成词云图" class="headerlink" title="生成词云图"></a>生成词云图</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">wordcloud = WordCloud().generate(text)</div></pre></td></tr></table></figure>
           <!--noindex-->
@@ -541,10 +542,10 @@
 
       
         
-          <h2 id="Wordcloud-的-API-Reference-分三部分："><a href="#Wordcloud-的-API-Reference-分三部分：" class="headerlink" title="Wordcloud 的 API Reference 分三部分："></a>Wordcloud 的 API Reference 分三部分：</h2><ul>
+          <h1 id="Wordcloud-的-API-Reference-分三部分："><a href="#Wordcloud-的-API-Reference-分三部分：" class="headerlink" title="Wordcloud 的 API Reference 分三部分："></a>Wordcloud 的 API Reference 分三部分：</h1><ul>
 <li>WordCloud([font_path, width, height, …])&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Word cloud对象，用于生成以及绘制</li>
 <li>ImageColorGenerator(image)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;基于一个彩色图片的颜色生成器</li>
-<li>random_color_func([word, font_size, …])&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;随机色调生成器</li>
+<li>random_color_func([word, font_size, …])&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;随机色相生成器</li>
 </ul>
           <!--noindex-->
           <div class="post-button text-center">
