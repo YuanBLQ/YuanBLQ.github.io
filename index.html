@@ -544,46 +544,18 @@
 
       
         
-          
-            <h1 id="mysql-hlocalhost-P3306-uroot-p"><a href="#mysql-hlocalhost-P3306-uroot-p" class="headerlink" title="mysql -hlocalhost -P3306 -uroot -p"></a>mysql -hlocalhost -P3306 -uroot -p</h1><h2 id="库的操作"><a href="#库的操作" class="headerlink" title="库的操作"></a>库的操作</h2><h3 id="新增数据库"><a href="#新增数据库" class="headerlink" title="新增数据库"></a>新增数据库</h3><p>create database 数据库名 [库选项];</p>
-<h4 id="库选项：用来约束数据库，分为两个选项"><a href="#库选项：用来约束数据库，分为两个选项" class="headerlink" title="库选项：用来约束数据库，分为两个选项"></a>库选项：用来约束数据库，分为两个选项</h4><ul>
-<li>字符集设定: charset / character set 具体字符集(数据存储的编码格式): 常用字符集: GBK, UTF8</li>
-<li>校对集设定: collate 具体校对集(数据比较的规则)<h4 id="数据库名可以用关键词，保留字等，但必须再数据库名字前后加上反引号-一般不这么干"><a href="#数据库名可以用关键词，保留字等，但必须再数据库名字前后加上反引号-一般不这么干" class="headerlink" title="数据库名可以用关键词，保留字等，但必须再数据库名字前后加上反引号 `(一般不这么干)"></a>数据库名可以用关键词，保留字等，但必须再数据库名字前后加上反引号 `(一般不这么干)</h4><h4 id="解决中文数据库名报错"><a href="#解决中文数据库名报错" class="headerlink" title="解决中文数据库名报错"></a>解决中文数据库名报错</h4></li>
-</ul>
-<ol>
-<li>set names gbk;  –因为 win 的命令窗口默认时 gbk 编码</li>
-<li>然后就可以设置中文数据库名了</li>
-<li>一般不创建中文数据库名，因为保存时会编码成不友好的字符<h4 id="每个数据库文件夹有个-opt-文件，保存的是库选项"><a href="#每个数据库文件夹有个-opt-文件，保存的是库选项" class="headerlink" title="每个数据库文件夹有个 opt 文件，保存的是库选项"></a>每个数据库文件夹有个 opt 文件，保存的是库选项</h4></li>
-</ol>
-<h3 id="查看数据库"><a href="#查看数据库" class="headerlink" title="查看数据库"></a>查看数据库</h3><h4 id="查看所有数据库"><a href="#查看所有数据库" class="headerlink" title="查看所有数据库"></a>查看所有数据库</h4><p>show databases;</p>
-<h4 id="查看指定部分的数据库：模糊查询"><a href="#查看指定部分的数据库：模糊查询" class="headerlink" title="查看指定部分的数据库：模糊查询"></a>查看指定部分的数据库：模糊查询</h4><p>show databases like ‘pattern’   – pattern 是匹配模式<br>%: 表示匹配多个字符<br>_: 表示匹配单个字符<br><strong>如果数据库名字中有下划线(_)查找时需要转义(\_)</strong></p>
-<h4 id="查看数据库的创建语句"><a href="#查看数据库的创建语句" class="headerlink" title="查看数据库的创建语句"></a>查看数据库的创建语句</h4><p>show create database 数据库名;</p>
-<h3 id="更新数据库"><a href="#更新数据库" class="headerlink" title="更新数据库"></a>更新数据库</h3><h4 id="数据库名字不可以修改"><a href="#数据库名字不可以修改" class="headerlink" title="数据库名字不可以修改"></a>数据库名字不可以修改</h4><p>因为修改数据库名字会导致后续一系列麻烦的操作</p>
-<h4 id="数据库的修改仅限库选项：字符集和校对集-校对集依赖字符集"><a href="#数据库的修改仅限库选项：字符集和校对集-校对集依赖字符集" class="headerlink" title="数据库的修改仅限库选项：字符集和校对集(校对集依赖字符集)"></a>数据库的修改仅限库选项：字符集和校对集(校对集依赖字符集)</h4><p>alter database 数据库名字 [库选项];<br>charset/character set [=] utf8/gbk</p>
-<h3 id="删除数据库"><a href="#删除数据库" class="headerlink" title="删除数据库"></a>删除数据库</h3><p>drop database 数据库名字;</p>
-<h2 id="表的操作"><a href="#表的操作" class="headerlink" title="表的操作"></a>表的操作</h2><p>表与字段密不可分。</p>
-<h3 id="新增数据表"><a href="#新增数据表" class="headerlink" title="新增数据表"></a>新增数据表</h3><p>create table [if not exists] 表名(<br>字段名 数据类型,<br>字段名 数据类型,<br>…<br>)[表选项];</p>
-<ul>
-<li>表选项: 控制表的表现<br>字符集: charset/character set 具体字符集;   – 保证表中数据存储的字符集<br>校对集: collate 具体校对集<br>存储引擎: engine 具体的存储引擎(innodb 和 myisam)  </li>
-<li>例: 创建表<br>方法 1(显式指定表所属的数据库):<br>create table if not exists 数据库名.student(<br>name varchar(10),<br>gender varchar(10),<br>number varchar(10),<br>age int<br>)charset utf8;<br>方法2(隐式指定表所属的数据库，先进入数据库):<br>use 数据库名;<br>create table if not exists student(<br>name varchar(10),<br>gender varchar(10),<br>number varchar(10),<br>age int<br>)charset utf8;  </li>
-</ul>
-<h3 id="查看数据表"><a href="#查看数据表" class="headerlink" title="查看数据表"></a>查看数据表</h3><ul>
-<li>查看所有表:<br>show tables;</li>
-<li>查看部分表: 模糊匹配<br>show tables like ‘pattren’</li>
-</ul>
-<h3 id="查看表创建语句"><a href="#查看表创建语句" class="headerlink" title="查看表创建语句"></a>查看表创建语句</h3><p>show create table 表名[\g];   –<br>show create table 表名\G;   – 旋转90°(纵向)</p>
-<h3 id="查看表结构-查看表中的字段信息"><a href="#查看表结构-查看表中的字段信息" class="headerlink" title="查看表结构: 查看表中的字段信息"></a>查看表结构: 查看表中的字段信息</h3><p>desc/describe / show columns from 表名;</p>
-<h3 id="修改数据表"><a href="#修改数据表" class="headerlink" title="修改数据表"></a>修改数据表</h3><p>表的修改分为两部分: 修改表本身和修改字段  </p>
-<h4 id="修改表本身-表名和表选项"><a href="#修改表本身-表名和表选项" class="headerlink" title="修改表本身: 表名和表选项"></a>修改表本身: 表名和表选项</h4><ul>
-<li>修改表名:<br>rename table 老表名 to 新表名</li>
-<li>修改表选项: 字符集, 校对集, 存储引擎<br>alter table 表名 charset = gbk  <h4 id="修改字段-新增-修改-重名-删除"><a href="#修改字段-新增-修改-重名-删除" class="headerlink" title="修改字段: 新增, 修改, 重名, 删除"></a>修改字段: 新增, 修改, 重名, 删除</h4></li>
-<li>新增字段<br>alter table 表名 add [column] 字段名 数据类型 [列属性] [位置];<br>位置: 字段可以存放在表中的任意位置(first, after 字段名)<br>例如:<br>alter table 表名 add [column] id int first;</li>
-<li>修改字段: 修改通常是修改属性或者数据类型<br>alter table 表名 modify 字段名 数据类型 [属性] [位置];<br>例如: 将表中number字段变成固定长度，且放到第二位之后<br>alter table 表名 modify number char(10) after id;</li>
-<li>重命名字段<br>alter table 表名 change 旧字段名 新字段名 数据类型 [属性] [位置];  </li>
-<li>删除字段<br>alter table 表名 drop 字段名;  <h3 id="删除数据表"><a href="#删除数据表" class="headerlink" title="删除数据表"></a>删除数据表</h3>drop table 表名1,表名2…;   – 可以一次性删除多张表</li>
-</ul>
-<h2 id="数据操作"><a href="#数据操作" class="headerlink" title="数据操作"></a>数据操作</h2>
-          
+          <h1 id="SQL"><a href="#SQL" class="headerlink" title="SQL"></a>SQL</h1><p>SQL分为三个部分：</p>
+<p>DDL：Data Definition<br>Language，数据定义语言，用来维护存储数据的结构（数据库，表），代表指令：create，drop，alter等。</p>
+<p>DML：Data Manipulation<br>Language，数据操作语言，用来对数据进行操作（数据表中的内容），代表指令：insert，delete，update等；其中DML内部又单独进行了一个分类：DQL（Data<br>Query Language：数据查询语言，如select）。</p>
+<p>DCL：Data Control<br>Language，数据控制语言，主要是负责权限管理（用户），代表指令：grant，revoke等。</p>
+<p>SQL是关系型数据库的操作指令，SQL是一种约束，但不强制（类似W3C），不同产品（如Oracle，mysql）可能内部会有一些细微的区别。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/04/11/mySQL操作/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
