@@ -131,7 +131,7 @@ DML：Data ManipulationLanguage，数据操作语言，用来对数据进行操�
 <meta property="og:image" content="https://yuanblq.github.io/2017/04/11/mySQL操作/30.png">
 <meta property="og:image" content="https://yuanblq.github.io/2017/04/11/mySQL操作/31.png">
 <meta property="og:image" content="https://yuanblq.github.io/2017/04/11/mySQL操作/32.png">
-<meta property="og:updated_time" content="2017-05-02T07:42:50.667Z">
+<meta property="og:updated_time" content="2017-05-02T08:06:29.024Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mySQL操作">
 <meta name="twitter:description" content="SQLSQL分为三个部分：
@@ -423,21 +423,21 @@ DML：Data ManipulationLanguage，数据操作语言，用来对数据进行操�
 <a id="more"></a>
 <h1 id="MySQL数据库"><a href="#MySQL数据库" class="headerlink" title="MySQL数据库"></a>MySQL数据库</h1><p>Mysql数据库是一种c/s结构的软件：客户端/服务端，若想访问服务器必须通过客户端（服务器一直运行，客户端在需要使用的时候运行）。</p>
 <p>交互方式</p>
-<ul>
+<ol>
 <li><p>客户端连接认证：连接服务器，认证身份：mysql.exe -hPup（hP连接，up认证）</p>
-<p>  <img src="/2017/04/11/mySQL操作/1.png" alt="png"></p>
+<p> <img src="/2017/04/11/mySQL操作/1.png" alt="png"></p>
 </li>
 <li><p>发送SQL指令</p>
 </li>
 <li><p>服务器接收SQL指令，处理SQL指令，返回操作结果</p>
 </li>
 <li><p>客户端接受结果，显示结果</p>
-<p>  <img src="/2017/04/11/mySQL操作/2.png" alt="png"></p>
+<p> <img src="/2017/04/11/mySQL操作/2.png" alt="png"></p>
 </li>
 <li><p>断开连接（释放资源：服务器并发限制）：exit / quit / \q</p>
-<p>  <img src="/2017/04/11/mySQL操作/3.png" alt="png"></p>
+<p> <img src="/2017/04/11/mySQL操作/3.png" alt="png"></p>
 </li>
-</ul>
+</ol>
 <h1 id="MySQL服务器对象"><a href="#MySQL服务器对象" class="headerlink" title="MySQL服务器对象"></a>MySQL服务器对象</h1><p>将mysql服务器内部对象分成四层：系统（DBMS）-> 数据库（DB）-><br>数据表（table）-> 字段（field）</p>
 <p><img src="/2017/04/11/mySQL操作/4.png" alt="png"></p>
 <h1 id="SQL基本操作"><a href="#SQL基本操作" class="headerlink" title="SQL基本操作"></a>SQL基本操作</h1><p>基本操作：CRUD</p>
@@ -458,38 +458,31 @@ DML：Data ManipulationLanguage，数据操作语言，用来对数据进行操�
 <p><img src="/2017/04/11/mySQL操作/6.png" alt="png"></p>
 </li>
 <li><p>每个数据库下都有一个opt文件：保存了库选项</p>
+<p><img src="/2017/04/11/mySQL操作/7.png" alt="png"></p>
 </li>
 </ol>
-<p><img src="/2017/04/11/mySQL操作/7.png" alt="png"></p>
 <h3 id="查看数据库"><a href="#查看数据库" class="headerlink" title="查看数据库"></a>查看数据库</h3><ol>
-<li>查看所有数据库</li>
-</ol>
+<li><p>查看所有数据库</p>
 <p>show databases;</p>
 <p><img src="/2017/04/11/mySQL操作/8.png" alt="png"></p>
-<ol>
-<li>查看指定部分的数据库：模糊查询</li>
+</li>
+<li><p>查看指定部分的数据库：模糊查询</p>
+<p>show databases like ‘pattern’ – pattern是匹配模式</p>
+<p>%：表示匹配多个字符</p>
+<p>_：表示匹配单个字符</p>
+</li>
+<li><p>查看数据库的创建语句</p>
+<p>show create database 数据库名字;</p>
+<p><img src="/2017/04/11/mySQL操作/9.png" alt="png"></p>
+<p>数据库在执行SQL语句之前会优化SQL，系统保存优化之后的结果。</p>
+</li>
 </ol>
-<blockquote>
-<p>  show databases like ‘pattern’ – pattern是匹配模式</p>
-<p>  %：表示匹配多个字符</p>
-<p>  _：表示匹配单个字符</p>
-</blockquote>
-<ol>
-<li>查看数据库的创建语句</li>
-</ol>
-<blockquote>
-<p>  show create database 数据库名字;</p>
-<p>  <img src="/2017/04/11/mySQL操作/9.png" alt="png"></p>
-<p>  数据库在执行SQL语句之前会优化SQL，系统保存优化之后的结果。</p>
-</blockquote>
-<h3 id="更新数据库"><a href="#更新数据库" class="headerlink" title="更新数据库"></a>更新数据库</h3><blockquote>
-<p>  数据库的名字不可以修改。 – 修改数据库名字不安全</p>
-<p>  数据库的修改仅限库选项：字符集和校对集（校对集依赖字符集）</p>
-<p>  alter database 数据库名字 [库选项];</p>
-<p>  库选项：charset / character set [=] 字符集</p>
-<p>  collate 校对集</p>
-<p>  <img src="/2017/04/11/mySQL操作/10.png" alt="png"></p>
-</blockquote>
+<h3 id="更新数据库"><a href="#更新数据库" class="headerlink" title="更新数据库"></a>更新数据库</h3><p>数据库的名字不可以修改。 – 修改数据库名字不安全</p>
+<p>数据库的修改仅限库选项：字符集和校对集（校对集依赖字符集）</p>
+<p>alter database 数据库名字 [库选项];</p>
+<p>库选项：charset / character set [=] 字符集</p>
+<p>collate 校对集</p>
+<p><img src="/2017/04/11/mySQL操作/10.png" alt="png"></p>
 <h3 id="删除数据库"><a href="#删除数据库" class="headerlink" title="删除数据库"></a>删除数据库</h3><p>drop database 数据库名字;</p>
 <p><img src="/2017/04/11/mySQL操作/11.png" alt="png"></p>
 <p>当执行删除数据库语句时，发生了什么？</p>
@@ -523,83 +516,59 @@ DML：Data ManipulationLanguage，数据操作语言，用来对数据进行操�
 <li><p>指定数据库下已经存在对应的表</p>
 </li>
 <li><p>在数据库对应的文件夹下，会产生对应表的机构文件（跟存储引擎有关）</p>
+<p><img src="/2017/04/11/mySQL操作/15.png" alt="png"></p>
 </li>
 </ol>
-<blockquote>
-<p>  <img src="/2017/04/11/mySQL操作/15.png" alt="png"></p>
-</blockquote>
 <h3 id="查看数据表"><a href="#查看数据表" class="headerlink" title="查看数据表"></a>查看数据表</h3><p>数据库能查看的方式表都能用。</p>
 <ol>
-<li>查看所有表：show tables;</li>
-</ol>
+<li><p>查看所有表：show tables;</p>
 <p><img src="/2017/04/11/mySQL操作/16.png" alt="png"></p>
-<ol>
+</li>
 <li><p>查看部分表：show tables like ‘pattren’; – pattern 匹配模式</p>
 </li>
 <li><p>查看表创建语句：show create table 表名;</p>
+<p>show create table student\g – \g 等价于分号（;）</p>
+<p>show create table student\G; – \G将查到的结构旋转90°（纵向）</p>
+<p><img src="/2017/04/11/mySQL操作/17.png" alt="png"></p>
+</li>
+<li><p>查看表结构：查看表中的字段信息</p>
+<p>desc/ describe / show columns from 表名;</p>
+<p><img src="/2017/04/11/mySQL操作/18.png" alt="png"></p>
 </li>
 </ol>
-<blockquote>
-<p>  show create table student\g – \g 等价于分号（;）</p>
-<p>  show create table student\G; – \G将查到的结构旋转90°（纵向）</p>
-<p>  <img src="/2017/04/11/mySQL操作/17.png" alt="png"></p>
-</blockquote>
-<ol>
-<li>查看表结构：查看表中的字段信息</li>
-</ol>
-<blockquote>
-<p>  desc/ describe / show columns from 表名;</p>
-<p>  <img src="/2017/04/11/mySQL操作/18.png" alt="png"></p>
-</blockquote>
 <h3 id="更新数据表"><a href="#更新数据表" class="headerlink" title="更新数据表"></a>更新数据表</h3><p>表的修改分为两部分：修改表本身和修改字段</p>
 <h4 id="修改表本身"><a href="#修改表本身" class="headerlink" title="修改表本身"></a>修改表本身</h4><p>表本身可以修改：表名和表选项</p>
 <ol>
-<li>修改表名：rename table 老表名 to 新表名;</li>
+<li><p>修改表名：rename table 老表名 to 新表名;</p>
+<p><img src="/2017/04/11/mySQL操作/19.png" alt="png"></p>
+</li>
+<li><p>修改表选项：字符集，校对集和存储引擎</p>
+<p>alter table 表名 表选项 [=] 值</p>
+<p><img src="/2017/04/11/mySQL操作/20.png" alt="png"></p>
+</li>
 </ol>
-<blockquote>
-<p>  <img src="/2017/04/11/mySQL操作/19.png" alt="png"></p>
-</blockquote>
+<h4 id="修改字段"><a href="#修改字段" class="headerlink" title="修改字段"></a>修改字段</h4><p>字段操作有很多：新增，修改，重名，删除</p>
 <ol>
-<li>修改表选项：字符集，校对集和存储引擎</li>
+<li><p>新增字段</p>
+<p>alter table 表名 add [column] 字段名 数据类型 [列属性] [位置];</p>
+<p>位置：字段名可以存放到表中的任意位置：</p>
+<p>first：第一个位置</p>
+<p>after：在哪个字段之后：after 字段名；默认的是在最后一个字段之后</p>
+<p><img src="/2017/04/11/mySQL操作/21.png" alt="png"></p>
+</li>
+<li><p>修改字段：通常修改属性或者数据类型</p>
+<p>alter table 表名 modify 字段名 数据类型 [属性] [位置];</p>
+<p><img src="/2017/04/11/mySQL操作/22.png" alt="png"></p>
+</li>
+<li><p>重命名字段</p>
+<p>alter table 表名 change 旧字段名 新字段名 数据类型 [属性] [位置];</p>
+<p><img src="/2017/04/11/mySQL操作/23.png" alt="png"></p>
+</li>
+<li><p>删除字段</p>
+<p>alter table 表名 drop 字段名;</p>
+<p><img src="/2017/04/11/mySQL操作/24.png" alt="png"></p>
+</li>
 </ol>
-<blockquote>
-<p>  alter table 表名 表选项 [=] 值</p>
-<p>  <img src="/2017/04/11/mySQL操作/20.png" alt="png"></p>
-</blockquote>
-<h4 id="修改字段"><a href="#修改字段" class="headerlink" title="修改字段"></a>修改字段</h4><blockquote>
-<p>  字段操作有很多：新增，修改，重名，删除</p>
-</blockquote>
-<ol>
-<li>新增字段</li>
-</ol>
-<blockquote>
-<p>  alter table 表名 add [column] 字段名 数据类型 [列属性] [位置];</p>
-<p>  位置：字段名可以存放到表中的任意位置：</p>
-<p>  first：第一个位置</p>
-<p>  after：在哪个字段之后：after 字段名；默认的是在最后一个字段之后</p>
-<p>  <img src="/2017/04/11/mySQL操作/21.png" alt="png"></p>
-</blockquote>
-<ol>
-<li>修改字段：通常修改属性或者数据类型</li>
-</ol>
-<blockquote>
-<p>  alter table 表名 modify 字段名 数据类型 [属性] [位置];</p>
-<p>  <img src="/2017/04/11/mySQL操作/22.png" alt="png"></p>
-</blockquote>
-<ol>
-<li>重命名字段</li>
-</ol>
-<blockquote>
-<p>  alter table 表名 change 旧字段名 新字段名 数据类型 [属性] [位置];</p>
-<p>  <img src="/2017/04/11/mySQL操作/23.png" alt="png"></p>
-</blockquote>
-<ol>
-<li>删除字段</li>
-</ol>
-<blockquote>
-<p>  alter table 表名 drop 字段名;</p>
-<p>  <img src="/2017/04/11/mySQL操作/24.png" alt="png"></p>
-</blockquote>
 <h4 id="删除数据表"><a href="#删除数据表" class="headerlink" title="删除数据表"></a>删除数据表</h4><p>drop table 表名1，表名2…; – 可以删除多张数据表</p>
 <p><img src="/2017/04/11/mySQL操作/25.png" alt="png"></p>
 <p>当删除数据表的指令执行后发生了什么？</p>
@@ -607,11 +576,9 @@ DML：Data ManipulationLanguage，数据操作语言，用来对数据进行操�
 <li><p>在表空间中，没有了指定的表（数据也没有了）</p>
 </li>
 <li><p>在数据库对用的文件夹下，表对应的文件（与存储引擎有关）也会被删除</p>
+<p><img src="/2017/04/11/mySQL操作/26.png" alt="png"></p>
 </li>
 </ol>
-<blockquote>
-<p>  <img src="/2017/04/11/mySQL操作/26.png" alt="png"></p>
-</blockquote>
 <h2 id="数据操作"><a href="#数据操作" class="headerlink" title="数据操作"></a>数据操作</h2><h3 id="新增数据"><a href="#新增数据" class="headerlink" title="新增数据"></a>新增数据</h3><p>有两种方法</p>
 <p>方案1：给全表字段插入数据，不需要指定字段列表：要求数据的值出现的顺序必须与表中设计的字段出现的顺序一致：凡是非数值数据，都需要使用引号（建议是单引号）包裹</p>
 <p>insert into 表名 values(值列表)[,(值列表)]; – 可以一次性插入多条记录</p>
@@ -621,13 +588,13 @@ DML：Data ManipulationLanguage，数据操作语言，用来对数据进行操�
 <p><img src="/2017/04/11/mySQL操作/28.png" alt="png"></p>
 <h3 id="查看数据"><a href="#查看数据" class="headerlink" title="查看数据"></a>查看数据</h3><p>select */字段列表 from 表名 [where 条件];</p>
 <ol>
-<li>查看所有数据</li>
-</ol>
+<li><p>查看所有数据</p>
 <p><img src="/2017/04/11/mySQL操作/29.png" alt="png"></p>
-<ol>
-<li>查看指定字段，指定条件的数据</li>
-</ol>
+</li>
+<li><p>查看指定字段，指定条件的数据</p>
 <p><img src="/2017/04/11/mySQL操作/30.png" alt="png"></p>
+</li>
+</ol>
 <h3 id="更新数据"><a href="#更新数据" class="headerlink" title="更新数据"></a>更新数据</h3><p>update 表名 set 字段 = 值 [where 条件]; – 不加where条件就是更新全部数据</p>
 <p><img src="/2017/04/11/mySQL操作/31.png" alt="png"></p>
 <h3 id="删除数据库-1"><a href="#删除数据库-1" class="headerlink" title="删除数据库"></a>删除数据库</h3><p>delete from 表名 [where条件];</p>
