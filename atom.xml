@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2017-03-28T09:10:40.658Z</updated>
+  <updated>2017-05-02T04:31:50.573Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -14,6 +14,94 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>itchat 微信机器人</title>
+    <link href="https://yuanblq.github.io/2017/05/02/itchat/"/>
+    <id>https://yuanblq.github.io/2017/05/02/itchat/</id>
+    <published>2017-05-02T04:13:51.000Z</published>
+    <updated>2017-05-02T04:31:50.573Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="通过-itchat-模块和微软小冰的微信公众号-xiaoice-ms-打造自己的微信机器人"><a href="#通过-itchat-模块和微软小冰的微信公众号-xiaoice-ms-打造自己的微信机器人" class="headerlink" title="通过 itchat 模块和微软小冰的微信公众号(xiaoice-ms)打造自己的微信机器人"></a>通过 itchat 模块和微软小冰的微信公众号(xiaoice-ms)打造自己的微信机器人</h1><h2 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h2><p>通过微信的 python 接口 itchat获取微信消息<br>将微信消息转发给”小冰”<br>获取”小冰”处理后的返回消息<br>将返回消息返回给微信消息的发送人  </p>
+<h2 id="基本步骤"><a href="#基本步骤" class="headerlink" title="基本步骤"></a>基本步骤</h2><h3 id="获取微信消息"><a href="#获取微信消息" class="headerlink" title="获取微信消息"></a>获取微信消息</h3><p>itchat 在注册时会根据相应的消息类型调用对应的函数.<br>比如现在只需获取基本的文本消息, 只需这样注册:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> itchat</div><div class="line"></div><div class="line"><span class="meta">@itchat.msg_register(itchat.content.TEXT)</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_msg</span><span class="params">(msg)</span>:</span></div><div class="line">	print(msg[<span class="string">'Text'</span>])</div><div class="line"></div><div class="line">itchat.auto_login()</div><div class="line">itchat.run</div></pre></td></tr></table></figure></p>
+<p>第三行, 通过装饰符将 <code>get_msg</code> 注册为处理消息的函数.  </p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;通过-itchat-模块和微软小冰的微信公众号-xiaoice-ms-打造自己的微信机器人&quot;&gt;&lt;a href=&quot;#通过-itchat-模块和微软小冰的微信公众号-xiaoice-ms-打造自己的微信机器人&quot; class=&quot;headerlink&quot; title=&quot;通过
+    
+    </summary>
+    
+      <category term="应用实例" scheme="https://yuanblq.github.io/categories/%E5%BA%94%E7%94%A8%E5%AE%9E%E4%BE%8B/"/>
+    
+    
+      <category term="python" scheme="https://yuanblq.github.io/tags/python/"/>
+    
+      <category term="itchat" scheme="https://yuanblq.github.io/tags/itchat/"/>
+    
+      <category term="小冰" scheme="https://yuanblq.github.io/tags/%E5%B0%8F%E5%86%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>mySQL操作</title>
+    <link href="https://yuanblq.github.io/2017/04/11/mySQL%E6%93%8D%E4%BD%9C/"/>
+    <id>https://yuanblq.github.io/2017/04/11/mySQL操作/</id>
+    <published>2017-04-11T11:38:36.000Z</published>
+    <updated>2017-04-11T13:51:52.276Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="mysql-hlocalhost-P3306-uroot-p"><a href="#mysql-hlocalhost-P3306-uroot-p" class="headerlink" title="mysql -hlocalhost -P3306 -uroot -p"></a>mysql -hlocalhost -P3306 -uroot -p</h1><h2 id="库的操作"><a href="#库的操作" class="headerlink" title="库的操作"></a>库的操作</h2><h3 id="新增数据库"><a href="#新增数据库" class="headerlink" title="新增数据库"></a>新增数据库</h3><p>create database 数据库名 [库选项];</p>
+<h4 id="库选项：用来约束数据库，分为两个选项"><a href="#库选项：用来约束数据库，分为两个选项" class="headerlink" title="库选项：用来约束数据库，分为两个选项"></a>库选项：用来约束数据库，分为两个选项</h4><ul>
+<li>字符集设定: charset / character set 具体字符集(数据存储的编码格式): 常用字符集: GBK, UTF8</li>
+<li>校对集设定: collate 具体校对集(数据比较的规则)<h4 id="数据库名可以用关键词，保留字等，但必须再数据库名字前后加上反引号-一般不这么干"><a href="#数据库名可以用关键词，保留字等，但必须再数据库名字前后加上反引号-一般不这么干" class="headerlink" title="数据库名可以用关键词，保留字等，但必须再数据库名字前后加上反引号 `(一般不这么干)"></a>数据库名可以用关键词，保留字等，但必须再数据库名字前后加上反引号 `(一般不这么干)</h4><h4 id="解决中文数据库名报错"><a href="#解决中文数据库名报错" class="headerlink" title="解决中文数据库名报错"></a>解决中文数据库名报错</h4></li>
+</ul>
+<ol>
+<li>set names gbk;  –因为 win 的命令窗口默认时 gbk 编码</li>
+<li>然后就可以设置中文数据库名了</li>
+<li>一般不创建中文数据库名，因为保存时会编码成不友好的字符<h4 id="每个数据库文件夹有个-opt-文件，保存的是库选项"><a href="#每个数据库文件夹有个-opt-文件，保存的是库选项" class="headerlink" title="每个数据库文件夹有个 opt 文件，保存的是库选项"></a>每个数据库文件夹有个 opt 文件，保存的是库选项</h4></li>
+</ol>
+<h3 id="查看数据库"><a href="#查看数据库" class="headerlink" title="查看数据库"></a>查看数据库</h3><h4 id="查看所有数据库"><a href="#查看所有数据库" class="headerlink" title="查看所有数据库"></a>查看所有数据库</h4><p>show databases;</p>
+<h4 id="查看指定部分的数据库：模糊查询"><a href="#查看指定部分的数据库：模糊查询" class="headerlink" title="查看指定部分的数据库：模糊查询"></a>查看指定部分的数据库：模糊查询</h4><p>show databases like ‘pattern’   – pattern 是匹配模式<br>%: 表示匹配多个字符<br>_: 表示匹配单个字符<br><strong>如果数据库名字中有下划线(_)查找时需要转义(\_)</strong></p>
+<h4 id="查看数据库的创建语句"><a href="#查看数据库的创建语句" class="headerlink" title="查看数据库的创建语句"></a>查看数据库的创建语句</h4><p>show create database 数据库名;</p>
+<h3 id="更新数据库"><a href="#更新数据库" class="headerlink" title="更新数据库"></a>更新数据库</h3><h4 id="数据库名字不可以修改"><a href="#数据库名字不可以修改" class="headerlink" title="数据库名字不可以修改"></a>数据库名字不可以修改</h4><p>因为修改数据库名字会导致后续一系列麻烦的操作</p>
+<h4 id="数据库的修改仅限库选项：字符集和校对集-校对集依赖字符集"><a href="#数据库的修改仅限库选项：字符集和校对集-校对集依赖字符集" class="headerlink" title="数据库的修改仅限库选项：字符集和校对集(校对集依赖字符集)"></a>数据库的修改仅限库选项：字符集和校对集(校对集依赖字符集)</h4><p>alter database 数据库名字 [库选项];<br>charset/character set [=] utf8/gbk</p>
+<h3 id="删除数据库"><a href="#删除数据库" class="headerlink" title="删除数据库"></a>删除数据库</h3><p>drop database 数据库名字;</p>
+<h2 id="表的操作"><a href="#表的操作" class="headerlink" title="表的操作"></a>表的操作</h2><p>表与字段密不可分。</p>
+<h3 id="新增数据表"><a href="#新增数据表" class="headerlink" title="新增数据表"></a>新增数据表</h3><p>create table [if not exists] 表名(<br>字段名 数据类型,<br>字段名 数据类型,<br>…<br>)[表选项];</p>
+<ul>
+<li>表选项: 控制表的表现<br>字符集: charset/character set 具体字符集;   – 保证表中数据存储的字符集<br>校对集: collate 具体校对集<br>存储引擎: engine 具体的存储引擎(innodb 和 myisam)  </li>
+<li>例: 创建表<br>方法 1(显式指定表所属的数据库):<br>create table if not exists 数据库名.student(<br>name varchar(10),<br>gender varchar(10),<br>number varchar(10),<br>age int<br>)charset utf8;<br>方法2(隐式指定表所属的数据库，先进入数据库):<br>use 数据库名;<br>create table if not exists student(<br>name varchar(10),<br>gender varchar(10),<br>number varchar(10),<br>age int<br>)charset utf8;  </li>
+</ul>
+<h3 id="查看数据表"><a href="#查看数据表" class="headerlink" title="查看数据表"></a>查看数据表</h3><ul>
+<li>查看所有表:<br>show tables;</li>
+<li>查看部分表: 模糊匹配<br>show tables like ‘pattren’</li>
+</ul>
+<h3 id="查看表创建语句"><a href="#查看表创建语句" class="headerlink" title="查看表创建语句"></a>查看表创建语句</h3><p>show create table 表名[\g];   –<br>show create table 表名\G;   – 旋转90°(纵向)</p>
+<h3 id="查看表结构-查看表中的字段信息"><a href="#查看表结构-查看表中的字段信息" class="headerlink" title="查看表结构: 查看表中的字段信息"></a>查看表结构: 查看表中的字段信息</h3><p>desc/describe / show columns from 表名;</p>
+<h3 id="修改数据表"><a href="#修改数据表" class="headerlink" title="修改数据表"></a>修改数据表</h3><p>表的修改分为两部分: 修改表本身和修改字段  </p>
+<h4 id="修改表本身-表名和表选项"><a href="#修改表本身-表名和表选项" class="headerlink" title="修改表本身: 表名和表选项"></a>修改表本身: 表名和表选项</h4><ul>
+<li>修改表名:<br>rename table 老表名 to 新表名</li>
+<li>修改表选项: 字符集, 校对集, 存储引擎<br>alter table 表名 charset = gbk  <h4 id="修改字段-新增-修改-重名-删除"><a href="#修改字段-新增-修改-重名-删除" class="headerlink" title="修改字段: 新增, 修改, 重名, 删除"></a>修改字段: 新增, 修改, 重名, 删除</h4></li>
+<li>新增字段<br>alter table 表名 add [column] 字段名 数据类型 [列属性] [位置];<br>位置: 字段可以存放在表中的任意位置(first, after 字段名)<br>例如:<br>alter table 表名 add [column] id int first;</li>
+<li>修改字段: 修改通常是修改属性或者数据类型<br>alter table 表名 modify 字段名 数据类型 [属性] [位置];<br>例如: 将表中number字段变成固定长度，且放到第二位之后<br>alter table 表名 modify number char(10) after id;</li>
+<li>重命名字段<br>alter table 表名 change 旧字段名 新字段名 数据类型 [属性] [位置];  </li>
+<li>删除字段<br>alter table 表名 drop 字段名;  <h3 id="删除数据表"><a href="#删除数据表" class="headerlink" title="删除数据表"></a>删除数据表</h3>drop table 表名1,表名2…;   – 可以一次性删除多张表</li>
+</ul>
+<h2 id="数据操作"><a href="#数据操作" class="headerlink" title="数据操作"></a>数据操作</h2>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;mysql-hlocalhost-P3306-uroot-p&quot;&gt;&lt;a href=&quot;#mysql-hlocalhost-P3306-uroot-p&quot; class=&quot;headerlink&quot; title=&quot;mysql -hlocalhost -P3306 -uroot 
+    
+    </summary>
+    
+      <category term="document" scheme="https://yuanblq.github.io/categories/document/"/>
+    
+    
+      <category term="mySQL" scheme="https://yuanblq.github.io/tags/mySQL/"/>
+    
+  </entry>
   
   <entry>
     <title>词云小例子</title>
@@ -71,7 +159,7 @@
     <link href="https://yuanblq.github.io/2017/03/26/WordCloud/"/>
     <id>https://yuanblq.github.io/2017/03/26/WordCloud/</id>
     <published>2017-03-26T12:55:52.000Z</published>
-    <updated>2017-03-28T13:59:25.124Z</updated>
+    <updated>2017-04-11T11:40:07.101Z</updated>
     
     <content type="html"><![CDATA[<h1 id="Wordcloud-的-API-Reference-分三部分："><a href="#Wordcloud-的-API-Reference-分三部分：" class="headerlink" title="Wordcloud 的 API Reference 分三部分："></a>Wordcloud 的 API Reference 分三部分：</h1><ul>
 <li>WordCloud([font_path, width, height, …])&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Word cloud对象，用于生成以及绘制</li>
@@ -209,14 +297,14 @@
     
       <category term="模块文档" scheme="https://yuanblq.github.io/categories/%E6%A8%A1%E5%9D%97%E6%96%87%E6%A1%A3/"/>
     
+      <category term="document" scheme="https://yuanblq.github.io/categories/%E6%A8%A1%E5%9D%97%E6%96%87%E6%A1%A3/document/"/>
+    
     
       <category term="python" scheme="https://yuanblq.github.io/tags/python/"/>
     
       <category term="词云" scheme="https://yuanblq.github.io/tags/%E8%AF%8D%E4%BA%91/"/>
     
       <category term="wordcloud" scheme="https://yuanblq.github.io/tags/wordcloud/"/>
-    
-      <category term="doc" scheme="https://yuanblq.github.io/tags/doc/"/>
     
   </entry>
   
