@@ -69,10 +69,10 @@
   
   <entry>
     <title>mySQL操作</title>
-    <link href="https://yuanblq.github.io/2017/04/11/mySQL%E6%93%8D%E4%BD%9C/"/>
-    <id>https://yuanblq.github.io/2017/04/11/mySQL操作/</id>
-    <published>2017-04-11T11:38:36.000Z</published>
-    <updated>2017-05-02T08:06:29.024Z</updated>
+    <link href="https://yuanblq.github.io/2017/04/21/mySQL%E6%93%8D%E4%BD%9C/"/>
+    <id>https://yuanblq.github.io/2017/04/21/mySQL操作/</id>
+    <published>2017-04-21T11:38:36.000Z</published>
+    <updated>2017-05-02T09:44:47.163Z</updated>
     
     <content type="html"><![CDATA[<h1 id="SQL"><a href="#SQL" class="headerlink" title="SQL"></a>SQL</h1><p>SQL分为三个部分：</p>
 <p>DDL：Data Definition<br>Language，数据定义语言，用来维护存储数据的结构（数据库，表），代表指令：create，drop，alter等。</p>
@@ -84,21 +84,21 @@
 <p>交互方式</p>
 <ol>
 <li><p>客户端连接认证：连接服务器，认证身份：mysql.exe -hPup（hP连接，up认证）</p>
-<p> <img src="/2017/04/11/mySQL操作/1.png" alt="png"></p>
+<p> <img src="/2017/04/21/mySQL操作/1.png" alt="png"></p>
 </li>
 <li><p>发送SQL指令</p>
 </li>
 <li><p>服务器接收SQL指令，处理SQL指令，返回操作结果</p>
 </li>
 <li><p>客户端接受结果，显示结果</p>
-<p> <img src="/2017/04/11/mySQL操作/2.png" alt="png"></p>
+<p> <img src="/2017/04/21/mySQL操作/2.png" alt="png"></p>
 </li>
 <li><p>断开连接（释放资源：服务器并发限制）：exit / quit / \q</p>
-<p> <img src="/2017/04/11/mySQL操作/3.png" alt="png"></p>
+<p> <img src="/2017/04/21/mySQL操作/3.png" alt="png"></p>
 </li>
 </ol>
 <h1 id="MySQL服务器对象"><a href="#MySQL服务器对象" class="headerlink" title="MySQL服务器对象"></a>MySQL服务器对象</h1><p>将mysql服务器内部对象分成四层：系统（DBMS）-> 数据库（DB）-><br>数据表（table）-> 字段（field）</p>
-<p><img src="/2017/04/11/mySQL操作/4.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/4.png" alt="png"></p>
 <h1 id="SQL基本操作"><a href="#SQL基本操作" class="headerlink" title="SQL基本操作"></a>SQL基本操作</h1><p>基本操作：CRUD</p>
 <p>将SQL的基本操作根据操作对象分为三类：库操作，表操作（字段），数据操作</p>
 <h2 id="库操作"><a href="#库操作" class="headerlink" title="库操作"></a>库操作</h2><p>对数据库的增删改查</p>
@@ -107,23 +107,23 @@
 <p>库选项：用来约束数据库，分为两个选项</p>
 <p>字符集设定：charset / character set<br>具体字符集（数据存储的编码格式）：常用字符集：gbk和utf8</p>
 <p>校对集设定：collate 具体校对集（数据比较的规则）</p>
-<p><img src="/2017/04/11/mySQL操作/5.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/5.png" alt="png"></p>
 <p>其中：数据库名字不能用关键字或者保留字，非要用可以在前后加上反引号（`）</p>
 <p>当创建数据库的SQL语句执行后，发生了什么？</p>
 <ol>
 <li><p>在数据库系统中，增加了对应的数据库信息</p>
 </li>
 <li><p>会在保存数据的文件夹下：Data目录，创建一个对应数据库名字的文件夹</p>
-<p><img src="/2017/04/11/mySQL操作/6.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/6.png" alt="png"></p>
 </li>
 <li><p>每个数据库下都有一个opt文件：保存了库选项</p>
-<p><img src="/2017/04/11/mySQL操作/7.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/7.png" alt="png"></p>
 </li>
 </ol>
 <h3 id="查看数据库"><a href="#查看数据库" class="headerlink" title="查看数据库"></a>查看数据库</h3><ol>
 <li><p>查看所有数据库</p>
 <p>show databases;</p>
-<p><img src="/2017/04/11/mySQL操作/8.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/8.png" alt="png"></p>
 </li>
 <li><p>查看指定部分的数据库：模糊查询</p>
 <p>show databases like ‘pattern’ – pattern是匹配模式</p>
@@ -132,7 +132,7 @@
 </li>
 <li><p>查看数据库的创建语句</p>
 <p>show create database 数据库名字;</p>
-<p><img src="/2017/04/11/mySQL操作/9.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/9.png" alt="png"></p>
 <p>数据库在执行SQL语句之前会优化SQL，系统保存优化之后的结果。</p>
 </li>
 </ol>
@@ -141,9 +141,9 @@
 <p>alter database 数据库名字 [库选项];</p>
 <p>库选项：charset / character set [=] 字符集</p>
 <p>collate 校对集</p>
-<p><img src="/2017/04/11/mySQL操作/10.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/10.png" alt="png"></p>
 <h3 id="删除数据库"><a href="#删除数据库" class="headerlink" title="删除数据库"></a>删除数据库</h3><p>drop database 数据库名字;</p>
-<p><img src="/2017/04/11/mySQL操作/11.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/11.png" alt="png"></p>
 <p>当执行删除数据库语句时，发生了什么？</p>
 <ol>
 <li><p>在数据库内部看不到对应的数据库</p>
@@ -162,48 +162,48 @@
 <p>字符集：charset / character set 具体字符集; – 保证表中数据存储的字符集</p>
 <p>校对集：collate 具体校对集;</p>
 <p>存储引擎：engin 具体的存储引擎（innodb和myisam）</p>
-<p><img src="/2017/04/11/mySQL操作/12.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/12.png" alt="png"></p>
 <p>任何一个表的设计都必须指定数据库。</p>
 <p>方案1：显式的指定表所属的数据库</p>
 <p>create table 数据库名.表名(); – 将当前的数据表创建到指定的数据库下</p>
-<p><img src="/2017/04/11/mySQL操作/13.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/13.png" alt="png"></p>
 <p>方案2：隐式的指定表所属的数据库：先进入到某个数据库环境，这样创建的表自动归属到某个指定的数据库。</p>
 <p>进入数据库环境：use 数据库名字</p>
-<p><img src="/2017/04/11/mySQL操作/14.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/14.png" alt="png"></p>
 <p>当创建表的SQL指令执行之后，发生了什么？</p>
 <ol>
 <li><p>指定数据库下已经存在对应的表</p>
 </li>
 <li><p>在数据库对应的文件夹下，会产生对应表的机构文件（跟存储引擎有关）</p>
-<p><img src="/2017/04/11/mySQL操作/15.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/15.png" alt="png"></p>
 </li>
 </ol>
 <h3 id="查看数据表"><a href="#查看数据表" class="headerlink" title="查看数据表"></a>查看数据表</h3><p>数据库能查看的方式表都能用。</p>
 <ol>
 <li><p>查看所有表：show tables;</p>
-<p><img src="/2017/04/11/mySQL操作/16.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/16.png" alt="png"></p>
 </li>
 <li><p>查看部分表：show tables like ‘pattren’; – pattern 匹配模式</p>
 </li>
 <li><p>查看表创建语句：show create table 表名;</p>
 <p>show create table student\g – \g 等价于分号（;）</p>
 <p>show create table student\G; – \G将查到的结构旋转90°（纵向）</p>
-<p><img src="/2017/04/11/mySQL操作/17.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/17.png" alt="png"></p>
 </li>
 <li><p>查看表结构：查看表中的字段信息</p>
 <p>desc/ describe / show columns from 表名;</p>
-<p><img src="/2017/04/11/mySQL操作/18.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/18.png" alt="png"></p>
 </li>
 </ol>
 <h3 id="更新数据表"><a href="#更新数据表" class="headerlink" title="更新数据表"></a>更新数据表</h3><p>表的修改分为两部分：修改表本身和修改字段</p>
 <h4 id="修改表本身"><a href="#修改表本身" class="headerlink" title="修改表本身"></a>修改表本身</h4><p>表本身可以修改：表名和表选项</p>
 <ol>
 <li><p>修改表名：rename table 老表名 to 新表名;</p>
-<p><img src="/2017/04/11/mySQL操作/19.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/19.png" alt="png"></p>
 </li>
 <li><p>修改表选项：字符集，校对集和存储引擎</p>
 <p>alter table 表名 表选项 [=] 值</p>
-<p><img src="/2017/04/11/mySQL操作/20.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/20.png" alt="png"></p>
 </li>
 </ol>
 <h4 id="修改字段"><a href="#修改字段" class="headerlink" title="修改字段"></a>修改字段</h4><p>字段操作有很多：新增，修改，重名，删除</p>
@@ -213,51 +213,51 @@
 <p>位置：字段名可以存放到表中的任意位置：</p>
 <p>first：第一个位置</p>
 <p>after：在哪个字段之后：after 字段名；默认的是在最后一个字段之后</p>
-<p><img src="/2017/04/11/mySQL操作/21.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/21.png" alt="png"></p>
 </li>
 <li><p>修改字段：通常修改属性或者数据类型</p>
 <p>alter table 表名 modify 字段名 数据类型 [属性] [位置];</p>
-<p><img src="/2017/04/11/mySQL操作/22.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/22.png" alt="png"></p>
 </li>
 <li><p>重命名字段</p>
 <p>alter table 表名 change 旧字段名 新字段名 数据类型 [属性] [位置];</p>
-<p><img src="/2017/04/11/mySQL操作/23.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/23.png" alt="png"></p>
 </li>
 <li><p>删除字段</p>
 <p>alter table 表名 drop 字段名;</p>
-<p><img src="/2017/04/11/mySQL操作/24.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/24.png" alt="png"></p>
 </li>
 </ol>
 <h4 id="删除数据表"><a href="#删除数据表" class="headerlink" title="删除数据表"></a>删除数据表</h4><p>drop table 表名1，表名2…; – 可以删除多张数据表</p>
-<p><img src="/2017/04/11/mySQL操作/25.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/25.png" alt="png"></p>
 <p>当删除数据表的指令执行后发生了什么？</p>
 <ol>
 <li><p>在表空间中，没有了指定的表（数据也没有了）</p>
 </li>
 <li><p>在数据库对用的文件夹下，表对应的文件（与存储引擎有关）也会被删除</p>
-<p><img src="/2017/04/11/mySQL操作/26.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/26.png" alt="png"></p>
 </li>
 </ol>
 <h2 id="数据操作"><a href="#数据操作" class="headerlink" title="数据操作"></a>数据操作</h2><h3 id="新增数据"><a href="#新增数据" class="headerlink" title="新增数据"></a>新增数据</h3><p>有两种方法</p>
 <p>方案1：给全表字段插入数据，不需要指定字段列表：要求数据的值出现的顺序必须与表中设计的字段出现的顺序一致：凡是非数值数据，都需要使用引号（建议是单引号）包裹</p>
 <p>insert into 表名 values(值列表)[,(值列表)]; – 可以一次性插入多条记录</p>
-<p><img src="/2017/04/11/mySQL操作/27.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/27.png" alt="png"></p>
 <p>方案2：给部分字段插入数据，需要选定字段列表：字段列表出现的顺序与字段的顺序无关，但是值列表的顺序必须与选定的字段的顺序一致。</p>
 <p>inset into 表名 (字段列表) values (值列表)[,(值列表)];</p>
-<p><img src="/2017/04/11/mySQL操作/28.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/28.png" alt="png"></p>
 <h3 id="查看数据"><a href="#查看数据" class="headerlink" title="查看数据"></a>查看数据</h3><p>select */字段列表 from 表名 [where 条件];</p>
 <ol>
 <li><p>查看所有数据</p>
-<p><img src="/2017/04/11/mySQL操作/29.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/29.png" alt="png"></p>
 </li>
 <li><p>查看指定字段，指定条件的数据</p>
-<p><img src="/2017/04/11/mySQL操作/30.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/30.png" alt="png"></p>
 </li>
 </ol>
 <h3 id="更新数据"><a href="#更新数据" class="headerlink" title="更新数据"></a>更新数据</h3><p>update 表名 set 字段 = 值 [where 条件]; – 不加where条件就是更新全部数据</p>
-<p><img src="/2017/04/11/mySQL操作/31.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/31.png" alt="png"></p>
 <h3 id="删除数据库-1"><a href="#删除数据库-1" class="headerlink" title="删除数据库"></a>删除数据库</h3><p>delete from 表名 [where条件];</p>
-<p><img src="/2017/04/11/mySQL操作/32.png" alt="png"></p>
+<p><img src="/2017/04/21/mySQL操作/32.png" alt="png"></p>
 ]]></content>
     
     <summary type="html">
@@ -279,20 +279,20 @@
   
   <entry>
     <title>词云小例子</title>
-    <link href="https://yuanblq.github.io/2017/03/27/%E8%AF%8D%E4%BA%91%E5%B0%8F%E4%BE%8B%E5%AD%90/"/>
-    <id>https://yuanblq.github.io/2017/03/27/词云小例子/</id>
-    <published>2017-03-27T14:52:09.000Z</published>
-    <updated>2017-03-28T09:10:40.658Z</updated>
+    <link href="https://yuanblq.github.io/2017/04/10/%E8%AF%8D%E4%BA%91%E5%B0%8F%E4%BE%8B%E5%AD%90/"/>
+    <id>https://yuanblq.github.io/2017/04/10/词云小例子/</id>
+    <published>2017-04-10T14:52:09.000Z</published>
+    <updated>2017-05-02T09:44:38.302Z</updated>
     
-    <content type="html"><![CDATA[<p><font size="4">在<a href="/2017/03/26/WordCloud/" title="&nbsp;上一篇&nbsp;">&nbsp;上一篇&nbsp;</a>中介绍了 word cloud 的一些用法，下面是几个实战小例子。</font></p>
+    <content type="html"><![CDATA[<p><font size="4">在<a href="/2017/04/03/WordCloud/" title="&nbsp;上一篇&nbsp;">&nbsp;上一篇&nbsp;</a>中介绍了 word cloud 的一些用法，下面是几个实战小例子。</font></p>
 <h2 id="使用默认参数从文本中生成矩形词云"><a href="#使用默认参数从文本中生成矩形词云" class="headerlink" title="使用默认参数从文本中生成矩形词云"></a>使用默认参数从文本中生成矩形词云</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span> WordCloud</div></pre></td></tr></table></figure>
 <h3 id="读取文件"><a href="#读取文件" class="headerlink" title="读取文件"></a>读取文件</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">with</span> open(<span class="string">'JaneEyre.txt'</span>) <span class="keyword">as</span> f:</div><div class="line">    text = f.read()</div></pre></td></tr></table></figure>
 <h3 id="生成词云图"><a href="#生成词云图" class="headerlink" title="生成词云图"></a>生成词云图</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">wordcloud = WordCloud().generate(text)</div></pre></td></tr></table></figure>
 <a id="more"></a>
 <h3 id="展示生成的图片"><a href="#展示生成的图片" class="headerlink" title="展示生成的图片"></a>展示生成的图片</h3><h4 id="matplotlib-方式："><a href="#matplotlib-方式：" class="headerlink" title="matplotlib 方式："></a>matplotlib 方式：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</div><div class="line">plt.imshow(wordcloud, interpolation=<span class="string">'bilinear'</span>)</div><div class="line">plt.axis(<span class="string">'off'</span>)</div><div class="line">plt.show()</div></pre></td></tr></table></figure>
-<p><img src="/2017/03/27/词云小例子/output_8_0.png" alt="png"></p>
+<p><img src="/2017/04/10/词云小例子/output_8_0.png" alt="png"></p>
 <h5 id="把最大字体尺寸改小点"><a href="#把最大字体尺寸改小点" class="headerlink" title="把最大字体尺寸改小点"></a>把最大字体尺寸改小点</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">wordcloud = WordCloud(max_font_size=<span class="number">40</span>).generate(text)</div><div class="line">plt.figure()</div><div class="line">plt.imshow(wordcloud, interpolation=<span class="string">'bilinear'</span>)</div><div class="line">plt.axis(<span class="string">'off'</span>)</div><div class="line">plt.show()</div></pre></td></tr></table></figure>
-<p><img src="/2017/03/27/词云小例子/output_10_0.png" alt="png"></p>
+<p><img src="/2017/04/10/词云小例子/output_10_0.png" alt="png"></p>
 <h4 id="用PIL方式（这种方式需要有管理员权限才可以运行）："><a href="#用PIL方式（这种方式需要有管理员权限才可以运行）：" class="headerlink" title="用PIL方式（这种方式需要有管理员权限才可以运行）："></a>用PIL方式（这种方式需要有管理员权限才可以运行）：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 运行之后会自动打开生成的图片文件</span></div><div class="line">image = wordcloud.to_image()</div><div class="line">image.show()</div></pre></td></tr></table></figure>
 <h2 id="在mask中生成词云图"><a href="#在mask中生成词云图" class="headerlink" title="在mask中生成词云图"></a>在mask中生成词云图</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</div><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div><div class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</div><div class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span> WordCloud, STOPWORDS</div></pre></td></tr></table></figure>
 <h3 id="读取文本文件"><a href="#读取文本文件" class="headerlink" title="读取文本文件"></a>读取文本文件</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">with</span> open(<span class="string">'JaneEyre.txt'</span>) <span class="keyword">as</span> f:</div><div class="line">    text = f.read()</div></pre></td></tr></table></figure>
@@ -302,13 +302,13 @@
 </code></pre><h3 id="存储到文件中"><a href="#存储到文件中" class="headerlink" title="存储到文件中"></a>存储到文件中</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">wc.to_file(<span class="string">'wc.png'</span>)</div></pre></td></tr></table></figure>
 <pre><code>&lt;wordcloud.wordcloud.WordCloud at 0x7c849b0&gt;
 </code></pre><h3 id="或者直接显示出来"><a href="#或者直接显示出来" class="headerlink" title="或者直接显示出来"></a>或者直接显示出来</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">plt.imshow(wc, interpolation=<span class="string">'bilinear'</span>)</div><div class="line">plt.axis(<span class="string">'off'</span>)</div><div class="line">plt.figure()</div><div class="line">plt.imshow(mask, cmap=plt.cm.gray, interpolation=<span class="string">'bilinear'</span>)</div><div class="line">plt.axis(<span class="string">'off'</span>)</div><div class="line">plt.show()</div></pre></td></tr></table></figure>
-<p><img src="/2017/03/27/词云小例子/output_11_0.png" alt="png"></p>
-<p><img src="/2017/03/27/词云小例子/output_11_1.png" alt="png"></p>
+<p><img src="/2017/04/10/词云小例子/output_11_0.png" alt="png"></p>
+<p><img src="/2017/04/10/词云小例子/output_11_1.png" alt="png"></p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;&lt;font size=&quot;4&quot;&gt;在&lt;a href=&quot;/2017/03/26/WordCloud/&quot; title=&quot;&amp;nbsp;上一篇&amp;nbsp;&quot;&gt;&amp;nbsp;上一篇&amp;nbsp;&lt;/a&gt;中介绍了 word cloud 的一些用法，下面是几个实战小例子。&lt;/font&gt;&lt;/p&gt;
+      &lt;p&gt;&lt;font size=&quot;4&quot;&gt;在&lt;a href=&quot;/2017/04/03/WordCloud/&quot; title=&quot;&amp;nbsp;上一篇&amp;nbsp;&quot;&gt;&amp;nbsp;上一篇&amp;nbsp;&lt;/a&gt;中介绍了 word cloud 的一些用法，下面是几个实战小例子。&lt;/font&gt;&lt;/p&gt;
 &lt;h2 id=&quot;使用默认参数从文本中生成矩形词云&quot;&gt;&lt;a href=&quot;#使用默认参数从文本中生成矩形词云&quot; class=&quot;headerlink&quot; title=&quot;使用默认参数从文本中生成矩形词云&quot;&gt;&lt;/a&gt;使用默认参数从文本中生成矩形词云&lt;/h2&gt;&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; wordcloud &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; WordCloud&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
 &lt;h3 id=&quot;读取文件&quot;&gt;&lt;a href=&quot;#读取文件&quot; class=&quot;headerlink&quot; title=&quot;读取文件&quot;&gt;&lt;/a&gt;读取文件&lt;/h3&gt;&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;with&lt;/span&gt; open(&lt;span class=&quot;string&quot;&gt;&#39;JaneEyre.txt&#39;&lt;/span&gt;) &lt;span class=&quot;keyword&quot;&gt;as&lt;/span&gt; f:&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    text = f.read()&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
 &lt;h3 id=&quot;生成词云图&quot;&gt;&lt;a href=&quot;#生成词云图&quot; class=&quot;headerlink&quot; title=&quot;生成词云图&quot;&gt;&lt;/a&gt;生成词云图&lt;/h3&gt;&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;wordcloud = WordCloud().generate(text)&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
@@ -330,10 +330,10 @@
   
   <entry>
     <title>WordCloud</title>
-    <link href="https://yuanblq.github.io/2017/03/26/WordCloud/"/>
-    <id>https://yuanblq.github.io/2017/03/26/WordCloud/</id>
-    <published>2017-03-26T12:55:52.000Z</published>
-    <updated>2017-04-11T11:40:07.101Z</updated>
+    <link href="https://yuanblq.github.io/2017/04/03/WordCloud/"/>
+    <id>https://yuanblq.github.io/2017/04/03/WordCloud/</id>
+    <published>2017-04-03T12:55:52.000Z</published>
+    <updated>2017-05-02T09:44:29.115Z</updated>
     
     <content type="html"><![CDATA[<h1 id="Wordcloud-的-API-Reference-分三部分："><a href="#Wordcloud-的-API-Reference-分三部分：" class="headerlink" title="Wordcloud 的 API Reference 分三部分："></a>Wordcloud 的 API Reference 分三部分：</h1><ul>
 <li>WordCloud([font_path, width, height, …])&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Word cloud对象，用于生成以及绘制</li>
