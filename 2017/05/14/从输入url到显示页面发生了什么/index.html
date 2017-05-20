@@ -89,24 +89,45 @@
 
 
 
-<meta name="description" content="当我们在浏览器的地址栏输入访问的 URL，然后回车，到浏览器显示对应的页面。这期间，到底发生了什么？
-输入 url在一个网络中，不同计算机拥有的 ip 地址都是唯一的。提供网页的服务器也是一台计算机，所以同样拥有唯一的一个 ip。  
-比如百度的某一台服务器 ip 为 111.13.101.208，你完全可以通过 111.13.101.208:80 去访问百度的首页。但如果你还想访问腾讯、淘宝等其">
+<meta name="description" content="当我们在浏览器的地址栏输入访问的 URL，然后回车，到浏览器显示对应的页面。这期间，到底发生了什么？  
+以下，我大概按如这几部分来探索关于浏览器是怎么呈现出我们想要的页面：  
+
+输入 url
+解析域名
+建立连接
+发起请求
+响应请求
+渲染页面
+断开连接">
 <meta property="og:type" content="article">
 <meta property="og:title" content="从输入url到显示页面发生了什么">
 <meta property="og:url" content="https://yuanblq.github.io/2017/05/14/从输入url到显示页面发生了什么/index.html">
 <meta property="og:site_name" content="YuanBLQ">
-<meta property="og:description" content="当我们在浏览器的地址栏输入访问的 URL，然后回车，到浏览器显示对应的页面。这期间，到底发生了什么？
-输入 url在一个网络中，不同计算机拥有的 ip 地址都是唯一的。提供网页的服务器也是一台计算机，所以同样拥有唯一的一个 ip。  
-比如百度的某一台服务器 ip 为 111.13.101.208，你完全可以通过 111.13.101.208:80 去访问百度的首页。但如果你还想访问腾讯、淘宝等其">
+<meta property="og:description" content="当我们在浏览器的地址栏输入访问的 URL，然后回车，到浏览器显示对应的页面。这期间，到底发生了什么？  
+以下，我大概按如这几部分来探索关于浏览器是怎么呈现出我们想要的页面：  
+
+输入 url
+解析域名
+建立连接
+发起请求
+响应请求
+渲染页面
+断开连接">
 <meta property="og:image" content="https://yuanblq.github.io/2017/05/14/从输入url到显示页面发生了什么/三次握手.PNG">
 <meta property="og:image" content="https://yuanblq.github.io/2017/05/14/从输入url到显示页面发生了什么/四次挥手.PNG">
-<meta property="og:updated_time" content="2017-05-19T15:13:55.989Z">
+<meta property="og:updated_time" content="2017-05-20T16:27:56.006Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从输入url到显示页面发生了什么">
-<meta name="twitter:description" content="当我们在浏览器的地址栏输入访问的 URL，然后回车，到浏览器显示对应的页面。这期间，到底发生了什么？
-输入 url在一个网络中，不同计算机拥有的 ip 地址都是唯一的。提供网页的服务器也是一台计算机，所以同样拥有唯一的一个 ip。  
-比如百度的某一台服务器 ip 为 111.13.101.208，你完全可以通过 111.13.101.208:80 去访问百度的首页。但如果你还想访问腾讯、淘宝等其">
+<meta name="twitter:description" content="当我们在浏览器的地址栏输入访问的 URL，然后回车，到浏览器显示对应的页面。这期间，到底发生了什么？  
+以下，我大概按如这几部分来探索关于浏览器是怎么呈现出我们想要的页面：  
+
+输入 url
+解析域名
+建立连接
+发起请求
+响应请求
+渲染页面
+断开连接">
 <meta name="twitter:image" content="https://yuanblq.github.io/2017/05/14/从输入url到显示页面发生了什么/三次握手.PNG">
 
 
@@ -385,7 +406,18 @@
       
 
       
-        <p><strong>当我们在浏览器的地址栏输入访问的 URL，然后回车，到浏览器显示对应的页面。这期间，到底发生了什么？</strong></p>
+        <p><strong>当我们在浏览器的地址栏输入访问的 URL，然后回车，到浏览器显示对应的页面。这期间，到底发生了什么？</strong>  </p>
+<p>以下，我大概按如这几部分来探索关于浏览器是怎么呈现出我们想要的页面：  </p>
+<ul>
+<li>输入 url</li>
+<li>解析域名</li>
+<li>建立连接</li>
+<li>发起请求</li>
+<li>响应请求</li>
+<li>渲染页面</li>
+<li>断开连接</li>
+</ul>
+<a id="more"></a>
 <h2 id="输入-url"><a href="#输入-url" class="headerlink" title="输入 url"></a>输入 url</h2><p>在一个网络中，不同计算机拥有的 ip 地址都是唯一的。提供网页的服务器也是一台计算机，所以同样拥有唯一的一个 ip。  </p>
 <p>比如百度的某一台服务器 ip 为 111.13.101.208，你完全可以通过 111.13.101.208:80 去访问百度的首页。但如果你还想访问腾讯、淘宝等其他网站呢？  </p>
 <p>显然以 ip 方式去访问一个网站是很费劲的。就像我们说天安门在哪的时候不会说天安门在经纬多少多少度一样，而是以人话说在北京哪哪哪。  </p>
@@ -405,7 +437,8 @@
 <p>请求头和请求体的最后一行之间有两个 ‘\r\n’，用于告诉服务器没有其他请求头了。（POST 方式的请求信息一般不放在请求体，而是通过表单提交）  </p>
 <h2 id="响应请求"><a href="#响应请求" class="headerlink" title="响应请求"></a>响应请求</h2><p>服务器接收到浏览器的请求之后，根据其响应内容会给浏览器相应的响应，服务器的 HTTP 响应同样也分为，响应行、响应头、响应体。  </p>
 <h2 id="渲染页面"><a href="#渲染页面" class="headerlink" title="渲染页面"></a>渲染页面</h2><p>浏览器拿到服务器返回的响应数据后，根据其内容在把它渲染出来。</p>
-<h2 id="断开连接"><a href="#断开连接" class="headerlink" title="断开连接"></a>断开连接</h2><p>当我们在浏览器关闭正在访问的页面的时候，浏览器会发送断开连接的请求，及四次挥手过程，如下图所示：<br><img src="/2017/05/14/从输入url到显示页面发生了什么/四次挥手.PNG" alt="PNG"></p>
+<h2 id="断开连接"><a href="#断开连接" class="headerlink" title="断开连接"></a>断开连接</h2><p>当我们在浏览器关闭正在访问的页面的时候，浏览器会发送断开连接的请求，及四次挥手过程，如下图所示：<br><img src="/2017/05/14/从输入url到显示页面发生了什么/四次挥手.PNG" alt="PNG">  </p>
+<p>以上基本就是一个简单的从输入 url 到浏览器显示最终页面，期间所发生的一些事。</p>
 
       
     </div>
@@ -460,7 +493,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/05/14/itertools模块解析/" rel="prev" title="itertools 模块解析">
+              <a href="/2017/05/21/itertools模块解析/" rel="prev" title="itertools 模块解析">
                 itertools 模块解析 <i class="fa fa-chevron-right"></i>
               </a>
             

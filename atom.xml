@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2017-05-19T14:35:40.565Z</updated>
+  <updated>2017-05-20T16:39:37.522Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -17,10 +17,10 @@
   
   <entry>
     <title>itertools 模块解析</title>
-    <link href="https://yuanblq.github.io/2017/05/14/itertools%E6%A8%A1%E5%9D%97%E8%A7%A3%E6%9E%90/"/>
-    <id>https://yuanblq.github.io/2017/05/14/itertools模块解析/</id>
-    <published>2017-05-14T11:32:55.000Z</published>
-    <updated>2017-05-19T14:35:40.565Z</updated>
+    <link href="https://yuanblq.github.io/2017/05/21/itertools%E6%A8%A1%E5%9D%97%E8%A7%A3%E6%9E%90/"/>
+    <id>https://yuanblq.github.io/2017/05/21/itertools模块解析/</id>
+    <published>2017-05-21T11:32:55.000Z</published>
+    <updated>2017-05-20T16:39:37.522Z</updated>
     
     <content type="html"><![CDATA[<p>python 的内建模块 <code>itertools</code> 提供了非常有用的用于操作可迭代对象的函数.<br>通过这些函数, 我们能更好更快的解决许多有关可迭代对象的问题.<br>对于这些函数, 大体分成三类来描述 :  </p>
 <ul>
@@ -197,9 +197,20 @@ ab
     <link href="https://yuanblq.github.io/2017/05/14/%E4%BB%8E%E8%BE%93%E5%85%A5url%E5%88%B0%E6%98%BE%E7%A4%BA%E9%A1%B5%E9%9D%A2%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/"/>
     <id>https://yuanblq.github.io/2017/05/14/从输入url到显示页面发生了什么/</id>
     <published>2017-05-14T09:59:04.000Z</published>
-    <updated>2017-05-19T15:13:55.989Z</updated>
+    <updated>2017-05-20T16:27:56.006Z</updated>
     
-    <content type="html"><![CDATA[<p><strong>当我们在浏览器的地址栏输入访问的 URL，然后回车，到浏览器显示对应的页面。这期间，到底发生了什么？</strong></p>
+    <content type="html"><![CDATA[<p><strong>当我们在浏览器的地址栏输入访问的 URL，然后回车，到浏览器显示对应的页面。这期间，到底发生了什么？</strong>  </p>
+<p>以下，我大概按如这几部分来探索关于浏览器是怎么呈现出我们想要的页面：  </p>
+<ul>
+<li>输入 url</li>
+<li>解析域名</li>
+<li>建立连接</li>
+<li>发起请求</li>
+<li>响应请求</li>
+<li>渲染页面</li>
+<li>断开连接</li>
+</ul>
+<a id="more"></a>
 <h2 id="输入-url"><a href="#输入-url" class="headerlink" title="输入 url"></a>输入 url</h2><p>在一个网络中，不同计算机拥有的 ip 地址都是唯一的。提供网页的服务器也是一台计算机，所以同样拥有唯一的一个 ip。  </p>
 <p>比如百度的某一台服务器 ip 为 111.13.101.208，你完全可以通过 111.13.101.208:80 去访问百度的首页。但如果你还想访问腾讯、淘宝等其他网站呢？  </p>
 <p>显然以 ip 方式去访问一个网站是很费劲的。就像我们说天安门在哪的时候不会说天安门在经纬多少多少度一样，而是以人话说在北京哪哪哪。  </p>
@@ -219,13 +230,23 @@ ab
 <p>请求头和请求体的最后一行之间有两个 ‘\r\n’，用于告诉服务器没有其他请求头了。（POST 方式的请求信息一般不放在请求体，而是通过表单提交）  </p>
 <h2 id="响应请求"><a href="#响应请求" class="headerlink" title="响应请求"></a>响应请求</h2><p>服务器接收到浏览器的请求之后，根据其响应内容会给浏览器相应的响应，服务器的 HTTP 响应同样也分为，响应行、响应头、响应体。  </p>
 <h2 id="渲染页面"><a href="#渲染页面" class="headerlink" title="渲染页面"></a>渲染页面</h2><p>浏览器拿到服务器返回的响应数据后，根据其内容在把它渲染出来。</p>
-<h2 id="断开连接"><a href="#断开连接" class="headerlink" title="断开连接"></a>断开连接</h2><p>当我们在浏览器关闭正在访问的页面的时候，浏览器会发送断开连接的请求，及四次挥手过程，如下图所示：<br><img src="/2017/05/14/从输入url到显示页面发生了什么/四次挥手.PNG" alt="PNG"></p>
+<h2 id="断开连接"><a href="#断开连接" class="headerlink" title="断开连接"></a>断开连接</h2><p>当我们在浏览器关闭正在访问的页面的时候，浏览器会发送断开连接的请求，及四次挥手过程，如下图所示：<br><img src="/2017/05/14/从输入url到显示页面发生了什么/四次挥手.PNG" alt="PNG">  </p>
+<p>以上基本就是一个简单的从输入 url 到浏览器显示最终页面，期间所发生的一些事。</p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;&lt;strong&gt;当我们在浏览器的地址栏输入访问的 URL，然后回车，到浏览器显示对应的页面。这期间，到底发生了什么？&lt;/strong&gt;&lt;/p&gt;
-&lt;h2 id=&quot;输入-url&quot;&gt;&lt;a href=&quot;#输入-url&quot; class=&quot;headerlink&quot; title=&quot;输入 ur
+      &lt;p&gt;&lt;strong&gt;当我们在浏览器的地址栏输入访问的 URL，然后回车，到浏览器显示对应的页面。这期间，到底发生了什么？&lt;/strong&gt;  &lt;/p&gt;
+&lt;p&gt;以下，我大概按如这几部分来探索关于浏览器是怎么呈现出我们想要的页面：  &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;输入 url&lt;/li&gt;
+&lt;li&gt;解析域名&lt;/li&gt;
+&lt;li&gt;建立连接&lt;/li&gt;
+&lt;li&gt;发起请求&lt;/li&gt;
+&lt;li&gt;响应请求&lt;/li&gt;
+&lt;li&gt;渲染页面&lt;/li&gt;
+&lt;li&gt;断开连接&lt;/li&gt;
+&lt;/ul&gt;
     
     </summary>
     
