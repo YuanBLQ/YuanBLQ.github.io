@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2017-05-20T16:39:37.522Z</updated>
+  <updated>2017-06-29T08:37:15.548Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -14,6 +14,110 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>python 版本控制神器</title>
+    <link href="https://yuanblq.github.io/2017/05/27/python-%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6%E7%A5%9E%E5%99%A8/"/>
+    <id>https://yuanblq.github.io/2017/05/27/python-版本控制神器/</id>
+    <published>2017-05-27T08:26:32.000Z</published>
+    <updated>2017-06-29T08:37:15.548Z</updated>
+    
+    <content type="html"><![CDATA[<p>由于 python 拥有众多的版本，以及不同模块也有不同的版本。如果每个版本之间相互都不兼容那也就无所谓什么版本控制了，可是同一机器上各个版本的 python 可以相互兼容并存，而且同一模块不同版本有时需要的 python 版本是不相同的，所以 python 的版本控制显得尤为重要。</p>
+<p><code>pyenv</code> 是个 shell 脚本，能够轻松得实现各个不同版本 python 的相互间切换，而且各个版本的 python 切换不限于全局切换，甚至不同文件夹都可以拥有不同的 python 版本。</p>
+<a id="more"></a>
+<p>下面我们就来看看如何使用 <code>pyenv</code>。</p>
+<h2 id="管理-python-版本"><a href="#管理-python-版本" class="headerlink" title="管理 python 版本"></a>管理 python 版本</h2><p>如果你既需要使用 <code>python2</code>，也需要使用 <code>python3</code>，<code>pyenv</code> 将是一个很高效的 python 版本管理工具。</p>
+<p>由于 <code>pyenv</code> 是脚本插件，所以只能在类 UNIX 系统上使用。所以，如果你想在 windows 上安装，那就点击左上角去隔壁 <code>virtualenv</code> 瞧瞧。</p>
+<h3 id="安装-pyenv（Ubuntu）"><a href="#安装-pyenv（Ubuntu）" class="headerlink" title="安装 pyenv（Ubuntu）"></a>安装 pyenv（Ubuntu）</h3><ol>
+<li><p><strong>确定你想把 <code>pyenv</code> 安装在哪。</strong>推荐安装在 <code>$HOME/.pyenv</code>，但你也可以安装在任意位置。  </p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git clone https://github.com/pyenv/pyenv.git ~/.pyenv</div></pre></td></tr></table></figure>
+</li>
+<li><p><strong>定义你 <code>PYENV_ROOT</code> 的环境变量</strong>来指定你把 pyenv 仓库克隆到了哪，并把 <code>$PYENV_ROOT/bin</code> 添加到你的 <code>$PATH</code> 中，这样就能在命令行使用 <code>pyenv</code> 命令。  </p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ echo &apos;export PYENV_ROOT=&quot;$HOME/.pyenv&quot;&apos; &gt;&gt; ~/.bashrc</div><div class="line">$ echo &apos;export PATH=&quot;$PYENV_ROOT/bin:$PATH&quot;&apos; &gt;&gt; ~/.bashrc</div></pre></td></tr></table></figure>
+</li>
+<li><p><strong>设置启动 shell 时自动加载 pyenv 脚本。</strong>在 shell 配置文件的最后面加上 <code>eval &quot;$(pyenv init -)&quot;</code>。  </p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ echo &apos;eval &quot;$(pyenv init -)&quot;&apos; &gt;&gt; ~/.bashrc</div></pre></td></tr></table></figure>
+</li>
+<li><p><strong>重启 shell，使脚本生效。</strong>  </p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ exec $SHELL</div></pre></td></tr></table></figure>
+</li>
+<li><p><strong>安装不同的 python 版本到 <code>$(pyenv root)/versions</code> 文件夹。</strong><br> 在 <code>pyenv</code> 安装之前的所有 python 版本都归为 <code>system</code> 版本。 （可以用 <code>pyenv versions</code> 查看当前安装的 python 版本）<br> 在安装 python 之前，可以使用 <code>pyenv install -l</code> 查看当前可以安装哪些 python 版本。<br> 然后使用 <code>pyenv install 选择的版本</code> 来安装你所选择的 python 版本。比如 <code>pyenv install 3.6.1</code> 安装 python 官网的版本。  </p>
+</li>
+</ol>
+<h3 id="使用-git-更新-pyenv"><a href="#使用-git-更新-pyenv" class="headerlink" title="使用 git 更新 pyenv"></a>使用 git 更新 pyenv</h3><p>如果你是按照上面的方法安装的 <code>pyenv</code>，那你可以使用 git 来更新。</p>
+<h4 id="更新为最新的开发版"><a href="#更新为最新的开发版" class="headerlink" title="更新为最新的开发版"></a>更新为最新的开发版</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ cd $(pyenv root)</div><div class="line">$ git pull</div></pre></td></tr></table></figure>
+<h4 id="更新为指定的版本"><a href="#更新为指定的版本" class="headerlink" title="更新为指定的版本"></a>更新为指定的版本</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ cd $(pyenv root)</div><div class="line">$ git fetch</div><div class="line">$ git tag</div><div class="line">v0.1.0</div><div class="line">$ git checkout v0.1.0</div></pre></td></tr></table></figure>
+<h3 id="pyenv-的基本操作命令"><a href="#pyenv-的基本操作命令" class="headerlink" title="pyenv 的基本操作命令"></a>pyenv 的基本操作命令</h3><ul>
+<li><code>pyenv versions</code> 查看当前已安装的 python 版本</li>
+<li><code>pyenv install ...</code> 安装指定版本的 python</li>
+<li><code>pyenv global python版本</code> 切换全局 python 版本</li>
+<li><code>pyenv local python版本</code> 切换当前文件夹下的 python 版本</li>
+<li><code>pyenv shell python版本</code> 切换当前 shell 中的 python 版本</li>
+<li><code>pyenv version</code> 查看当前使用的 python 版本</li>
+</ul>
+<h3 id="卸载-pyenv"><a href="#卸载-pyenv" class="headerlink" title="卸载 pyenv"></a>卸载 pyenv</h3><ul>
+<li>如果你只是想禁用 <code>pyenv</code>，那么把 <code>pyenv init</code> 从 shell 的配置文件中移除，然后重启 shell 就行了（移除后 <code>pyenv</code> 命令仍然能使用，但是版本切换命令不会生效）。  </li>
+<li>完整卸载 pyenv。执行上一步，然后把 pyenv 的根目录删除即可全部删除 pyenv（通过 <code>pyenv install ...</code> 安装的 python 版本都会删除）。    <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rm -rf $(pyenv root)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="卸载-pyenv-安装的-python-版本"><a href="#卸载-pyenv-安装的-python-版本" class="headerlink" title="卸载 pyenv 安装的 python 版本"></a>卸载 pyenv 安装的 python 版本</h3><ul>
+<li>使用 <code>pyenv uninstall ...</code> 命令。  </li>
+<li>直接删除 <code>versions</code> 文件夹下的对应 python 版本文件夹。  </li>
+</ul>
+<h3 id="pyenv-其他操作命令"><a href="#pyenv-其他操作命令" class="headerlink" title="pyenv 其他操作命令"></a>pyenv 其他操作命令</h3><p>参见 <a href="https://github.com/pyenv/pyenv/blob/master/COMMANDS.md" target="_blank" rel="external">commands.md</a></p>
+<h2 id="管理-python-模块版本"><a href="#管理-python-模块版本" class="headerlink" title="管理 python 模块版本"></a>管理 python 模块版本</h2><p>使用 <code>virtualenv</code> 和 <code>virtualenvwrapper</code> 管理 python 虚拟环境，每次都需要手动激活或退出。对于懒癌晚期患者，<code>pyenv-virtual</code> 的自动激活和退出虚拟环境功能简直不能再赞。另外搭配 <code>pyenv</code> 食用效果更佳。</p>
+<h3 id="安装-pyenv-virtualenv（Ubuntu）"><a href="#安装-pyenv-virtualenv（Ubuntu）" class="headerlink" title="安装 pyenv-virtualenv（Ubuntu）"></a>安装 pyenv-virtualenv（Ubuntu）</h3><p>由于 <code>pyenv-virtualenv</code> 是 <code>pyenv</code> 的一个插件，所以安装之前需要先安装 <code>pyenv</code>。</p>
+<p><strong>注意：</strong>如果 <code>pyenv</code> 的安装目录不是 <code>$HOME/.pyenv</code> 需要确保克隆下来的仓库位于你所安装的 <code>pyenv</code> 目录下的 <code>plugin</code> 文件夹下。</p>
+<p>接下来就可以执行安装步骤了：</p>
+<ul>
+<li>克隆 <code>pyenv-virtual</code> 仓库到 <code>plugin</code> 文件夹下。</li>
+<li><p>（可选/重点）添加 <code>pyenv virtualenv-init</code> 到你的 shell 配置文件中，这样进入指定文件夹自动进入虚拟环境，离开文件夹退出虚拟环境。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ echo &apos;eval &quot;$(pyenv virtualenv-init -)&quot;&apos; &gt;&gt; ~/.bashrc</div></pre></td></tr></table></figure>
+</li>
+<li><p>重启 shell。</p>
+</li>
+</ul>
+<h3 id="创建-pyenv-virtualenv-虚拟环境"><a href="#创建-pyenv-virtualenv-虚拟环境" class="headerlink" title="创建 pyenv-virtualenv 虚拟环境"></a>创建 pyenv-virtualenv 虚拟环境</h3><ul>
+<li><code>pyenv virtualenv 指定python版本 虚拟环境名字</code></li>
+<li><code>pyenv virtualenv 虚拟环境名字</code></li>
+</ul>
+<p>如果不指定 python 版本，则默认使用当前 <code>pyenv version</code> 的 python 版本。</p>
+<p>创建的虚拟环境位于 <code>$(pyenv root)/versions/</code> 下的指定 python 版本的文件夹中 <code>envs/</code> 文件夹下。</p>
+<h3 id="激活虚拟环境"><a href="#激活虚拟环境" class="headerlink" title="激活虚拟环境"></a>激活虚拟环境</h3><ul>
+<li>自动激活/退出</li>
+<li>手动激活/退出</li>
+</ul>
+<p>自动激活环境：</p>
+<ul>
+<li>在 <code>.bashrc</code> 文件的最后添加 <code>eval &quot;$(pyenv virtualenv-init -)&quot;</code>，然后在 shell 中输入 <code>exec &quot;$SHELL&quot;</code> 重启 shell，或者手动重启 shell。</li>
+<li>在想要激活虚拟环境的文件夹中新建 <code>.python-version</code> 文件，并写入虚拟环境的名字（<code>pyenv local python版本</code> 该命令也是通过创建该文件来达到进入该文件夹后自动使用指定 python 版本的目的）。</li>
+<li>以后进入该的文件夹就会自动激活虚拟环境，离开该文件夹就会退出虚拟环境。</li>
+</ul>
+<p>手动激活环境：</p>
+<ul>
+<li><code>pyenv activate 虚拟环境名字</code> 激活虚拟环境。</li>
+<li><code>pyenv deactivate</code> 退出虚拟环境。</li>
+</ul>
+<h3 id="删除虚拟环境"><a href="#删除虚拟环境" class="headerlink" title="删除虚拟环境"></a>删除虚拟环境</h3><p>有 2 种方法：  </p>
+<ol>
+<li>删除 <code>$(pyenv root)/versions</code> 和 <code>$(pyenv root)/versions/{version}/envs</code> 的相关文件夹即可。  </li>
+<li>命令行运行 <code>pyenv uninstall 虚拟环境的名字</code></li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;由于 python 拥有众多的版本，以及不同模块也有不同的版本。如果每个版本之间相互都不兼容那也就无所谓什么版本控制了，可是同一机器上各个版本的 python 可以相互兼容并存，而且同一模块不同版本有时需要的 python 版本是不相同的，所以 python 的版本控制显得尤为重要。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;pyenv&lt;/code&gt; 是个 shell 脚本，能够轻松得实现各个不同版本 python 的相互间切换，而且各个版本的 python 切换不限于全局切换，甚至不同文件夹都可以拥有不同的 python 版本。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="document" scheme="https://yuanblq.github.io/categories/document/"/>
+    
+    
+      <category term="python" scheme="https://yuanblq.github.io/tags/python/"/>
+    
+  </entry>
   
   <entry>
     <title>itertools 模块解析</title>
