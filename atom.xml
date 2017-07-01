@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2017-06-29T09:00:21.906Z</updated>
+  <updated>2017-07-01T15:48:28.320Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="https://yuanblq.github.io/2017/05/27/python-%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6%E7%A5%9E%E5%99%A8/"/>
     <id>https://yuanblq.github.io/2017/05/27/python-版本控制神器/</id>
     <published>2017-05-27T08:26:32.000Z</published>
-    <updated>2017-06-29T09:00:21.906Z</updated>
+    <updated>2017-07-01T15:48:28.320Z</updated>
     
     <content type="html"><![CDATA[<p>由于 python 拥有众多的版本，以及不同模块也有不同的版本。如果每个版本之间相互都不兼容那也就无所谓什么版本控制了，可是同一机器上各个版本的 python 可以相互兼容并存，而且同一模块不同版本有时需要的 python 版本是不相同的，所以 python 的版本控制显得尤为重要。</p>
 <p><code>pyenv</code> 是个 shell 脚本，能够轻松得实现各个不同版本 python 的相互间切换，而且各个版本的 python 切换不限于全局切换，甚至不同文件夹都可以拥有不同的 python 版本。</p>
@@ -42,6 +42,10 @@
  <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ exec $SHELL</div></pre></td></tr></table></figure>
 </li>
 <li><p><strong>安装不同的 python 版本到 <code>$(pyenv root)/versions</code> 文件夹。</strong><br> 在 <code>pyenv</code> 安装之前的所有 python 版本都归为 <code>system</code> 版本。 （可以用 <code>pyenv versions</code> 查看当前安装的 python 版本）<br> 在安装 python 之前，可以使用 <code>pyenv install -l</code> 查看当前可以安装哪些 python 版本。<br> 然后使用 <code>pyenv install 选择的版本</code> 来安装你所选择的 python 版本。比如 <code>pyenv install 3.6.1</code> 安装 python 官网的版本。  </p>
+</li>
+<li><p><strong>如果在安装 python 时报了如下错误，</strong>那就有可能是你的环境依赖没有装好，一般安装以下几个依赖就可以了。  </p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 报错信息</div><div class="line">WARNING: The Python bz2 extension was not compiled. Missing the bzip2 lib</div><div class="line"></div><div class="line">WARNING: The Python readline extension was not compiled. Missing the GNU readline lib</div><div class="line"></div><div class="line">ERROR: The Python ssl extension was not compiled. Missing the OpenSSL lib</div></pre></td></tr></table></figure>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"># 安装以下依赖</div><div class="line">sudo apt-get install libbz2-dev</div><div class="line"></div><div class="line">sudo apt-get install libssl-dev</div><div class="line"></div><div class="line">sudo apt-get install libreadline6 libreadline6-dev</div><div class="line"></div><div class="line">sudo apt-get install libsqlite3-dev</div></pre></td></tr></table></figure>
 </li>
 </ol>
 <h3 id="使用-git-更新-pyenv"><a href="#使用-git-更新-pyenv" class="headerlink" title="使用 git 更新 pyenv"></a>使用 git 更新 pyenv</h3><p>如果你是按照上面的方法安装的 <code>pyenv</code>，那你可以使用 git 来更新。</p>
