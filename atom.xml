@@ -129,7 +129,7 @@
     <link href="https://yuanblq.github.io/2017/05/21/itertools%E6%A8%A1%E5%9D%97%E8%A7%A3%E6%9E%90/"/>
     <id>https://yuanblq.github.io/2017/05/21/itertools模块解析/</id>
     <published>2017-05-21T11:32:55.000Z</published>
-    <updated>2017-05-20T16:39:37.522Z</updated>
+    <updated>2017-05-20T16:39:37.523Z</updated>
     
     <content type="html"><![CDATA[<p>python 的内建模块 <code>itertools</code> 提供了非常有用的用于操作可迭代对象的函数.<br>通过这些函数, 我们能更好更快的解决许多有关可迭代对象的问题.<br>对于这些函数, 大体分成三类来描述 :  </p>
 <ul>
@@ -306,7 +306,7 @@ ab
     <link href="https://yuanblq.github.io/2017/05/14/%E4%BB%8E%E8%BE%93%E5%85%A5url%E5%88%B0%E6%98%BE%E7%A4%BA%E9%A1%B5%E9%9D%A2%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/"/>
     <id>https://yuanblq.github.io/2017/05/14/从输入url到显示页面发生了什么/</id>
     <published>2017-05-14T09:59:04.000Z</published>
-    <updated>2017-05-20T16:27:56.006Z</updated>
+    <updated>2017-05-20T16:27:56.007Z</updated>
     
     <content type="html"><![CDATA[<p><strong>当我们在浏览器的地址栏输入访问的 URL，然后回车，到浏览器显示对应的页面。这期间，到底发生了什么？</strong>  </p>
 <p>以下，我大概按如这几部分来探索关于浏览器是怎么呈现出我们想要的页面：  </p>
@@ -373,7 +373,7 @@ ab
     <link href="https://yuanblq.github.io/2017/05/08/yield%E7%90%86%E8%A7%A3/"/>
     <id>https://yuanblq.github.io/2017/05/08/yield理解/</id>
     <published>2017-05-08T12:54:59.000Z</published>
-    <updated>2017-05-19T14:34:24.287Z</updated>
+    <updated>2017-05-19T14:34:24.288Z</updated>
     
     <content type="html"><![CDATA[<h3 id="这是-StackOverflow-上的一个很热的帖子-这里是投票最高的一个答案"><a href="#这是-StackOverflow-上的一个很热的帖子-这里是投票最高的一个答案" class="headerlink" title="这是 StackOverflow 上的一个很热的帖子, 这里是投票最高的一个答案"></a>这是 StackOverflow 上的一个很热的帖子, 这里是投票最高的一个答案</h3><p>原文: <a href="http://stackoverflow.com/questions/231767/the-python-yield-keyword-explained" target="_blank" rel="external">http://stackoverflow.com/questions/231767/the-python-yield-keyword-explained</a></p>
 <h4 id="提问者的问题"><a href="#提问者的问题" class="headerlink" title="提问者的问题"></a>提问者的问题</h4><p>Python 关键字 yield 的作用是什么? 用来干什么的?</p>
@@ -787,7 +787,7 @@ $100
     <link href="https://yuanblq.github.io/2017/04/10/%E8%AF%8D%E4%BA%91%E5%B0%8F%E4%BE%8B%E5%AD%90/"/>
     <id>https://yuanblq.github.io/2017/04/10/词云小例子/</id>
     <published>2017-04-10T14:52:09.000Z</published>
-    <updated>2017-05-02T09:44:38.302Z</updated>
+    <updated>2017-05-02T09:44:38.303Z</updated>
     
     <content type="html"><![CDATA[<p><font size="4">在<a href="/2017/04/03/WordCloud/" title="&nbsp;上一篇&nbsp;">&nbsp;上一篇&nbsp;</a>中介绍了 word cloud 的一些用法，下面是几个实战小例子。</font></p>
 <h2 id="使用默认参数从文本中生成矩形词云"><a href="#使用默认参数从文本中生成矩形词云" class="headerlink" title="使用默认参数从文本中生成矩形词云"></a>使用默认参数从文本中生成矩形词云</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span> WordCloud</div></pre></td></tr></table></figure>
