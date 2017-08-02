@@ -1323,11 +1323,11 @@ $100
   </entry>
   
   <entry>
-    <title>Django设计模式（二）</title>
+    <title>Django设计模式</title>
     <link href="https://yuanblq.github.io/2017/02/09/Django%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
     <id>https://yuanblq.github.io/2017/02/09/Django设计模式/</id>
     <published>2017-02-09T13:38:12.000Z</published>
-    <updated>2017-08-02T13:48:04.262Z</updated>
+    <updated>2017-08-02T14:52:08.703Z</updated>
     
     <content type="html"><![CDATA[<p>Django 大致的逻辑思路是这样的：用户在地址栏输入 url 由 <code>urls.py</code> 通过正则表达式传到 <code>views.py</code>，然后在 views 中处理最终传到 templates 返回渲染生成的页面。</p>
 <a id="more"></a>
