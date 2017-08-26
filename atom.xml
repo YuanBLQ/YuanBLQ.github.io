@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2017-08-25T18:34:33.727Z</updated>
+  <updated>2017-08-26T05:11:47.956Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -16,20 +16,492 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>影分身术之-asyncio_part4</title>
+    <link href="https://yuanblq.github.io/2017/07/31/asyncio4/"/>
+    <id>https://yuanblq.github.io/2017/07/31/asyncio4/</id>
+    <published>2017-07-31T07:08:14.000Z</published>
+    <updated>2017-08-26T05:11:47.956Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="不同线程的事件循环"><a href="#不同线程的事件循环" class="headerlink" title="不同线程的事件循环"></a>不同线程的事件循环</h2><p>通过前面的介绍，我们现在能在单线程中实现多协程的工作。</p>
+<p>这节就说说怎么在多线程中管理协程。</p>
+<p>对于多线程中的协程操作，我们一般把一个线程当做管理线程，而另一个当做工作线程，其中有多个协程进行不同的 task 操作。</p>
+<a id="more"></a>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> asyncio</div><div class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread</div><div class="line"><span class="keyword">import</span> time</div><div class="line"></div><div class="line">now = <span class="keyword">lambda</span>: time.time()</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">start_loop</span><span class="params">(loop)</span>:</span></div><div class="line">    asyncio.set_event_loop(loop)</div><div class="line">    loop.run_forever()</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">more_work</span><span class="params">(x)</span>:</span></div><div class="line">    print(<span class="string">'More work start --&gt; &#123;&#125;'</span>.format(x))</div><div class="line">    time.sleep(x)</div><div class="line">    print(<span class="string">'Finished more work &#123;&#125;'</span>.format(x))</div><div class="line"></div><div class="line">start = now()</div><div class="line"></div><div class="line">new_loop = asyncio.new_event_loop()</div><div class="line"></div><div class="line">t = Thread(target=start_loop, args=(new_loop,))</div><div class="line">t.start()</div><div class="line"></div><div class="line">new_loop.call_soon_threadsafe(more_work, <span class="number">6</span>)</div><div class="line">new_loop.call_soon_threadsafe(more_work, <span class="number">3</span>)</div><div class="line"></div><div class="line">print(<span class="string">'TIME: &#123;&#125;'</span>.format(now() - start))</div></pre></td></tr></table></figure>
+<pre><code>TIME: 0.0023021697998046875
+More work start --&gt; 6
+Finished more work 6
+More work start --&gt; 3
+Finished more work 3
+</code></pre><p>可见，当前线程不会阻塞。新的线程会按顺序执行 <code>call_soon_threadsafe()</code> 方法中注册的函数，因为注册的方法不是协程，所以新开的线程大概会执行 6+3 s。</p>
+<p>那么，多线程实现协程的过程大致也是这样：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">start_loop</span><span class="params">(loop)</span>:</span></div><div class="line">    asyncio.set_event_loop(loop)</div><div class="line">    loop.run_forever()</div><div class="line">    </div><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">do_some_work</span><span class="params">(x)</span>:</span></div><div class="line">    print(<span class="string">'More work --&gt; &#123;&#125;'</span>.format(x))</div><div class="line">    <span class="keyword">await</span> asyncio.sleep(x)</div><div class="line">    print(<span class="string">'&#123;&#125; Done after &#123;&#125;s'</span>.format(x, x))</div><div class="line"></div><div class="line">start = now()</div><div class="line"></div><div class="line">new_loop = asyncio.new_event_loop()</div><div class="line"></div><div class="line">t = Thread(target=start_loop, args=(new_loop,))</div><div class="line">t.start()</div><div class="line"></div><div class="line">asyncio.run_coroutine_threadsafe(do_some_work(<span class="number">6</span>), new_loop)</div><div class="line">asyncio.run_coroutine_threadsafe(do_some_work(<span class="number">3</span>), new_loop)</div><div class="line"></div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
+<pre><code>TIME:  0.0006730556488037109
+More work --&gt; 6
+More work --&gt; 3
+3 Done after 3s
+6 Done after 6s
+</code></pre><p>由于我们在子线程开启的是协程任务，所以子线程大概耗时 6s。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;不同线程的事件循环&quot;&gt;&lt;a href=&quot;#不同线程的事件循环&quot; class=&quot;headerlink&quot; title=&quot;不同线程的事件循环&quot;&gt;&lt;/a&gt;不同线程的事件循环&lt;/h2&gt;&lt;p&gt;通过前面的介绍，我们现在能在单线程中实现多协程的工作。&lt;/p&gt;
+&lt;p&gt;这节就说说怎么在多线程中管理协程。&lt;/p&gt;
+&lt;p&gt;对于多线程中的协程操作，我们一般把一个线程当做管理线程，而另一个当做工作线程，其中有多个协程进行不同的 task 操作。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="知识点" scheme="https://yuanblq.github.io/categories/%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
+    
+    
+      <category term="Python" scheme="https://yuanblq.github.io/tags/Python/"/>
+    
+      <category term="异步" scheme="https://yuanblq.github.io/tags/%E5%BC%82%E6%AD%A5/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>影分身术之-asyncio_part3</title>
+    <link href="https://yuanblq.github.io/2017/07/30/asyncio3/"/>
+    <id>https://yuanblq.github.io/2017/07/30/asyncio3/</id>
+    <published>2017-07-30T03:27:31.000Z</published>
+    <updated>2017-08-26T05:12:03.612Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="停止协程"><a href="#停止协程" class="headerlink" title="停止协程"></a>停止协程</h2><p><code>Future</code> 对象有几种状态：</p>
+<ul>
+<li>pending</li>
+<li>running</li>
+<li>done</li>
+<li>cancelled</li>
+</ul>
+<p><code>Future</code> 对象刚创建的时候是 pending 状态，处于调用状态为 running，执行完毕就是 done，如果在执行期间停止事件，则是 cancelled。</p>
+<a id="more"></a>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> asyncio</div><div class="line"><span class="keyword">import</span> time</div><div class="line"></div><div class="line">now = <span class="keyword">lambda</span>: time.time()</div></pre></td></tr></table></figure>
+<h3 id="逐个停止"><a href="#逐个停止" class="headerlink" title="逐个停止"></a>逐个停止</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">do_some_work</span><span class="params">(x)</span>:</span></div><div class="line">    print(<span class="string">'Waiting: '</span>, x)</div><div class="line">    <span class="keyword">await</span> asyncio.sleep(x)</div><div class="line">    <span class="keyword">return</span> <span class="string">'work &#123;0&#125; Done after &#123;1&#125;s'</span>.format(x, x)</div><div class="line"></div><div class="line">coroutine1 = do_some_work(<span class="number">2</span>)</div><div class="line">coroutine2 = do_some_work(<span class="number">3</span>)</div><div class="line">coroutine3 = do_some_work(<span class="number">4</span>)</div><div class="line"></div><div class="line">tasks = [</div><div class="line">    asyncio.ensure_future(coroutine1),</div><div class="line">    asyncio.ensure_future(coroutine2),</div><div class="line">    asyncio.ensure_future(coroutine3),</div><div class="line">]</div><div class="line"></div><div class="line">start = now()</div><div class="line"></div><div class="line">loop = asyncio.get_event_loop()</div><div class="line"></div><div class="line"><span class="keyword">try</span>:</div><div class="line">    loop.run_until_complete(asyncio.wait(tasks))</div><div class="line"><span class="keyword">except</span> KeyboardInterrupt <span class="keyword">as</span> e:</div><div class="line">    print(asyncio.Task.all_tasks())</div><div class="line">    <span class="keyword">for</span> task <span class="keyword">in</span> asyncio.Task.all_tasks():</div><div class="line">        print(task.cancel())</div><div class="line">    loop.stop()</div><div class="line">    loop.run_forever()</div><div class="line"><span class="keyword">finally</span>:</div><div class="line">    loop.close()</div><div class="line"></div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
+<pre><code>Waiting:  2
+Waiting:  3
+Waiting:  4
+{&lt;Task pending coro=&lt;do_some_work() running at &lt;ipython-input-2-d349a09958ba&gt;:3&gt; wait_for=&lt;Future pending cb=[Task._wakeup()]&gt; cb=[_wait.&lt;locals&gt;._on_completion() at /home/chy/.pyenv/versions/3.5.3/lib/python3.5/asyncio/tasks.py:422]&gt;, &lt;Task pending coro=&lt;wait() running at /home/chy/.pyenv/versions/3.5.3/lib/python3.5/asyncio/tasks.py:355&gt; wait_for=&lt;Future pending cb=[Task._wakeup()]&gt; cb=[_run_until_complete_cb() at /home/chy/.pyenv/versions/3.5.3/lib/python3.5/asyncio/base_events.py:176]&gt;, &lt;Task pending coro=&lt;do_some_work() running at &lt;ipython-input-2-d349a09958ba&gt;:3&gt; wait_for=&lt;Future pending cb=[Task._wakeup()]&gt; cb=[_wait.&lt;locals&gt;._on_completion() at /home/chy/.pyenv/versions/3.5.3/lib/python3.5/asyncio/tasks.py:422]&gt;, &lt;Task pending coro=&lt;do_some_work() running at &lt;ipython-input-2-d349a09958ba&gt;:3&gt; wait_for=&lt;Future pending cb=[Task._wakeup()]&gt; cb=[_wait.&lt;locals&gt;._on_completion() at /home/chy/.pyenv/versions/3.5.3/lib/python3.5/asyncio/tasks.py:422]&gt;}
+True
+True
+True
+True
+TIME:  1.8798322677612305
+</code></pre><p><code>True</code> 表示取消成功。</p>
+<p>上述方法是逐个 <code>cancel</code>。也可以像之前提到的，把所有的 task 封装在一个函数中，这样，该函数就相当于是最外面的一个 task，那么可以对该函数处理：</p>
+<h3 id="打包停止"><a href="#打包停止" class="headerlink" title="打包停止"></a>打包停止</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">do_some_work</span><span class="params">(x)</span>:</span></div><div class="line">    print(<span class="string">'Waiting: '</span>, x)</div><div class="line">    <span class="keyword">await</span> asyncio.sleep(x)</div><div class="line">    <span class="keyword">return</span> <span class="string">'work &#123;0&#125; Done after &#123;1&#125;s'</span>.format(x, x)</div><div class="line"></div><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    coroutine1 = do_some_work(<span class="number">2</span>)</div><div class="line">    coroutine2 = do_some_work(<span class="number">3</span>)</div><div class="line">    coroutine3 = do_some_work(<span class="number">4</span>)</div><div class="line"></div><div class="line">    tasks = [</div><div class="line">        asyncio.ensure_future(coroutine1),</div><div class="line">        asyncio.ensure_future(coroutine2),</div><div class="line">        asyncio.ensure_future(coroutine3),</div><div class="line">    ]</div><div class="line">    </div><div class="line">    dones, pendings = <span class="keyword">await</span> asyncio.wait(tasks)</div><div class="line">    </div><div class="line">    <span class="keyword">for</span> task <span class="keyword">in</span> dones:</div><div class="line">        print(<span class="string">'Task result: '</span>, task.result())</div><div class="line"></div><div class="line">start = now()</div><div class="line"></div><div class="line">loop = asyncio.get_event_loop()</div><div class="line"></div><div class="line">task = asyncio.ensure_future(main())</div><div class="line"></div><div class="line"><span class="keyword">try</span>:</div><div class="line">    loop.run_until_complete(task)</div><div class="line"><span class="keyword">except</span> KeyboardInterrupt <span class="keyword">as</span> e:</div><div class="line">    print(asyncio.Task.all_tasks())</div><div class="line">    print(asyncio.gather(*asyncio.Task.all_tasks()).cancel())</div><div class="line">    loop.stop()</div><div class="line">    loop.run_forever()</div><div class="line"><span class="keyword">finally</span>:</div><div class="line">    loop.close()</div><div class="line">    </div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
+<pre><code>Waiting:  2
+Waiting:  3
+Waiting:  4
+{&lt;Task pending coro=&lt;do_some_work() running at &lt;ipython-input-2-daa7e16e8aa3&gt;:3&gt; wait_for=&lt;Future pending cb=[Task._wakeup()]&gt; cb=[_wait.&lt;locals&gt;._on_completion() at /home/chy/.pyenv/versions/3.5.3/lib/python3.5/asyncio/tasks.py:422]&gt;, &lt;Task pending coro=&lt;main() running at &lt;ipython-input-2-daa7e16e8aa3&gt;:17&gt; wait_for=&lt;Future pending cb=[Task._wakeup()]&gt; cb=[_run_until_complete_cb() at /home/chy/.pyenv/versions/3.5.3/lib/python3.5/asyncio/base_events.py:176]&gt;, &lt;Task pending coro=&lt;do_some_work() running at &lt;ipython-input-2-daa7e16e8aa3&gt;:3&gt; wait_for=&lt;Future pending cb=[Task._wakeup()]&gt; cb=[_wait.&lt;locals&gt;._on_completion() at /home/chy/.pyenv/versions/3.5.3/lib/python3.5/asyncio/tasks.py:422]&gt;, &lt;Task pending coro=&lt;do_some_work() running at &lt;ipython-input-2-daa7e16e8aa3&gt;:3&gt; wait_for=&lt;Future pending cb=[Task._wakeup()]&gt; cb=[_wait.&lt;locals&gt;._on_completion() at /home/chy/.pyenv/versions/3.5.3/lib/python3.5/asyncio/tasks.py:422]&gt;}
+True
+TIME:  0.649970531463623
+</code></pre><p>到目前为止，我们已经能够简单地开启多个协程，管理多个协程，可是，如果一个协程耗时过长，那么整个线程依旧会阻塞，这时我们只有开启多线程或者多进程来实现并行操作。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;停止协程&quot;&gt;&lt;a href=&quot;#停止协程&quot; class=&quot;headerlink&quot; title=&quot;停止协程&quot;&gt;&lt;/a&gt;停止协程&lt;/h2&gt;&lt;p&gt;&lt;code&gt;Future&lt;/code&gt; 对象有几种状态：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;pending&lt;/li&gt;
+&lt;li&gt;running&lt;/li&gt;
+&lt;li&gt;done&lt;/li&gt;
+&lt;li&gt;cancelled&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code&gt;Future&lt;/code&gt; 对象刚创建的时候是 pending 状态，处于调用状态为 running，执行完毕就是 done，如果在执行期间停止事件，则是 cancelled。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="知识点" scheme="https://yuanblq.github.io/categories/%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
+    
+    
+      <category term="Python" scheme="https://yuanblq.github.io/tags/Python/"/>
+    
+      <category term="异步" scheme="https://yuanblq.github.io/tags/%E5%BC%82%E6%AD%A5/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>影分身术之-asyncio_part2</title>
+    <link href="https://yuanblq.github.io/2017/07/29/asyncio2/"/>
+    <id>https://yuanblq.github.io/2017/07/29/asyncio2/</id>
+    <published>2017-07-29T01:14:37.000Z</published>
+    <updated>2017-08-26T05:16:53.410Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="异步实现"><a href="#异步实现" class="headerlink" title="异步实现"></a>异步实现</h2><p>要想使用 <code>asyncio</code> 实现异步，和 <code>gevent</code> 差不多，都需要相应的代码支持。<code>gevent</code> 是通过打上“猴子补丁”来实现的，而 <code>asyncio</code> 和 <code>yield from</code> 有着千丝万缕的关系，所以先实现就比较简单了。</p>
+<p>你可以自己用 <code>yield from</code> 写个协程方法，要么就只能用用别人实现的协程模块。</p>
+<a id="more"></a>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> asyncio</div><div class="line"><span class="keyword">import</span> time</div><div class="line"></div><div class="line">now = <span class="keyword">lambda</span>: time.time()</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">do_some_work</span><span class="params">(x)</span>:</span></div><div class="line">    print(<span class="string">'Waiting: '</span>, x)</div><div class="line">    <span class="keyword">await</span> asyncio.sleep(x)</div><div class="line">    <span class="keyword">return</span> <span class="string">'work &#123;0&#125; Done after &#123;1&#125;s'</span>.format(x, x)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">done_callback</span><span class="params">(future)</span>:</span></div><div class="line">    print(<span class="string">'Callback: '</span>, future.result())</div><div class="line"></div><div class="line">start = now()</div><div class="line"></div><div class="line">coroutine1 = do_some_work(<span class="number">2</span>)</div><div class="line">coroutine2 = do_some_work(<span class="number">3</span>)</div><div class="line">coroutine3 = do_some_work(<span class="number">4</span>)</div><div class="line"></div><div class="line">tasks = [</div><div class="line">    asyncio.ensure_future(coroutine1),</div><div class="line">    asyncio.ensure_future(coroutine2),</div><div class="line">    asyncio.ensure_future(coroutine3),</div><div class="line">]</div><div class="line"></div><div class="line"><span class="comment"># 完成一个任务打印一个</span></div><div class="line"><span class="keyword">for</span> task <span class="keyword">in</span> tasks:</div><div class="line">    task.add_done_callback(done_callback)</div><div class="line"></div><div class="line">loop = asyncio.get_event_loop()</div><div class="line"></div><div class="line"><span class="comment"># 将协程 task 任务列表添加到事件循环中</span></div><div class="line"><span class="comment"># 这两种方法都能实现添加事件循环</span></div><div class="line">loop.run_until_complete(asyncio.wait(tasks))</div><div class="line"><span class="comment"># loop.run_until_complete(asyncio.gather(*tasks))</span></div><div class="line"></div><div class="line"><span class="comment"># 最后一个任务完成的时候一起打印</span></div><div class="line"><span class="comment"># for task in tasks:</span></div><div class="line"><span class="comment">#     print("Task result: ", task.result())</span></div><div class="line"></div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
+<pre><code>Waiting:  2
+Waiting:  3
+Waiting:  4
+Callback:  work 2 Done after 2s
+Callback:  work 3 Done after 3s
+Callback:  work 4 Done after 4s
+TIME:  4.004777193069458
+</code></pre><p>总计花了 4s 多点的时间，如果是同步的话，至少 9s。可见，我们通过 <code>asyncio</code> 实现了并发功能。</p>
+<h2 id="协程嵌套"><a href="#协程嵌套" class="headerlink" title="协程嵌套"></a>协程嵌套</h2><p>在协程的嵌套中，如何处理协程返回的数据是件很灵活的事。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">do_some_work</span><span class="params">(x)</span>:</span></div><div class="line">    print(<span class="string">'Waiting: '</span>, x)</div><div class="line">    <span class="keyword">await</span> asyncio.sleep(x)</div><div class="line">    <span class="keyword">return</span> <span class="string">'work &#123;0&#125; Done after &#123;1&#125;s'</span>.format(x, x)</div><div class="line"></div><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    coroutine1 = do_some_work(<span class="number">2</span>)</div><div class="line">    coroutine2 = do_some_work(<span class="number">3</span>)</div><div class="line">    coroutine3 = do_some_work(<span class="number">4</span>)</div><div class="line"></div><div class="line">    tasks = [</div><div class="line">        asyncio.ensure_future(coroutine1),</div><div class="line">        asyncio.ensure_future(coroutine2),</div><div class="line">        asyncio.ensure_future(coroutine3),</div><div class="line">    ]</div><div class="line">    </div><div class="line">    <span class="comment"># wait 返回 task 对象</span></div><div class="line">    <span class="comment"># dones, pendings = await asyncio.wait(tasks)</span></div><div class="line">    <span class="comment"># print(dones)</span></div><div class="line">    <span class="comment"># print(pendings)</span></div><div class="line">    <span class="comment"># for task in dones:</span></div><div class="line">    <span class="comment">#     print('Task result: ', task.result())</span></div><div class="line"></div><div class="line">    <span class="comment"># gather 直接返回的是协程运行结果</span></div><div class="line">    results = <span class="keyword">await</span> asyncio.gather(*tasks)</div><div class="line">    <span class="keyword">for</span> result <span class="keyword">in</span> results:</div><div class="line">        print(<span class="string">"Task result: "</span>, result)</div><div class="line">    </div><div class="line">    </div><div class="line">start = now()</div><div class="line"></div><div class="line">loop = asyncio.get_event_loop()</div><div class="line">loop.run_until_complete(main())</div><div class="line"></div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
+<pre><code>Waiting:  2
+Waiting:  3
+Waiting:  4
+Task result:  work 2 Done after 2s
+Task result:  work 3 Done after 3s
+Task result:  work 4 Done after 4s
+TIME:  4.0052490234375
+</code></pre><p>在 <code>main()</code> 协程函数中，可以不直接处理结果，直接返回 <code>await</code> 内容，那么，<code>run_until_complete()</code> 将会接受返回的结果。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    coroutine1 = do_some_work(<span class="number">2</span>)</div><div class="line">    coroutine2 = do_some_work(<span class="number">3</span>)</div><div class="line">    coroutine3 = do_some_work(<span class="number">4</span>)</div><div class="line"></div><div class="line">    tasks = [</div><div class="line">        asyncio.ensure_future(coroutine1),</div><div class="line">        asyncio.ensure_future(coroutine2),</div><div class="line">        asyncio.ensure_future(coroutine3),</div><div class="line">    ]</div><div class="line">    </div><div class="line">    <span class="comment"># wait 返回 task 对象</span></div><div class="line">    <span class="keyword">return</span> <span class="keyword">await</span> asyncio.wait(tasks)</div><div class="line">    </div><div class="line">    </div><div class="line">start = now()</div><div class="line"></div><div class="line">loop = asyncio.get_event_loop()</div><div class="line">dones, pendings = loop.run_until_complete(main())</div><div class="line"><span class="keyword">for</span> done <span class="keyword">in</span> dones:</div><div class="line">    print(<span class="string">"Task result: "</span>, done.result())</div><div class="line"></div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
+<pre><code>Waiting:  2
+Waiting:  3
+Waiting:  4
+Task result:  work 4 Done after 4s
+Task result:  work 2 Done after 2s
+Task result:  work 3 Done after 3s
+TIME:  4.0036780834198
+</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    coroutine1 = do_some_work(<span class="number">2</span>)</div><div class="line">    coroutine2 = do_some_work(<span class="number">3</span>)</div><div class="line">    coroutine3 = do_some_work(<span class="number">4</span>)</div><div class="line"></div><div class="line">    tasks = [</div><div class="line">        asyncio.ensure_future(coroutine1),</div><div class="line">        asyncio.ensure_future(coroutine2),</div><div class="line">        asyncio.ensure_future(coroutine3),</div><div class="line">    ]</div><div class="line"></div><div class="line">    <span class="comment"># gather 直接返回的是协程运行结果</span></div><div class="line">    <span class="keyword">return</span> <span class="keyword">await</span> asyncio.gather(*tasks)</div><div class="line">    </div><div class="line">    </div><div class="line">start = now()</div><div class="line"></div><div class="line">loop = asyncio.get_event_loop()</div><div class="line">results = loop.run_until_complete(main())</div><div class="line"><span class="keyword">for</span> result <span class="keyword">in</span> results:</div><div class="line">    print(<span class="string">"Task result: "</span>, result)</div><div class="line"></div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
+<pre><code>Waiting:  2
+Waiting:  3
+Waiting:  4
+Task result:  work 2 Done after 2s
+Task result:  work 3 Done after 3s
+Task result:  work 4 Done after 4s
+TIME:  4.003807544708252
+</code></pre><p>除此之外，还可以使用 asyncio 的 <code>as_completed()</code> 方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    coroutine1 = do_some_work(<span class="number">2</span>)</div><div class="line">    coroutine2 = do_some_work(<span class="number">3</span>)</div><div class="line">    coroutine3 = do_some_work(<span class="number">4</span>)</div><div class="line"></div><div class="line">    tasks = [</div><div class="line">        asyncio.ensure_future(coroutine1),</div><div class="line">        asyncio.ensure_future(coroutine2),</div><div class="line">        asyncio.ensure_future(coroutine3),</div><div class="line">    ]</div><div class="line"></div><div class="line">    <span class="keyword">for</span> task <span class="keyword">in</span> asyncio.as_completed(tasks):</div><div class="line">        result = <span class="keyword">await</span> task</div><div class="line">        print(<span class="string">"Task result: "</span>, result)</div><div class="line">    </div><div class="line">    </div><div class="line">start = now()</div><div class="line"></div><div class="line">loop = asyncio.get_event_loop()</div><div class="line">loop.run_until_complete(main())</div><div class="line"></div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
+<pre><code>Waiting:  2
+Waiting:  3
+Waiting:  4
+Task result:  work 2 Done after 2s
+Task result:  work 3 Done after 3s
+Task result:  work 4 Done after 4s
+TIME:  4.002615690231323
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;异步实现&quot;&gt;&lt;a href=&quot;#异步实现&quot; class=&quot;headerlink&quot; title=&quot;异步实现&quot;&gt;&lt;/a&gt;异步实现&lt;/h2&gt;&lt;p&gt;要想使用 &lt;code&gt;asyncio&lt;/code&gt; 实现异步，和 &lt;code&gt;gevent&lt;/code&gt; 差不多，都需要相应的代码支持。&lt;code&gt;gevent&lt;/code&gt; 是通过打上“猴子补丁”来实现的，而 &lt;code&gt;asyncio&lt;/code&gt; 和 &lt;code&gt;yield from&lt;/code&gt; 有着千丝万缕的关系，所以先实现就比较简单了。&lt;/p&gt;
+&lt;p&gt;你可以自己用 &lt;code&gt;yield from&lt;/code&gt; 写个协程方法，要么就只能用用别人实现的协程模块。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="知识点" scheme="https://yuanblq.github.io/categories/%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
+    
+    
+      <category term="Python" scheme="https://yuanblq.github.io/tags/Python/"/>
+    
+      <category term="异步" scheme="https://yuanblq.github.io/tags/%E5%BC%82%E6%AD%A5/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>影分身术之-asyncio_part1</title>
+    <link href="https://yuanblq.github.io/2017/07/28/asyncio1/"/>
+    <id>https://yuanblq.github.io/2017/07/28/asyncio1/</id>
+    <published>2017-07-28T04:59:48.000Z</published>
+    <updated>2017-08-26T05:17:06.691Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="创建一个协程"><a href="#创建一个协程" class="headerlink" title="创建一个协程"></a>创建一个协程</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> time</div><div class="line"><span class="keyword">import</span> asyncio</div><div class="line"></div><div class="line">now = <span class="keyword">lambda</span>: time.time()</div><div class="line"></div><div class="line"><span class="comment"># 定义协程函数</span></div><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">do_some_work</span><span class="params">(x)</span>:</span></div><div class="line">    print(<span class="string">'Waiting: '</span>, x)</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">start = now()</div><div class="line"></div><div class="line"><span class="string">"""</span></div><div class="line">获取协程对象，协程对象的调用不会立刻执行函数</div><div class="line">协程对象需要注册到事件循环上，由事件循环调用</div><div class="line">"""</div><div class="line">coroutine = do_some_work(<span class="number">2</span>)</div><div class="line"></div><div class="line"><span class="comment"># 获取事件循环对象</span></div><div class="line">loop = asyncio.get_event_loop()</div><div class="line"></div><div class="line"><span class="comment"># 调用协程对象</span></div><div class="line">loop.run_until_complete(coroutine)</div><div class="line"></div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
+<pre><code>Waiting:  2
+TIME:  0.0010256767272949219
+</code></pre><h2 id="创建一个-task"><a href="#创建一个-task" class="headerlink" title="创建一个 task"></a>创建一个 task</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">start = now()</div><div class="line"></div><div class="line">coroutine = do_some_work(<span class="number">3</span>)</div><div class="line"></div><div class="line">loop = asyncio.get_event_loop()</div><div class="line"></div><div class="line"><span class="string">"""</span></div><div class="line">ensure_future() 返回的也是 Furure 对象，</div><div class="line">内部同样是调用的 create_task()</div><div class="line">task = asyncio.ensure_future(coroutine)</div><div class="line">"""</div><div class="line">task = loop.create_task(coroutine)</div><div class="line"></div><div class="line">print(task)</div><div class="line">loop.run_until_complete(task)</div><div class="line">print(task)</div><div class="line"></div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
+<pre><code>&lt;Task pending coro=&lt;do_some_work() running at &lt;ipython-input-12-3ef64d36efb6&gt;:7&gt;&gt;
+Waiting:  3
+&lt;Task finished coro=&lt;do_some_work() done, defined at &lt;ipython-input-12-3ef64d36efb6&gt;:7&gt; result=None&gt;
+TIME:  0.0009589195251464844
+</code></pre><p>所谓 task 对象本质上是一个 <code>Future</code> 对象（是 <code>Future</code> 的子类）。<code>Future</code> 类保存了协程运行后的状态，用于未来获取协程的结果。</p>
+<p>task 在加入事件循环之前是 pending 状态。执行完成之后为 finished 状态。</p>
+<p><code>asyncio.ensure_future(coroutine)</code> 和 <code>loop.create_task(coroutine)</code> 都可以创建一个 task，<code>asyncio.ensure_future(coroutine)</code> 内部就是通过调用 <code>loop.create_task(coroutine)</code> 返回的 task 对象。</p>
+<h2 id="绑定回调"><a href="#绑定回调" class="headerlink" title="绑定回调"></a>绑定回调</h2><p>我们修改一下 <code>do_some_work()</code> 函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">do_some_work</span><span class="params">(x)</span>:</span></div><div class="line">    print(<span class="string">'Waiting: '</span>, x)</div><div class="line">    <span class="keyword">return</span> <span class="string">'Done after &#123;&#125;s'</span>.format(x)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">done_callback</span><span class="params">(future)</span>:</span></div><div class="line">    print(<span class="string">'Callback: '</span>, future.result())</div><div class="line"></div><div class="line">start = now()</div><div class="line"></div><div class="line">coroutine = do_some_work(<span class="number">2</span>)</div><div class="line">loop = asyncio.get_event_loop()</div><div class="line">task = asyncio.ensure_future(coroutine)</div><div class="line"></div><div class="line"><span class="comment"># 给 task 对象添加回调函数</span></div><div class="line">task.add_done_callback(done_callback)</div><div class="line">loop.run_until_complete(task)</div><div class="line"></div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
+<pre><code>Waiting:  2
+Callback:  Done after 2s
+TIME:  0.0015606880187988281
+</code></pre><p><code>Future</code> 对象的 <code>add_done_callback()</code> 方法接受一个回调函数对象，并且会把自己也传过去。等 task 调用结束时，就可以通过 task 对象的 <code>result()</code> 方法获取调用返回值。</p>
+<p>如果有这么一种需求，当回调的时候，我们还需要往回调函数传入多个参数。这种情况可以通过偏函数解决：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> functools</div><div class="line"></div><div class="line"><span class="comment"># 注意参数传入的顺序</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">done_callback_part</span><span class="params">(op, future)</span>:</span></div><div class="line">    print(<span class="string">'Callback: '</span>, op, future.result())</div><div class="line"></div><div class="line">start = now()</div><div class="line"></div><div class="line">coroutine = do_some_work(<span class="number">2</span>)</div><div class="line">loop = asyncio.get_event_loop()</div><div class="line">task = asyncio.ensure_future(coroutine)</div><div class="line"></div><div class="line"><span class="comment"># 给 task 对象添加回调函数</span></div><div class="line"><span class="comment"># 注意参数传入的顺序</span></div><div class="line">task.add_done_callback(functools.partial(done_callback_part, <span class="string">"other param"</span>))</div><div class="line">loop.run_until_complete(task)</div><div class="line"></div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
+<pre><code>Waiting:  2
+Callback:  other param Done after 2s
+TIME:  0.00046443939208984375
+</code></pre><h2 id="阻塞和-await"><a href="#阻塞和-await" class="headerlink" title="阻塞和 await"></a>阻塞和 await</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">do_some_work</span><span class="params">(x)</span>:</span></div><div class="line">    print(<span class="string">'Waiting: '</span>, x)</div><div class="line">    <span class="keyword">await</span> asyncio.sleep(x)</div><div class="line">    <span class="keyword">return</span> <span class="string">'Done after &#123;&#125;s'</span>.format(x)</div><div class="line"></div><div class="line">start = now()</div><div class="line"></div><div class="line">coroutine = do_some_work(<span class="number">2</span>)</div><div class="line">loop = asyncio.get_event_loop()</div><div class="line">task = asyncio.ensure_future(coroutine)</div><div class="line">loop.run_until_complete(task)</div><div class="line"></div><div class="line">print(<span class="string">"Task result: "</span>, task.result())</div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
+<pre><code>Waiting:  2
+Task result:  Done after 2s
+TIME:  2.0026657581329346
+</code></pre><p>当 sleep 的时候，使用 <code>await</code> 让出控制权。即当程序执行到耗时操作时，使用 <code>await</code> 方法将协程的控制权让出，以便 <code>loop</code> 调用其他协程。</p>
+<p>上面的例子都只有一个协程，所以看不出有什么效果。接下来我们就上多个协程瞧瞧。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;创建一个协程&quot;&gt;&lt;a href=&quot;#创建一个协程&quot; class=&quot;headerlink&quot; title=&quot;创建一个协程&quot;&gt;&lt;/a&gt;创建一个协程&lt;/h2&gt;&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;6&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;7&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;8&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; time&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; asyncio&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;now = &lt;span class=&quot;keyword&quot;&gt;lambda&lt;/span&gt;: time.time()&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 定义协程函数&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;async&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;do_some_work&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(x)&lt;/span&gt;:&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    print(&lt;span class=&quot;string&quot;&gt;&#39;Waiting: &#39;&lt;/span&gt;, x)&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+    
+    </summary>
+    
+      <category term="知识点" scheme="https://yuanblq.github.io/categories/%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
+    
+    
+      <category term="Python" scheme="https://yuanblq.github.io/tags/Python/"/>
+    
+      <category term="异步" scheme="https://yuanblq.github.io/tags/%E5%BC%82%E6%AD%A5/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>遇见NoSQL-Redis</title>
+    <link href="https://yuanblq.github.io/2017/07/26/Redis/"/>
+    <id>https://yuanblq.github.io/2017/07/26/Redis/</id>
+    <published>2017-07-26T06:18:49.000Z</published>
+    <updated>2017-08-26T05:17:43.879Z</updated>
+    
+    <content type="html"><![CDATA[<p>Redis 是键值对存储的，通过键存入的值会永久存储。<a href="http://try.redis.io/" target="_blank" rel="external">入门 Redis 最好的网站</a></p>
+<h2 id="set-get"><a href="#set-get" class="headerlink" title="set / get"></a>set / get</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">set name &quot;fido&quot;</div></pre></td></tr></table></figure>
+<p><code>set</code> 设置键值对。然后就可以通过 <code>get</code> 键名来获取对应的键值：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">get name</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; &quot;fido&quot;</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="del-incr-decr"><a href="#del-incr-decr" class="headerlink" title="del / incr / decr"></a>del / incr / decr</h2><p><code>del</code> : 通过键名删除对应的键值。<br><code>incr</code> : 自增键名所对应的键值（如果键名对应的键值不存在，自动设置对应的键值为 1）。<br><code>decr</code> : 自减键名所对应的键值（如果键名对应的键值不存在，自动设置对应的键值为 -1）。</p>
+<p>像 <code>incr</code> 和 <code>decr</code> 这种操作明明可以通过一些简单的操作运算就能完成，为什么 Redis 还要提供这样的操作呢？</p>
+<p>因为当同时操作同一个键名对应的键值时（所谓的并发），就可能会发生错误。所以像 <code>incr</code> 这种操作，在 Redis 中是 <code>atomic</code> 原子性操作，Redis 还有很多类似的操作。</p>
+<h2 id="expire-ttl"><a href="#expire-ttl" class="headerlink" title="expire / ttl"></a>expire / ttl</h2><p><code>expire</code> : 设置键名的存活时间。<br><code>ttl</code> : 查询键名是否存活。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ttl name</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; (integer) -1</div></pre></td></tr></table></figure>
+<p><code>-1</code> 表示该键名永不过期。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">expire name 120</div><div class="line">// 设置 name 的存活时间为 120 秒</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ttl name</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; (integer) 120</div></pre></td></tr></table></figure>
+<p>如果 <code>ttl</code> 的键名没过期，则返回该键名还能存活的时间（秒）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">// 120s 后</div><div class="line">ttl name</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; (integer) -2</div></pre></td></tr></table></figure>
+<p><code>-2</code> 表示对应的键名已过期 / 不存在。</p>
+<h2 id="rpush-lpush-lrange-lpop-rpop-llen"><a href="#rpush-lpush-lrange-lpop-rpop-llen" class="headerlink" title="rpush / lpush / lrange / lpop / rpop / llen"></a>rpush / lpush / lrange / lpop / rpop / llen</h2><p>Redis 能够操作很多复杂的数据结构，比如列表：</p>
+<p><code>rpush</code> : 在列表最后添加新值。<br><code>lrange</code> : 列表的切片操作。<br><code>lpop</code> : 删除列表起始值，并返回删除的值。<br><code>rpop</code> : 删除列表末尾值，并返回删除的值。<br><code>llen</code> : 返回列表长度。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">rpush friends &quot;Alice&quot;</div><div class="line">rpush friends &quot;Bob&quot;</div><div class="line">lpush friends &quot;Sam&quot;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">lrange friends 0 -1  =&gt;  1)&quot;Sam&quot; 2)&quot;Alice&quot; 3)&quot;Bob&quot;</div><div class="line">lrange friends 1 2  =&gt;  1)&quot;Alice&quot; 2)&quot;Bob&quot;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">lpop friends  =&gt;  &quot;Sam&quot;</div><div class="line">rpop friends  =&gt;  &quot;Bob&quot;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">llen friends  =&gt;  1</div></pre></td></tr></table></figure>
+<h2 id="sadd-srem-sismember-smembers-sunion"><a href="#sadd-srem-sismember-smembers-sunion" class="headerlink" title="sadd / srem / sismember / smembers / sunion"></a>sadd / srem / sismember / smembers / sunion</h2><p>在比如说，set 集合这个数据结构。集合除了无序，不重复外，其他与列表很像。</p>
+<p><code>sadd</code> : 往集合中添加元素。<br><code>srem</code> : 从集合中删除元素。<br><code>sismember</code> : 测试所给的值是否在该集合中，返回 1 表示存在，0 表示不存在。<br><code>smembers</code> : 返回集合中所有元素的一个列表。<br><code>sunion</code> : 联合两个或很多个集合，并返回所有元素的一个列表。</p>
+<h2 id="zadd-zrange"><a href="#zadd-zrange" class="headerlink" title="zadd / zrange"></a>zadd / zrange</h2><p>虽然集合在某些方面很便利，但是集合无法排序，所以 Redis 提供了一种有序的集合。</p>
+<p>有序集合与一般的集合差别不大，只是在创建新值的时候需要制定该值相关的分数（用作排序依据）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">ZADD hackers 1940 &quot;Alan Kay&quot;</div><div class="line">ZADD hackers 1906 &quot;Grace Hopper&quot;</div><div class="line">ZADD hackers 1953 &quot;Richard Stallman&quot;</div><div class="line">ZADD hackers 1965 &quot;Yukihiro Matsumoto&quot;</div><div class="line">ZADD hackers 1916 &quot;Claude Shannon&quot;</div><div class="line">ZADD hackers 1969 &quot;Linus Torvalds&quot;</div><div class="line">ZADD hackers 1957 &quot;Sophie Wilson&quot;</div><div class="line">ZADD hackers 1912 &quot;Alan Turing&quot;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">zrange hackers 2 4  =&gt;  1) &quot;Claude Shannon&quot;, 2) &quot;Alan Kay&quot;, 3) &quot;Richard Stallman&quot;</div></pre></td></tr></table></figure>
+<p>切片的用法和列表很像。</p>
+<h2 id="hset-hgetall-hget"><a href="#hset-hgetall-hget" class="headerlink" title="hset / hgetall / hget"></a>hset / hgetall / hget</h2><p>Redis 中有一中数据结构和字典和相似：<code>Hashes</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">hset user name &quot;John Smith&quot;</div><div class="line">hset user email &quot;john.smith@example.com&quot;</div><div class="line">hset user password &quot;s3cret&quot;</div></pre></td></tr></table></figure>
+<p>通过 <code>hgetall</code> 获取所有的数据：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hgetall user</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">1) &quot;name&quot;</div><div class="line">2) &quot;John Smith&quot;</div><div class="line">3) &quot;email&quot;</div><div class="line">4) &quot;john.smith@example.com&quot;</div><div class="line">5) &quot;password&quot;</div><div class="line">6) &quot;s3cret&quot;</div></pre></td></tr></table></figure>
+<p>或者通过 <code>hget</code> 获取单个字段的值：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hget user name  =&gt;  “John Smith&quot;</div></pre></td></tr></table></figure></p>
+<p>hash 字段中的数字，也能像普通数字字段一样，能进行原子自增自减操作：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">hset user visits 10</div><div class="line">hincrby user visits 1  =&gt;  11</div><div class="line">hdecrby user visits 2  =&gt;  9</div><div class="line">hdel user visits</div><div class="line">hincrby user visits 1  =&gt; 1</div></pre></td></tr></table></figure>
+<pre><code>
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Redis 是键值对存储的，通过键存入的值会永久存储。&lt;a href=&quot;http://try.redis.io/&quot;&gt;入门 Redis 最好的网站&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&quot;set-get&quot;&gt;&lt;a href=&quot;#set-get&quot; class=&quot;headerlink&quot; title=&quot;set / get&quot;&gt;&lt;/a&gt;set / get&lt;/h2&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;set name &amp;quot;fido&amp;quot;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;code&gt;set&lt;/code&gt; 设置键值对。然后就可以通过 &lt;code&gt;get&lt;/code&gt; 键名来获取对应的键值：&lt;br&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;get name&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &amp;quot;fido&amp;quot;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+    
+    </summary>
+    
+      <category term="-文档" scheme="https://yuanblq.github.io/categories/%E6%96%87%E6%A1%A3/"/>
+    
+    
+      <category term="-Database" scheme="https://yuanblq.github.io/tags/Database/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>遇见NoSQL-MongoDB</title>
+    <link href="https://yuanblq.github.io/2017/07/26/MongoDB/"/>
+    <id>https://yuanblq.github.io/2017/07/26/MongoDB/</id>
+    <published>2017-07-26T04:43:02.000Z</published>
+    <updated>2017-08-26T05:17:53.942Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="数据库操作"><a href="#数据库操作" class="headerlink" title="数据库操作"></a>数据库操作</h2><h3 id="show-dbs-db-use-xx"><a href="#show-dbs-db-use-xx" class="headerlink" title="show dbs / db / use xx"></a>show dbs / db / use xx</h3><ul>
+<li><code>show dbs</code> 显示当前所有数据库</li>
+<li><code>db</code> 显示当前所选数据库</li>
+<li><code>use xx</code> 选择 xx 数据库，如果当前没有该数据库，则自动创建</li>
+</ul>
+<h3 id="db-dropDatabase"><a href="#db-dropDatabase" class="headerlink" title="db.dropDatabase()"></a>db.dropDatabase()</h3><p>删除当前数据库</p>
+<a id="more"></a>
+<h2 id="集合和文档的操作"><a href="#集合和文档的操作" class="headerlink" title="集合和文档的操作"></a>集合和文档的操作</h2><h3 id="insert-save-update"><a href="#insert-save-update" class="headerlink" title="insert / save / update"></a>insert / save / update</h3><p><code>db.集合名字.insert(文档)</code><br>往该集合中插入一个文档，如果该集合不存在，会自动创建该集合。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">db.coll.insert(&#123;</div><div class="line">    name: &quot;Zhang&quot;,</div><div class="line">    age: 12,</div><div class="line">    addr: [&quot;beijng&quot;, &quot;tianjing&quot;],</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p><code>save()</code> 方法：</p>
+<ul>
+<li>如果不指定 <code>_id</code> 字段，则和 <code>insert()</code> 方法一样</li>
+<li>如果指定 <code>_id</code> 字段，则更新该文档的数据</li>
+</ul>
+<p><code>update()</code> 语法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">db.coll.update(</div><div class="line">    &lt;query&gt;,</div><div class="line">    &lt;update&gt;,</div><div class="line">    &#123;</div><div class="line">        upsert: &lt;boolean&gt;,</div><div class="line">        multi: &lt;boolean&gt;,</div><div class="line">        writeConcern: &lt;document&gt;</div><div class="line">    &#125;</div><div class="line">)</div></pre></td></tr></table></figure></p>
+<p>参数说明：</p>
+<ul>
+<li><code>query</code>：update 的查询条件，类似 sql update 中的 where</li>
+<li><code>update</code>：update 的对象，类似 sql update 中的 set</li>
+<li><code>upsert</code>：可选（默认 false），如果 update 的记录不存在是否将其新增进去</li>
+<li><code>multi</code>：可选（默认 false），有相同的记录是否全部找出来</li>
+<li><code>writeConcern</code>：可选，抛出异常的级别</li>
+</ul>
+<p>比如我们通过 update() 方法更新上面的姓名：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">db.coll.update(</div><div class="line">    &#123;&quot;name&quot;: &quot;Zhang&quot;&#125;,</div><div class="line">    &#123;$set: &#123;&quot;name&quot;: &quot;Li&quot;&#125;&#125;,</div><div class="line">)</div></pre></td></tr></table></figure></p>
+<p>更多实例：</p>
+<p>只更新第一条记录：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.coll.update( &#123; &quot;count&quot; : &#123; $gt : 1 &#125; &#125; , &#123; $set : &#123; &quot;test2&quot; : &quot;OK&quot;&#125; &#125; );</div></pre></td></tr></table></figure></p>
+<p>全部更新：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.coll.update( &#123; &quot;count&quot; : &#123; $gt : 3 &#125; &#125; , &#123; $set : &#123; &quot;test2&quot; : &quot;OK&quot;&#125; &#125;,false,true );</div></pre></td></tr></table></figure></p>
+<p>只添加第一条：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.coll.update( &#123; &quot;count&quot; : &#123; $gt : 4 &#125; &#125; , &#123; $set : &#123; &quot;test5&quot; : &quot;OK&quot;&#125; &#125;,true,false );</div></pre></td></tr></table></figure></p>
+<p>全部添加加进去：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.coll.update( &#123; &quot;count&quot; : &#123; $gt : 5 &#125; &#125; , &#123; $set : &#123; &quot;test5&quot; : &quot;OK&quot;&#125; &#125;,true,true );</div></pre></td></tr></table></figure></p>
+<p>全部更新：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.coll.update( &#123; &quot;count&quot; : &#123; $gt : 15 &#125; &#125; , &#123; $inc : &#123; &quot;count&quot; : 1&#125; &#125;,false,true );</div></pre></td></tr></table></figure></p>
+<p>只更新第一条记录：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.coll.update( &#123; &quot;count&quot; : &#123; $gt : 10 &#125; &#125; , &#123; $inc : &#123; &quot;count&quot; : 1&#125; &#125;,false,false );</div></pre></td></tr></table></figure></p>
+<h3 id="find-pretty"><a href="#find-pretty" class="headerlink" title="find / pretty"></a>find / pretty</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.coll.find()</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123; &quot;_id&quot; : ObjectId(&quot;5992f9bfe81188c3e5ce8c72&quot;), &quot;name&quot; : &quot;Zhang&quot;, &quot;age&quot; : 12, &quot;addr&quot; : [ &quot;beijng&quot;, &quot;tianjing&quot; ] &#125;</div></pre></td></tr></table></figure>
+<p>在 <code>find()</code> 方法后面加上 <code>pretty()</code> 则以格式化的形式，显示所查询的文档：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&gt; db.coll.find().pretty()</div><div class="line">&#123;</div><div class="line">	&quot;_id&quot; : ObjectId(&quot;5992f9bfe81188c3e5ce8c72&quot;),</div><div class="line">	&quot;name&quot; : &quot;Zhang&quot;,</div><div class="line">	&quot;age&quot; : 12,</div><div class="line">	&quot;addr&quot; : [</div><div class="line">		&quot;beijng&quot;, </div><div class="line">        &quot;tianjing&quot;</div><div class="line">	]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="remove"><a href="#remove" class="headerlink" title="remove"></a>remove</h3><p><code>remove()</code> 方法的基本语法格式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">db.coll.remove(</div><div class="line">    &lt;query&gt;,</div><div class="line">    &#123;</div><div class="line">        justOne: &lt;boolean&gt;,</div><div class="line">        writeConcern: &lt;document&gt;</div><div class="line">    &#125;</div><div class="line">)</div></pre></td></tr></table></figure></p>
+<p>参数说明：</p>
+<ul>
+<li><code>query</code>：可选，删除文档的条件</li>
+<li><code>justOne</code>：可选，如果设为 true，则只删除一个文档</li>
+<li><code>writeConcern</code>：可选，抛出异常的级别</li>
+</ul>
+<p>我们再插入一个文档：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">db.coll.insert(&#123;</div><div class="line">    name: &quot;Wang&quot;,</div><div class="line">    age: 25,</div><div class="line">    addr: [&quot;henan&quot;, &quot;hunan&quot;],</div><div class="line">&#125;)</div></pre></td></tr></table></figure></p>
+<p>使用 <code>find()</code> 查询数据：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt; db.coll.find()</div><div class="line">&#123; &quot;_id&quot; : ObjectId(&quot;5992f9bfe81188c3e5ce8c72&quot;), &quot;name&quot; : &quot;zhang&quot;, &quot;age&quot; : 12, &quot;addr&quot; : [ &quot;beijng&quot;, &quot;tianjing&quot; ] &#125;</div><div class="line">&#123; &quot;_id&quot; : ObjectId(&quot;59930244e81188c3e5ce8c73&quot;), &quot;name&quot; : &quot;Wang&quot;, &quot;age&quot; : 25, &quot;addr&quot; : [ &quot;henan&quot;, &quot;hunan&quot; ] &#125;</div></pre></td></tr></table></figure></p>
+<p>接下来我们移除 name 为 Zhang 的文档：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">db.coll.remove(</div><div class="line">    &#123;&quot;name&quot;: &quot;zhang&quot;&#125;</div><div class="line">)</div></pre></td></tr></table></figure></p>
+<p>现在数据文档只剩下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; db.coll.find()</div><div class="line">&#123; &quot;_id&quot; : ObjectId(&quot;59930244e81188c3e5ce8c73&quot;), &quot;name&quot; : &quot;Wang&quot;, &quot;age&quot; : 25, &quot;addr&quot; : [ &quot;henan&quot;, &quot;hunan&quot; ] &#125;</div></pre></td></tr></table></figure></p>
+<h2 id="MongoDB-与-RDBMS-where-语句比较"><a href="#MongoDB-与-RDBMS-where-语句比较" class="headerlink" title="MongoDB 与 RDBMS where 语句比较"></a>MongoDB 与 RDBMS where 语句比较</h2><table>
+<thead>
+<tr>
+<th style="text-align:center">操作</th>
+<th style="text-align:center">格式</th>
+<th style="text-align:center">范例</th>
+<th style="text-align:center">RDBMS中的类似语句</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">等于</td>
+<td style="text-align:center"><code>{&lt;key&gt;: &lt;value&gt;}</code></td>
+<td style="text-align:center"><code>db.coll.find({&quot;name&quot;: &quot;zhang&quot;})</code></td>
+<td style="text-align:center"><code>where by = &quot;zhang&quot;</code></td>
+</tr>
+<tr>
+<td style="text-align:center">小于</td>
+<td style="text-align:center"><code>{&lt;key&gt;: {$lt: &lt;value&gt;}}</code></td>
+<td style="text-align:center"><code>db.coll.find({&quot;age&quot;: {$lt: 18}})</code></td>
+<td style="text-align:center"><code>where age &lt; 18</code></td>
+</tr>
+<tr>
+<td style="text-align:center">小于或等于</td>
+<td style="text-align:center"><code>{&lt;key&gt;: {$lte: &lt;value&gt;}}</code></td>
+<td style="text-align:center"><code>db.coll.find({&quot;age&quot;: {$lte: 18}})</code></td>
+<td style="text-align:center"><code>where age &lt;= 18</code></td>
+</tr>
+<tr>
+<td style="text-align:center">大于</td>
+<td style="text-align:center"><code>{&lt;key&gt;: {$gt: &lt;value&gt;}}</code></td>
+<td style="text-align:center"><code>db.coll.find({&quot;age&quot;: {$gt: 18}})</code></td>
+<td style="text-align:center"><code>where age &gt; 18</code></td>
+</tr>
+<tr>
+<td style="text-align:center">大于或等于</td>
+<td style="text-align:center"><code>{&lt;key&gt;: {$gte: &lt;value&gt;}}</code></td>
+<td style="text-align:center"><code>db.coll.find({&quot;age&quot;: {$gte: 18}})</code></td>
+<td style="text-align:center"><code>where age &gt;= 18</code></td>
+</tr>
+<tr>
+<td style="text-align:center">不等于</td>
+<td style="text-align:center"><code>{&lt;key&gt;: {$ne: &lt;value&gt;}}</code></td>
+<td style="text-align:center"><code>db.coll.find({&quot;age&quot;: {$ne: 18}})</code></td>
+<td style="text-align:center"><code>where age != 18</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="MongoDB-and-条件"><a href="#MongoDB-and-条件" class="headerlink" title="MongoDB and 条件"></a>MongoDB and 条件</h2><p>MongoDB 的 <code>find()</code> 方法可以传入多个键，每个键以逗号分隔：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&gt;db.col.find(&#123;key1:value1, key2:value2&#125;).pretty()</div></pre></td></tr></table></figure></p>
+<h2 id="MongoDB-or-条件"><a href="#MongoDB-or-条件" class="headerlink" title="MongoDB or 条件"></a>MongoDB or 条件</h2><p>MongoDB or 条件使用了关键字 <code>$or</code>，语法格式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&gt;db.coll.find(&#123;$or: [&#123;key1: value1&#125;, &#123;key2: value2&#125;]&#125;).pretty()</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;数据库操作&quot;&gt;&lt;a href=&quot;#数据库操作&quot; class=&quot;headerlink&quot; title=&quot;数据库操作&quot;&gt;&lt;/a&gt;数据库操作&lt;/h2&gt;&lt;h3 id=&quot;show-dbs-db-use-xx&quot;&gt;&lt;a href=&quot;#show-dbs-db-use-xx&quot; class=&quot;headerlink&quot; title=&quot;show dbs / db / use xx&quot;&gt;&lt;/a&gt;show dbs / db / use xx&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;show dbs&lt;/code&gt; 显示当前所有数据库&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;db&lt;/code&gt; 显示当前所选数据库&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;use xx&lt;/code&gt; 选择 xx 数据库，如果当前没有该数据库，则自动创建&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;db-dropDatabase&quot;&gt;&lt;a href=&quot;#db-dropDatabase&quot; class=&quot;headerlink&quot; title=&quot;db.dropDatabase()&quot;&gt;&lt;/a&gt;db.dropDatabase()&lt;/h3&gt;&lt;p&gt;删除当前数据库&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="-文档" scheme="https://yuanblq.github.io/categories/%E6%96%87%E6%A1%A3/"/>
+    
+    
+      <category term="-Database" scheme="https://yuanblq.github.io/tags/Database/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>排序算法-归并排序</title>
+    <link href="https://yuanblq.github.io/2017/07/16/merger-sort/"/>
+    <id>https://yuanblq.github.io/2017/07/16/merger-sort/</id>
+    <published>2017-07-16T11:18:30.000Z</published>
+    <updated>2017-08-26T05:17:58.660Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h2><p>有很多算法在结构上是递归的：为了解决一个给定的问题，算法一次或多次递归地调用其自身以解决相关的若干子问题。</p>
+<p>这是典型的分治法思想：将原问题分解为几个规模较小，但类似于原问题的子问题，递归地求解这些子问题，然后再合并这些子问题的解来建立原问题的解。</p>
+<a id="more"></a>
+<p>归并排序算法完全遵循分治模式。直观上操作如下：</p>
+<ul>
+<li><strong>分解：</strong>分解待排序的 n 个元素的序列成各具 n/2 个元素的 2 个子序列</li>
+<li><strong>解决：</strong>使用归并排序递归地排序 2 个子序列</li>
+<li><strong>合并：</strong>合并两个已排序的子序列以产生已排序的答案</li>
+</ul>
+<p>层层往下分解的时候，当待排序的序列长度为 1 时，递归“开始回升”，这种情况下不要做任何工作，因为长度为 1 的每个序列都已排好序。</p>
+<p>归并算法的关键操作是“合并”步骤中，两个已排序序列的合并。</p>
+<p>回到插入排序中我们所举的扑克牌的例子，假设桌面上有两堆牌面朝上的牌，每堆都已排序，最小的牌在顶上。</p>
+<p>我们希望把这两堆牌合并成单一的排好序的输出堆。我们可以这么做：</p>
+<p>在牌面朝上的两堆牌的顶上选取较小的一张，将该牌从其堆中移开，并将牌面向下地放置到最终的输出堆。重复这个步骤，直到一个输出堆为空，这时，我们只需将剩余的一堆牌朝下地放置到输出堆。</p>
+<p>因为我们之比较顶上的两张牌，所以合并步骤只需 O(n) 的时间。</p>
+<p>下面以伪代码的形式实现上面的思想：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># A: 数组  p、q、r是数组的下表，满足 p &lt;= q &lt; r</span></div><div class="line">MERAGE(A, p, q, r)</div><div class="line">n1 = q - p + <span class="number">1</span></div><div class="line">n2 = r - q</div><div class="line"><span class="comment"># let L[1, n1+1] and R[1, n2+1] be new arrays</span></div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, n1):</div><div class="line">    L[i] = A[p+i<span class="number">-1</span>]</div><div class="line"><span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, n2):</div><div class="line">    R[j] = A[q+j]</div><div class="line">L[n1+<span class="number">1</span>] = ∞</div><div class="line">R[n2+<span class="number">1</span>] = ∞</div><div class="line">i = <span class="number">1</span></div><div class="line">j = <span class="number">1</span></div><div class="line"><span class="keyword">for</span> k <span class="keyword">in</span> range(p, r):</div><div class="line">    <span class="keyword">if</span> L[i] &lt;= R[j]:</div><div class="line">        A[k] = L[i]</div><div class="line">        i += <span class="number">1</span></div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        A[k] = R[j]</div><div class="line">        j += <span class="number">1</span></div></pre></td></tr></table></figure>
+<p>下面为两个已排好序的列表，进行合并操作的示意图：</p>
+<p><img src="/2017/07/16/merger-sort/2-3.png" alt="合并示意图"></p>
+<p>然后我们把这个合并操作作为归并算法中的一个子程序来用。</p>
+<p>下面过程中 <code>merger-sort(A, p, r)</code> 排序子数组 A[p..r] 中的元素。若 p &gt;= r，则该子数组最多有一个元素，所以已经排好序。否则，分解步骤简单地计算一个下标 q，将 A[p..r] 分成两个子数组 A[p..q] 和 A[q+1..r]，前者包含 n/2 个元素，后者包含 n/2 个元素。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># merger-sort(A, p, r)</span></div><div class="line"><span class="keyword">if</span> p &lt; r:</div><div class="line">    q = (p+r) / <span class="number">2</span></div><div class="line">    <span class="comment"># 对这两数组进行归并排序</span></div><div class="line">    merger-sort(A, p, q)</div><div class="line">    merger-sort(A, q+<span class="number">1</span>, r)</div><div class="line">    <span class="comment"># 将排好序的两个数组合并</span></div><div class="line">    merger(A, p, q, r)</div></pre></td></tr></table></figure>
+<p>以下是 Python 实现的完整归并算法，仅供参考：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">merger</span><span class="params">(ls, rs)</span>:</span></div><div class="line">    <span class="string">'''</span></div><div class="line">    用于合并两个列表</div><div class="line">    '''</div><div class="line">    B = []</div><div class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">        <span class="keyword">if</span> <span class="keyword">not</span> ls:</div><div class="line">            B.extend(rs)</div><div class="line">            <span class="keyword">return</span> B</div><div class="line">        <span class="keyword">if</span> <span class="keyword">not</span> rs:</div><div class="line">            B.extend(ls)</div><div class="line">            <span class="keyword">return</span> B</div><div class="line">        <span class="keyword">if</span> ls[<span class="number">0</span>] &lt; rs[<span class="number">0</span>]:</div><div class="line">            B.append(ls.pop(<span class="number">0</span>))</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            B.append(rs.pop(<span class="number">0</span>))</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">merger_sort</span><span class="params">(A)</span>:</span></div><div class="line">    <span class="string">'''</span></div><div class="line">    归并排序</div><div class="line">    '''</div><div class="line">    length = len(A)</div><div class="line">    <span class="keyword">if</span> length &lt; <span class="number">2</span>:</div><div class="line">        <span class="keyword">return</span> A</div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        mid = length // <span class="number">2</span></div><div class="line">    La = merger_sort(A[:mid])</div><div class="line">    Ra = merger_sort(A[mid:])</div><div class="line">    <span class="keyword">return</span> merger(La, Ra)</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">a = [<span class="number">1</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">9</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">0</span>,<span class="number">7</span>]</div><div class="line">print(merger_sort(a))</div></pre></td></tr></table></figure>
+<pre><code>[0, 1, 2, 3, 4, 6, 7, 7, 9]
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;归并排序&quot;&gt;&lt;a href=&quot;#归并排序&quot; class=&quot;headerlink&quot; title=&quot;归并排序&quot;&gt;&lt;/a&gt;归并排序&lt;/h2&gt;&lt;p&gt;有很多算法在结构上是递归的：为了解决一个给定的问题，算法一次或多次递归地调用其自身以解决相关的若干子问题。&lt;/p&gt;
+&lt;p&gt;这是典型的分治法思想：将原问题分解为几个规模较小，但类似于原问题的子问题，递归地求解这些子问题，然后再合并这些子问题的解来建立原问题的解。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="-小练习" scheme="https://yuanblq.github.io/categories/%E5%B0%8F%E7%BB%83%E4%B9%A0/"/>
+    
+    
+      <category term="-Algorithms" scheme="https://yuanblq.github.io/tags/Algorithms/"/>
+    
+  </entry>
+  
+  <entry>
     <title>排序算法-插入排序</title>
-    <link href="https://yuanblq.github.io/2017/08/26/insertion-sort/"/>
-    <id>https://yuanblq.github.io/2017/08/26/insertion-sort/</id>
-    <published>2017-08-25T18:15:11.000Z</published>
-    <updated>2017-08-25T18:34:33.727Z</updated>
+    <link href="https://yuanblq.github.io/2017/07/03/insertion-sort/"/>
+    <id>https://yuanblq.github.io/2017/07/03/insertion-sort/</id>
+    <published>2017-07-02T17:15:11.000Z</published>
+    <updated>2017-08-26T05:18:05.723Z</updated>
     
     <content type="html"><![CDATA[<h2 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h2><p>对于少量元素的排序，插入排序算是一个比较有效的算法。</p>
 <p>它的执行流程和打扑克摸牌时候的插牌差不多。</p>
-<p><img src="/2017/08/26/insertion-sort/2-1.png" alt="使用插入排序来排序手中扑克牌"></p>
+<p><img src="/2017/07/03/insertion-sort/2-1.png" alt="使用插入排序来排序手中扑克牌"></p>
 <p>打扑克插牌的时候，首先手上没有牌，从桌上扣着的牌里不断抓取。每抓一张牌，都会与手中已有的牌进行比对，然后插入合适的位置。</p>
+<a id="more"></a>
 <p>上面的流程，可以用 Python 的伪代码这么表示：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># A 为总共可以抓取的扑克牌数，四人斗地主的话，即 25 张牌</span></div><div class="line"><span class="comment"># 因为从第 2 次抓牌开始，才算进行真正的排序</span></div><div class="line"><span class="keyword">for</span> j <span class="keyword">in</span> [<span class="number">2</span>, len(A)]:</div><div class="line">    <span class="comment"># poke 为当前抓取的牌</span></div><div class="line">    poke = A[j]</div><div class="line">    <span class="comment"># 把当前抓到的牌插入之前已经排序好的牌中</span></div><div class="line">    <span class="comment"># 即，将 A[j] 插在 A[1..j-1] 的合适位置</span></div><div class="line">    <span class="comment"># 假设从小到大排序</span></div><div class="line">    <span class="comment"># 从当前牌的最后一张开始比对，如果比当前牌大，就调个个</span></div><div class="line">    i = j - <span class="number">1</span></div><div class="line">    <span class="keyword">while</span> i &gt; <span class="number">0</span> <span class="keyword">and</span> A[i] &gt; poke:</div><div class="line">        A[i+<span class="number">1</span>] = A[i]</div><div class="line">        i = i - <span class="number">1</span></div><div class="line">    <span class="comment"># 真正的插入操作 =&gt; 将抓取的牌，插在合适的位置</span></div><div class="line">    A[i+<span class="number">1</span>] = poke</div></pre></td></tr></table></figure></p>
 <p>在 for 循环中，每次迭代开始的时候，A[1, j-1] 总是已经排好序的牌，这个特性叫做循环不变式。</p>
 <p>下图表明了对于 A=[5, 2, 4, 6, 1, 3] 该算法如何工作的：</p>
-<p><img src="/2017/08/26/insertion-sort/2-2.png" alt="插入排序工作原理"></p>
+<p><img src="/2017/07/03/insertion-sort/2-2.png" alt="插入排序工作原理"></p>
 <p>循环不变式主要用来帮助我们理解算法的正确性。关于循环不变式，我们必须证明三条性质：</p>
 <ul>
 <li><strong>初始化：</strong>循环的第一次迭代之前，它为真。</li>
@@ -52,7 +524,8 @@
     
       &lt;h2 id=&quot;插入排序&quot;&gt;&lt;a href=&quot;#插入排序&quot; class=&quot;headerlink&quot; title=&quot;插入排序&quot;&gt;&lt;/a&gt;插入排序&lt;/h2&gt;&lt;p&gt;对于少量元素的排序，插入排序算是一个比较有效的算法。&lt;/p&gt;
 &lt;p&gt;它的执行流程和打扑克摸牌时候的插牌差不多。&lt;/p&gt;
-&lt;p
+&lt;p&gt;&lt;img src=&quot;/2017/07/03/insertion-sort/2-1.png&quot; alt=&quot;使用插入排序来排序手中扑克牌&quot;&gt;&lt;/p&gt;
+&lt;p&gt;打扑克插牌的时候，首先手上没有牌，从桌上扣着的牌里不断抓取。每抓一张牌，都会与手中已有的牌进行比对，然后插入合适的位置。&lt;/p&gt;
     
     </summary>
     
@@ -1251,211 +1724,6 @@ $100
     
       &lt;p&gt;使用 Django 提交表单很简单，而且 Django 内置了跨站请求伪造攻击的防御方法。&lt;/p&gt;
 &lt;p&gt;先来看下 Django 中简单表单的提交。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Django" scheme="https://yuanblq.github.io/categories/Django/"/>
-    
-    
-      <category term="python" scheme="https://yuanblq.github.io/tags/python/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Django创建数据模型</title>
-    <link href="https://yuanblq.github.io/2017/03/10/Django%E5%88%9B%E5%BB%BA%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B/"/>
-    <id>https://yuanblq.github.io/2017/03/10/Django创建数据模型/</id>
-    <published>2017-03-10T14:43:18.000Z</published>
-    <updated>2017-08-02T13:53:50.730Z</updated>
-    
-    <content type="html"><![CDATA[<p>前面已经创建了 Django 的视图，但还没有数据。由于我们使用的是 Django，所以我们不必担心自己不会使用 SQL 语言。Django 内置了众多 API 帮助我们处理数据库。</p>
-<a id="more"></a>
-<h2 id="我们只需在-model-py-中创建数据模型即可。"><a href="#我们只需在-model-py-中创建数据模型即可。" class="headerlink" title="我们只需在 model.py 中创建数据模型即可。"></a>我们只需在 <code>model.py</code> 中创建数据模型即可。</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Question</span><span class="params">(models.Model)</span>:</span></div><div class="line">    question_text = models.CharField(max_length=<span class="number">200</span>)</div><div class="line">    pub_date = models.DateTimeField(verbose_name=<span class="string">'date published'</span>)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">return</span> self.question_text</div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Choice</span><span class="params">(models.Model)</span>:</span></div><div class="line">    <span class="comment"># 通过ForeignKey告诉Django每个Choice关联一个Question</span></div><div class="line">    question = models.ForeignKey(Question, on_delete=models.CASCADE)</div><div class="line">    choice_text = models.CharField(max_length=<span class="number">200</span>)</div><div class="line">    votes = models.IntegerField(default=<span class="number">0</span>)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">return</span> self.choice_text</div></pre></td></tr></table></figure>
-<h2 id="通过以下命令创建迁移文件"><a href="#通过以下命令创建迁移文件" class="headerlink" title="通过以下命令创建迁移文件"></a>通过以下命令创建迁移文件</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python manage.py makemigrations polls</div></pre></td></tr></table></figure>
-<h2 id="更新数据库"><a href="#更新数据库" class="headerlink" title="更新数据库"></a>更新数据库</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python manage.py migrate</div></pre></td></tr></table></figure>
-<h2 id="以下是-Django-内置的一些数据库-API"><a href="#以下是-Django-内置的一些数据库-API" class="headerlink" title="以下是 Django 内置的一些数据库 API"></a>以下是 Django 内置的一些数据库 API</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#--------------------一般API---------------------</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>Question.objects.all()    <span class="comment">#所有Question实例的set集</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>q = Question(question_text=<span class="string">"xxx"</span>, pub_date=timezone.now())    <span class="comment">#创建Question实例</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>q.save()    <span class="comment">#保存实例</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>q.question_text    q.pub_date    q.id     <span class="comment">#调用实例的一些属性</span></div><div class="line"><span class="comment">#---------------------查找API---------------------</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>Question.objects.filter(id = <span class="number">1</span>)   <span class="comment">#根据id查找</span></div><div class="line">filter(question_text__startswith = <span class="string">"xxx"</span>)    <span class="comment">#通过某些关系函数查找</span></div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>Question.objects.get(pub_date__year = current_year)     <span class="comment">#通过get查找具体实例</span></div><div class="line">get(pk = <span class="number">1</span>)    <span class="comment">#通过键值查找</span></div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>q.choice_set.all()    <span class="comment">#返回与当前question实例相关的所有choice的set集</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>c = q.choice_set.create(choice_text=<span class="string">"xxx"</span>, vote=<span class="number">0</span>)    <span class="comment">#为当前question实例的choice集创建一个实例</span></div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>c.question     <span class="comment">#返回与当前choice相关的question实例</span></div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>c.delete()    <span class="comment">#删除当前实例，同时id和pk值也会删掉</span></div></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;前面已经创建了 Django 的视图，但还没有数据。由于我们使用的是 Django，所以我们不必担心自己不会使用 SQL 语言。Django 内置了众多 API 帮助我们处理数据库。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Django" scheme="https://yuanblq.github.io/categories/Django/"/>
-    
-    
-      <category term="python" scheme="https://yuanblq.github.io/tags/python/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>sina新闻爬虫</title>
-    <link href="https://yuanblq.github.io/2017/02/26/sina%E6%96%B0%E9%97%BB%E7%88%AC%E8%99%AB/"/>
-    <id>https://yuanblq.github.io/2017/02/26/sina新闻爬虫/</id>
-    <published>2017-02-26T14:09:12.000Z</published>
-    <updated>2017-08-02T14:22:01.077Z</updated>
-    
-    <content type="html"><![CDATA[<p>现在是大数据的时代，而在这大数据时代，获取数据的一个重要来源就是爬虫。</p>
-<p>今天我们就以最简单的 sina新闻爬虫为例，看看爬虫是到底怎么实现的。</p>
-<a id="more"></a>
-<h2 id="获取-sina新闻的-html"><a href="#获取-sina新闻的-html" class="headerlink" title="获取 sina新闻的 html"></a>获取 sina新闻的 html</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> requests  </div><div class="line">res = requests.get(<span class="string">r'http://news.sina.com.cn/china/'</span>)  </div><div class="line">res.encoding = <span class="string">'utf-8'</span></div><div class="line">html = res.text</div></pre></td></tr></table></figure>
-<h2 id="解析-html-获取所要的信息"><a href="#解析-html-获取所要的信息" class="headerlink" title="解析 html 获取所要的信息"></a>解析 html 获取所要的信息</h2><p>我们先来分析一下 sina新闻的网页布局<br><img src="/2017/02/26/sina新闻爬虫/640.jpg" alt="jpg"></p>
-<h2 id="通过-BeautifulSoup-处理，获取所需节点的内容"><a href="#通过-BeautifulSoup-处理，获取所需节点的内容" class="headerlink" title="通过 BeautifulSoup 处理，获取所需节点的内容"></a>通过 BeautifulSoup 处理，获取所需节点的内容</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup  </div><div class="line">soup = BeautifulSoup(html,<span class="string">'html.parser'</span>)  </div><div class="line"><span class="keyword">for</span> news <span class="keyword">in</span> soup.select(<span class="string">r'.news-item'</span>):  </div><div class="line">    <span class="keyword">if</span> len(news.select(<span class="string">'h2'</span>)) &gt;<span class="number">0</span>:  </div><div class="line">        h2 = news.select(<span class="string">'h2'</span>)[<span class="number">0</span>].text  </div><div class="line">        time = news.select(<span class="string">'.time'</span>)[<span class="number">0</span>].text  </div><div class="line">        href = news.select(<span class="string">'a'</span>)[<span class="number">0</span>][<span class="string">'href'</span>]  </div><div class="line">        print(time, h2, href)</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div></pre></td><td class="code"><pre><div class="line">2月26日 16:29 丽江古城官微被指回复网友永远别来 称正在调查 http://news.sina.com.cn/o/2017-02-26/doc-ifyavrsx5185529.shtml</div><div class="line">2月26日 16:26 日媒:日首次将执勤战斗机增至4架 应对中国军机 http://news.sina.com.cn/c/nd/2017-02-26/doc-ifyavvsk3629936.shtml</div><div class="line">2月26日 16:15 汶川抗震志愿者史业宽去世 捐献遗体作教学研究 http://news.sina.com.cn/c/nd/2017-02-26/doc-ifyavvsh6842129.shtml</div><div class="line">2月26日 16:10 财政部部长：企业慈善行为将享更多税收优惠 http://news.sina.com.cn/c/nd/2017-02-26/doc-ifyavvsk3627856.shtml</div><div class="line">2月26日 16:04 日本增加执勤战机 中国军机将在钓鱼岛以一敌四 http://news.sina.com.cn/o/2017-02-26/doc-ifyavwcv8969989.shtml</div><div class="line">2月26日 15:58 四川汶川4级地震系9年前地震余震 部分房屋裂纹 http://news.sina.com.cn/c/2017-02-26/doc-ifyavwcv8969612.shtml</div><div class="line">2月26日 15:47 湖南湘乡“村霸”被举报非法开矿占田 纪委回应 http://news.sina.com.cn/c/2017-02-26/doc-ifyavwcv8969074.shtml</div><div class="line">2月26日 15:40 一文看懂刘士余记者会亮点 这些妙喻又将刷屏 http://news.sina.com.cn/c/nd/2017-02-26/doc-ifyavvsk3623611.shtml</div><div class="line">2月26日 15:27 浙江沉船事故7名获救船员无大碍 其余人仍失联 http://news.sina.com.cn/o/2017-02-26/doc-ifyavwcv8968162.shtml</div><div class="line">2月26日 15:09 湖南生育率连续下跌 报告建议提供二孩生育补助 http://news.sina.com.cn/o/2017-02-26/doc-ifyavwcv8967429.shtml</div><div class="line">2月26日 13:17 马拉松替跑者猝死家属索赔120多万 系国内首例 http://news.sina.com.cn/c/2017-02-26/doc-ifyavrsx5175978.shtml</div><div class="line">2月26日 16:56 全国人大法工委评罗尔事件:此类变相募捐违法 http://news.sina.com.cn/c/nd/2017-02-26/doc-ifyavvsk3634939.shtml</div><div class="line">2月26日 16:29 丽江古城官微被指回复网友永远别来 称正在调查 http://news.sina.com.cn/o/2017-02-26/doc-ifyavrsx5185529.shtml</div><div class="line">2月26日 16:26 日媒:日首次将执勤战斗机增至4架 应对中国军机 http://news.sina.com.cn/c/nd/2017-02-26/doc-ifyavvsk3629936.shtml</div><div class="line">2月26日 16:15 汶川抗震志愿者史业宽去世 捐献遗体作教学研究 http://news.sina.com.cn/c/nd/2017-02-26/doc-ifyavvsh6842129.shtml</div><div class="line">2月26日 16:10 财政部部长：企业慈善行为将享更多税收优惠 http://news.sina.com.cn/c/nd/2017-02-26/doc-ifyavvsk3627856.shtml</div><div class="line">2月26日 16:04 日本增加执勤战机 中国军机将在钓鱼岛以一敌四 http://news.sina.com.cn/o/2017-02-26/doc-ifyavwcv8969989.shtml</div><div class="line">2月26日 15:58 四川汶川4级地震系9年前地震余震 部分房屋裂纹 http://news.sina.com.cn/c/2017-02-26/doc-ifyavwcv8969612.shtml</div><div class="line">2月26日 15:58 南昌致10人死亡酒店火灾事故已控制涉事者24人 http://news.sina.com.cn/c/nd/2017-02-26/doc-ifyavvsk3626073.shtml</div><div class="line">2月26日 15:47 湖南湘乡“村霸”被举报非法开矿占田 纪委回应 http://news.sina.com.cn/c/2017-02-26/doc-ifyavwcv8969074.shtml</div><div class="line">2月26日 15:40 一文看懂刘士余记者会亮点 这些妙喻又将刷屏 http://news.sina.com.cn/c/nd/2017-02-26/doc-ifyavvsk3623611.shtml</div><div class="line">2月26日 15:27 浙江沉船事故7名获救船员无大碍 其余人仍失联 http://news.sina.com.cn/o/2017-02-26/doc-ifyavwcv8968162.shtml</div><div class="line">2月26日 15:09 湖南生育率连续下跌 报告建议提供二孩生育补助 http://news.sina.com.cn/o/2017-02-26/doc-ifyavwcv8967429.shtml</div><div class="line">2月26日 14:25 媒体:小学入学日期松动并不意味支持更早入学 http://news.sina.com.cn/o/2017-02-26/doc-ifyavwcv8965123.shtml</div><div class="line">2月26日 14:23 深莞惠联手望造巨无霸机场 惠州谋划千万级空港 http://news.sina.com.cn/c/nd/2017-02-26/doc-ifyavrsx5179318.shtml</div><div class="line">2月26日 14:16 汶川抗震志愿者史业宽去世 曾徒手刨出被埋女孩 http://news.sina.com.cn/c/nd/2017-02-26/doc-ifyavvsk3612873.shtml</div><div class="line">2月26日 14:02 重庆大足石刻藏千里眼顺风耳造像 全国罕见(图) http://news.sina.com.cn/c/nd/2017-02-26/doc-ifyavrsx5178288.shtml</div><div class="line">2月26日 13:59 有人跟拍陈满被骗3个月 家人愤怒:为何不说一声 http://news.sina.com.cn/c/nd/2017-02-26/doc-ifyavvsk3612689.shtml</div><div class="line">2月26日 13:17 马拉松替跑者猝死家属索赔120多万 系国内首例 http://news.sina.com.cn/c/2017-02-26/doc-ifyavrsx5175978.shtml</div><div class="line">2月26日 12:55 广西融水违法嫌疑人拒捕被击毙 检察机关已介入 http://news.sina.com.cn/c/nd/2017-02-26/doc-ifyavvsh6823933.shtml</div><div class="line">2月26日 12:53 南昌酒店因违规焊割致火灾 已控制涉事人员24人 http://news.sina.com.cn/c/nd/2017-02-26/doc-ifyavvsh6823839.shtml</div><div class="line">2月26日 12:16 一文看懂刘士余记者会亮点 这些妙喻又要刷屏了 http://news.sina.com.cn/o/2017-02-26/doc-ifyavrsx5172927.shtml</div><div class="line">2月26日 12:13 浙江慈溪发生车祸致1死8伤 有人被撞出数米之远 http://news.sina.com.cn/c/nd/2017-02-26/doc-ifyavrsx5172738.shtml</div><div class="line">2月25日 18:57 台湾大学两名教授涉论文造假被解聘 http://news.sina.com.cn/c/gat/2017-02-25/doc-ifyavvsh6687141.shtml</div><div class="line">2月25日 17:55 外交部驻港公署:英方对港所谓“责任”并不存在 http://news.sina.com.cn/o/2017-02-25/doc-ifyavwcv8909652.shtml</div><div class="line">2月25日 11:15 台湾大学两名教授涉论文造假被解聘 http://news.sina.com.cn/o/2017-02-25/doc-ifyavwcv8846818.shtml</div><div class="line">2月25日 05:10 台湾同性婚姻专法曝光：书面约定“谁夫谁妻” http://news.sina.com.cn/c/gat/2017-02-25/doc-ifyavvsh6534117.shtml</div><div class="line">2月25日 04:55 台湾军方基地26名官兵采尿验毒 初检呈阳性 http://news.sina.com.cn/c/gat/2017-02-25/doc-ifyavvsh6533630.shtml</div><div class="line">2月24日 19:55 上海航空班机起飞后疑因引擎异常折返台北 http://news.sina.com.cn/o/2017-02-24/doc-ifyavrsx5002084.shtml</div><div class="line">2月24日 11:46 台财信传媒董事长：新台币成全球最强货币 http://news.sina.com.cn/c/2017-02-24/doc-ifyavwcv8724969.shtml</div><div class="line">2月24日 10:25 台湾解除家禽禁令 此前已禁宰禁运7天 http://news.sina.com.cn/o/2017-02-24/doc-ifyavwcv8712945.shtml</div><div class="line">2月24日 10:18 台北大巨蛋可能复工？ 议员：柯文哲已骑虎难下 http://news.sina.com.cn/o/2017-02-24/doc-ifyavwcv8711559.shtml</div><div class="line">2月24日 02:07 台中山大学或拆孙中山铜像 被批“去中国化” http://news.sina.com.cn/c/2017-02-24/doc-ifyavwcv8672157.shtml</div><div class="line">2月24日 02:07 国民党选举杀出“女黑马” 洪秀柱或遭冲击 http://news.sina.com.cn/c/2017-02-24/doc-ifyavwcv8672152.shtml</div><div class="line">2月23日 21:07 台湾H5N6疫情趋缓 家禽禁运宰24日解除 http://news.sina.com.cn/o/2017-02-23/doc-ifyavrsx4869265.shtml</div><div class="line">2月23日 17:52 台空军涉毒案最新进展：20人初验结果呈阳性 http://news.sina.com.cn/c/gat/2017-02-23/doc-ifyavvsk2885663.shtml</div><div class="line">2月23日 17:34 张晓明驳“干预特首选举”:中央关注是名正言顺 http://news.sina.com.cn/c/gat/2017-02-23/doc-ifyavvsh6106167.shtml</div><div class="line">2月23日 14:44 蔡英文出席台活动再提“维持两岸现状” http://news.sina.com.cn/c/gat/2017-02-23/doc-ifyavvsh6065765.shtml</div><div class="line">2月23日 13:23 临近二二八 台湾现“喷漆行动”蒋介石像遭殃 http://news.sina.com.cn/c/2017-02-23/doc-ifyavrsx4832888.shtml</div><div class="line">2月23日 11:55 女子自称在荒山野岭露宿11天 靠喝山涧水保命 http://news.sina.com.cn/o/2017-02-23/doc-ifyavrsx4824661.shtml</div><div class="line">2月23日 10:45 台湾33死游览车事故：哥哥领妹妹理赔金遭拒 http://news.sina.com.cn/o/2017-02-23/doc-ifyavrsx4814560.shtml</div><div class="line">2月23日 02:34 台当局担忧蔡英文遭毒针攻击 特勤将配解毒剂 http://news.sina.com.cn/c/2017-02-23/doc-ifyavrsx4769246.shtml</div><div class="line">2月23日 02:34 台空军基地现多包疑似毒品 对近3000人尿液筛检 http://news.sina.com.cn/c/2017-02-23/doc-ifyavrsx4769244.shtml</div><div class="line">2月25日 23:23 央视：保监会痛打姚振华释放了什么重大信号 http://news.sina.com.cn/c/zs/2017-02-25/doc-ifyavvsh6744567.shtml</div><div class="line">2月25日 05:25 江西宁都公务员下班禁打麻将 媒体盘点奇葩禁令 http://news.sina.com.cn/c/zs/2017-02-25/doc-ifyavvsk3310293.shtml</div><div class="line">2月24日 12:53 媒体：中国暂停进口朝鲜煤炭 旨在推动半岛和平 http://news.sina.com.cn/c/zs/2017-02-24/doc-ifyavvsh6276149.shtml</div><div class="line">2月23日 08:17 学者：“台独”将成为中国崛起面临的紧迫问题 http://news.sina.com.cn/c/2017-02-23/doc-ifyavrsx4790474.shtml</div><div class="line">2月23日 05:19 媒体：院士身份对杨振宁只能是荣誉而非利益 http://news.sina.com.cn/o/2017-02-23/doc-ifyavrsx4774727.shtml</div><div class="line">2月21日 11:19 最高法：证据不足案按疑罪从无原则 依法判无罪 http://news.sina.com.cn/o/2017-02-21/doc-ifyarrcc8386275.shtml</div><div class="line">2月21日 10:47 最高法：推动建立健全冤假错案防范和纠正机制 http://news.sina.com.cn/o/2017-02-21/doc-ifyarzzv3578109.shtml</div><div class="line">2月21日 07:04 学者:中国游客息事宁人纵容越方人员讨小费习惯 http://news.sina.com.cn/o/2017-02-21/doc-ifyarzzv3530923.shtml</div><div class="line">2月18日 10:11 台学者：特朗普重回“一中”有助两岸关系 http://news.sina.com.cn/c/gat/2017-02-18/doc-ifyarzzv3087698.shtml</div><div class="line">2月18日 01:59 媒体：中美“大警报”解除 讨价还价开始 http://news.sina.com.cn/o/2017-02-18/doc-ifyarref5815482.shtml</div><div class="line">2月17日 19:53 媒体：特殊时期 新疆这个大会开得很及时 http://news.sina.com.cn/c/nd/2017-02-18/doc-ifyarzzv3013845.shtml</div><div class="line">2月17日 14:12 检方提前介入重大案件后都需要做啥 http://news.sina.com.cn/c/2017-02-17/doc-ifyarzzv2937163.shtml</div><div class="line">2月17日 13:29 官方：普及高中阶段教育 促其毛入学率达到90% http://news.sina.com.cn/o/2017-02-17/doc-ifyarrcc7623040.shtml</div><div class="line">2月16日 10:31 教育部：在高校施诚信教育 建失信行为惩戒机制 http://news.sina.com.cn/o/2017-02-16/doc-ifyarref5447942.shtml</div><div class="line">2月16日 10:27 教育部：健全高校弹性学制 入学后可申休学创业 http://news.sina.com.cn/o/2017-02-16/doc-ifyarref5447069.shtml</div><div class="line">2月16日 08:58 媒体：国内20亿级别富豪2000余位 半数无高学历 http://news.sina.com.cn/c/nd/2017-02-16/doc-ifyarmcu6029038.shtml</div><div class="line">2月16日 07:54 港媒：内地单身青年达2亿人 找对象太难 http://news.sina.com.cn/c/nd/2017-02-16/doc-ifyarrqs9855789.shtml</div><div class="line">2月16日 03:38 专家:大陆高调纪念“二二八”粉碎“台独”论述 http://news.sina.com.cn/c/zs/2017-02-16/doc-ifyarmcu6023653.shtml</div><div class="line">2月16日 00:13 中国多地开始流行共享汽车 会否加剧交通拥堵？ http://news.sina.com.cn/o/2017-02-16/doc-ifyarref5391585.shtml</div><div class="line">2月15日 23:21 新华社：三大管理乱象导致台湾游览车事故频发 http://news.sina.com.cn/o/2017-02-15/doc-ifyarrcf4062961.shtml</div><div class="line">1月31日 19:12 大马沉船事故确认7名苏州游客身份 1死1失联 http://news.sina.com.cn/c/sd/2017-01-31/doc-ifxzyxmu8444643.shtml</div><div class="line">1月19日 00:01 中央时隔17年再下文加强政法队伍建设 有何用意 http://news.sina.com.cn/o/2017-01-19/doc-ifxzunxf1377803.shtml</div><div class="line">1月17日 01:59 哈萨克斯坦人集会反对姑娘嫁中国人 怕他们分地 http://news.sina.com.cn/o/2017-01-17/doc-ifxzqnva3778799.shtml</div><div class="line">1月12日 16:36 美没收中国红通3号人物乔建军前妻赵世兰房产 http://news.sina.com.cn/c/sd/2017-01-12/doc-ifxzqnip0848945.shtml</div><div class="line">1月12日 13:50 中科院最美的玫瑰走了 她当得起这一声“先生” http://news.sina.com.cn/c/sd/2017-01-12/doc-ifxzqnip0817768.shtml</div><div class="line">12月16日 21:53 落马贪官人大代表职务 为何有的请辞有的被罢免 http://news.sina.com.cn/c/sd/2016-12-16/doc-ifxytqqn8780142.shtml</div><div class="line">12月5日 08:20 大米走私链条曝光:进行抛光搀兑后销往多地市场 http://news.sina.com.cn/c/sd/2016-12-05/doc-ifxyicnf1572611.shtml</div><div class="line">12月1日 19:23 江苏广电总台原女台长被带走调查 疑涉经济问题 http://news.sina.com.cn/c/sd/2016-12-02/doc-ifxyhwyy0408568.shtml</div><div class="line">11月29日 03:39 小鱼塘兽药失禁 多地水产均曾检出孔雀石绿(图) http://news.sina.com.cn/c/sd/2016-11-29/doc-ifxyawxa3005371.shtml</div><div class="line">11月28日 23:53 国安部长任中政委委员 曾弃清华北大选这所大学 http://news.sina.com.cn/c/sd/2016-11-29/doc-ifxyasmv2125402.shtml</div><div class="line">11月28日 11:35 雾霾中现耐药菌人类将面临无药可医？揭秘真相 http://news.sina.com.cn/c/sd/2016-11-28/doc-ifxyawmm3624224.shtml</div><div class="line">11月28日 07:50 舰载机飞行员牺牲细节:4.4秒生死瞬间欲救战机 http://news.sina.com.cn/c/sd/2016-11-28/doc-ifxyawxa2907507.shtml</div><div class="line">11月28日 05:41 贵州童工多因贫困外出打工 有时连吃盐都成问题 http://news.sina.com.cn/o/2016-11-28/doc-ifxyasmv2025198.shtml</div><div class="line">11月27日 14:01 湖南从严推进县乡人大换届选举:铭记衡阳案教训 http://news.sina.com.cn/c/sd/2016-11-27/doc-ifxyawxa2866597.shtml</div><div class="line">11月21日 15:00 北京国I国Ⅱ车辆明年2月15日起五环内限行 http://news.sina.com.cn/c/sd/2016-11-21/doc-ifxxwrwh4831425.shtml</div><div class="line">11月21日 14:44 北京重污染应急预案为何5年4版本 http://news.sina.com.cn/c/2016-11-21/doc-ifxxwsix4256007.shtml</div><div class="line">11月15日 11:47 中央督察组:黑龙江自然保护区违建问题严重 http://news.sina.com.cn/c/2016-11-15/doc-ifxxsmuu5714118.shtml</div><div class="line">11月15日 07:16 这些贪官为什么被判终身监禁 http://news.sina.com.cn/c/sd/2016-11-15/doc-ifxxsmic6290399.shtml</div><div class="line">11月6日 05:09 遭贾敬龙射杀村支书之子接任父职 被指村官世袭 http://news.sina.com.cn/c/sd/2016-11-06/doc-ifxxnety7454000.shtml</div><div class="line">11月6日 03:36 揭秘职称评选之痛 教授称专注教学就是毁灭自己 http://news.sina.com.cn/c/sd/2016-11-06/doc-ifxxnety7452898.shtml</div></pre></td></tr></table></figure>
-<h2 id="通过浏览器开发者工具获取对应信息的-url-并用-requests-抓取"><a href="#通过浏览器开发者工具获取对应信息的-url-并用-requests-抓取" class="headerlink" title="通过浏览器开发者工具获取对应信息的 url 并用 requests 抓取"></a>通过浏览器开发者工具获取对应信息的 url 并用 requests 抓取</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> requests  </div><div class="line">res = requests.get(<span class="string">r'http://news.sina.com.cn/c/nd/2017-02-23/doc-ifyavvsk2741237.shtml'</span>)  </div><div class="line">res.encoding = <span class="string">'utf-8'</span></div></pre></td></tr></table></figure>
-<h2 id="通过-BeautifulSoup-抓取时间及来源信息"><a href="#通过-BeautifulSoup-抓取时间及来源信息" class="headerlink" title="通过 BeautifulSoup 抓取时间及来源信息"></a>通过 BeautifulSoup 抓取时间及来源信息</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">html = res.text  </div><div class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup  </div><div class="line">soup = BeautifulSoup(html,<span class="string">'html.parser'</span>)  </div><div class="line"><span class="comment"># 通过contents属性可以获得打标签内的不同内容的一个list</span></div><div class="line">timesource = soup.select(<span class="string">'#navtimeSource'</span>)[<span class="number">0</span>].contents[<span class="number">0</span>].strip()  </div><div class="line">timesource</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&apos;2017年02月23日00:04&apos;</div></pre></td></tr></table></figure>
-<h2 id="通过-datetime-模块把时间-str-转换为可以时间格式，方便以后在数据库中的存储"><a href="#通过-datetime-模块把时间-str-转换为可以时间格式，方便以后在数据库中的存储" class="headerlink" title="通过 datetime 模块把时间 str 转换为可以时间格式，方便以后在数据库中的存储"></a>通过 datetime 模块把时间 str 转换为可以时间格式，方便以后在数据库中的存储</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime  </div><div class="line">time = datetime.strptime(timesource,<span class="string">'%Y年%m月%d日%H:%M'</span>)  </div><div class="line">time</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">datetime.datetime(2017, 2, 23, 0, 4)</div></pre></td></tr></table></figure>
-<h2 id="datetime-也可以把时间格式的数据转换为-str"><a href="#datetime-也可以把时间格式的数据转换为-str" class="headerlink" title="datetime 也可以把时间格式的数据转换为 str"></a>datetime 也可以把时间格式的数据转换为 str</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">timestr = datetime.strftime(time, &apos;%Y-%m-%d&apos;)  </div><div class="line">timestr2 = time.strftime(&apos;%Y-%m-%d&apos;)  </div><div class="line">print(timestr, timestr2)</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">2017-02-23 2017-02-23</div></pre></td></tr></table></figure>
-<h2 id="通过多次-select-获取新闻来源"><a href="#通过多次-select-获取新闻来源" class="headerlink" title="通过多次 select 获取新闻来源"></a>通过多次 <code>select</code> 获取新闻来源</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">print(soup.select(<span class="string">'#navtimeSource'</span>))  </div><div class="line">source = soup.select(<span class="string">'#navtimeSource span a'</span>)[<span class="number">0</span>].text  </div><div class="line">print(source)</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[&lt;span class=&quot;time-source&quot; id=&quot;navtimeSource&quot;&gt;2017年02月23日00:04        &lt;span&gt;</div><div class="line">&lt;span data-sudaclick=&quot;media_name&quot;&gt;&lt;a href=&quot;http://mp.weixin.qq.com/s?__biz=MzIwNzI5NjA5Ng==&amp;amp;mid=2247485847&amp;amp;idx=3&amp;amp;sn=fb13d17edf9d16699bfe28910c782270&amp;amp;scene=0#wechat_redirect&quot; rel=&quot;nofollow&quot; target=&quot;_blank&quot;&gt;法制晚报&lt;/a&gt;&lt;/span&gt;&lt;/span&gt;</div><div class="line">&lt;/span&gt;]</div><div class="line">法制晚报</div></pre></td></tr></table></figure>
-<h2 id="获取新闻正文"><a href="#获取新闻正文" class="headerlink" title="获取新闻正文"></a>获取新闻正文</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">paragraph = <span class="string">'\n'</span>.join([p.text.strip() <span class="keyword">for</span> p <span class="keyword">in</span> soup.select(<span class="string">'#artibody p'</span>)])  </div><div class="line">print(paragraph)</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">原标题：市委书记履新巧合一幕：学弟接棒学长</div><div class="line">2月20日，大连召开领导干部大会，宣布辽宁省委常委谭作钧接棒另一位省委常委唐军，任大连市委书记。</div><div class="line">观海解局记者注意到，两人毕业于同一所高校——武汉大学，只是唐军为1983届，中国文学专业；谭作钧为1990届，国际法专业。两人毕业时间相差仅7年。</div><div class="line">这种校友间接棒的情形在高校系统时有发生，政界则较为少见。</div><div class="line">省委书记出席市委书记就职大会</div><div class="line">据《大连日报》报道，辽宁省委书记李希亲自出席了大连领导干部大会，并讲话。</div><div class="line">辽宁省委常委、组织部部长王正谱宣读中央和省委的决定。中央批准：谭作钧任大连市委书记，唐军不再担任辽宁省委常委、大连市委书记。</div><div class="line">李希在讲话中指出，这次大连市委主要领导调整，是中央根据辽宁工作大局需要，本着干部交流的原则，着眼于加强辽宁省和大连市领导班子建设的实际，通盘考虑作出的重要决策。</div><div class="line">在评价唐军的成绩时，李希指出，在唐军主持下，大连经济社会及各项事业发展都取得了新的进步。至于对新班子的期望，李希提出了11个“要”，其中两个即为“在辽宁新一轮振兴发展中当好领头羊”“深刻吸取辽宁拉票贿选案沉痛教训”。</div><div class="line">唐军在表态发言时饱含深情地说，我对大连人民的感情真挚而深沉，无论身在哪里，都始终心系大连、永远祝福大连。谭作钧在表态发言中作出6个承诺，其一为严格遵守党章党规，公道正派，清正廉洁，打造风清气正的政治环境。</div><div class="line">新老书记相差7年毕业</div><div class="line">观海解局记者发现，大连两任市委书记均毕业于武汉大学，且“老书记”为“新书记”的学长。</div><div class="line">公开简历显示，离开大连市委书记一职的唐军1962年5月生，江苏建湖人，1983年毕业于武汉大学中文系中国文学专业，获文学学士。</div><div class="line">毕业后，唐军进入原劳动人事部工作。此后24年间，他由干部局干部累升至副部长。2008年3月，唐军“空降”为辽宁任省委常委、组织部长，3年后转任大连市委书记。算下来，他在大连任职已近6年。</div><div class="line">此次履新的谭作钧1968年10月生，湖南茶陵人，比唐军小6岁。1990年，他于武汉大学毕业，专业则为国际法。</div><div class="line">据《第一财经日报》报道，谭作钧屡创“最年轻”记录。</div><div class="line">毕业后，他先在江南造船厂锻炼，后入中国船舶工业贸易公司。1998年后，他先后担任香港华联船舶有限公司副总经理、总经理等职务。10年之后，40岁的谭作钧出任中船集团总经理，成为当时最年轻的央企总经理。</div><div class="line">4年后，“商而优则仕”的谭作钧北上辽宁担任副省长。2015年1月，谭作钧升任辽宁省委常委，兼任省委秘书长，成为当时最年轻的省级常委。直至2016年11月，出生于1970年1月刘捷当选江西省委常委。</div><div class="line">出任大连市委书记后，谭作钧再次刷新一记录——目前全国15个副省级城市中最年轻的市委书记。</div><div class="line">辽宁曾有3常委同校毕业</div><div class="line">观海解局记者还发现，除了唐军、谭作钧，辽宁省委常委班子里还有一位武汉大学毕业生——省纪委书记陈小江。</div><div class="line">简历显示，陈小江出生于1962年6月，浙江龙游人，1984年毕业于武汉水利电力学院电力系统及自动化专业。</div><div class="line">据武汉大学官网介绍，1954年，水利学院从该校分出，成立武汉水利学院，即为武汉水利电力学院前身。2000年，武汉大学与武汉水利电力大学、武汉测绘科技大学、湖北医科大学合并组建新的武汉大学。</div><div class="line">毕业后，陈小江进入媒体工作，直至1996年任中国水利报社社长、党委书记。两年后，他开始担任水利部直属机关党委常务副书记，正式迈入仕途，直至2009年担任水利部党组成员、办公厅主任。</div><div class="line">2015年8月，离开熟悉的水利电力领域，陈小江进入纪检系统，接任第二位中纪委宣传部部长。不到一年，他再次受到重用，“空降”辽宁抓反腐，任省委常委、纪委书记。</div><div class="line">观海解局记者注意到，这种校友间接棒的情形在高校系统时有发生，政界则较为少见。</div><div class="line">比如去年12月13日，北京大学党委书记换人，郝平接棒朱善璐履新。</div><div class="line">公开简历显示，郝平1959年升出，1982年毕业于北京大学历史专业。此后留校，20多年后出任副校长，2005年6月，郝平离开北大，到北京外国语大学担任校长。2009年，他又出任教育部副部长。</div><div class="line">朱善璐1953年出生，同样于1982年毕业北京大学，专业则是哲学。此后留校，一直干到党委副书记。此后，朱善璐离开燕园，在北京、江苏两地担任党政领导。2011年8月，阔别北大15年后，朱善璐回归校园，担任北大党委书记。</div><div class="line">阮成发曾回母校武大交“作业”</div><div class="line">除了唐军、陈小江、谭作钧，武汉大学毕业的政要还有不少。比如现任江西省委书记鹿心社、云南省长阮成发，以及北京市委常委、纪委书记张硕辅等。</div><div class="line">2016年7月15日，武汉大学官网刊登了一则消息——江西省委书记鹿心社致信母校话合作。</div><div class="line">简历显示，鹿心社1978年进入武汉水利电力学院农田水利工程专业学习。文章称，时年6月，鹿心社接任江西省委书记。获悉消息后，武汉大学给他发去贺信。</div><div class="line">鹿心社在回信中称，他诚挚感谢母校的关心和培养，并为母校的发展感到高兴，希望武汉大学充分发挥知识、人才、信息和科技优势，推动与江西更高水平、更深层次、更宽领域的合作，促进省校共同发展。</div><div class="line">据《长江日报》报道，2012年6月27日，时任武汉市委书记的阮成发来到武汉大学经济与管理学院，为600余名师生作了《建设国家中心城市 复兴大武汉》报告。</div><div class="line">报道称，阮成发此行有着双重身份：毕业于武汉大学的他，自称以一名学生身份回到母校交“作业”，全面介绍了武汉近年来经济社会快速发展的良好势头；代表市委、市政府，他向这所百年名校致以崇高敬意和衷心感谢，“武汉大学与武汉唇齿相依，武汉一直因武大而骄傲、因武大而发展”。</div><div class="line">政要排行榜 北大第一</div><div class="line">哪些名校出身的政要最多？</div><div class="line">2014年3月，中国校友会网编制完成《2014中国大学评价研究报告》，报告显示，北京大学毕业生中有92名杰出政要校友，为2014中国大学杰出政要校友榜第一名。清华大学有78人，中国人民大学有70人。</div><div class="line">2015年6月，艾瑞深中国校友会网公布了《2015中国大学教学质量评价报告》。</div><div class="line">报告显示，北京大学培养和造就杰出政界英才校友人数最多，有96人；清华大学79人，居第2；中国人民大学73人，居第3；清华北大人大三校培养的杰出政界校友人数遥遥领先于其他大学，是我国政界大学毕业生质量最高、校友最为杰出的大学，堪称“中国政界英才摇篮”。</div><div class="line">前十名里还有吉林大学、复旦大学、北京师范大学、山东大学、南开大学、同济大学、哈尔滨工业大学等，堪称“中国最具政坛影响力的十大高校”。</div><div class="line">责任编辑：李鹏</div></pre></td></tr></table></figure>
-<p>获取数据后，你想存哪就有你决定啦。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;现在是大数据的时代，而在这大数据时代，获取数据的一个重要来源就是爬虫。&lt;/p&gt;
-&lt;p&gt;今天我们就以最简单的 sina新闻爬虫为例，看看爬虫是到底怎么实现的。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="爬虫" scheme="https://yuanblq.github.io/categories/%E7%88%AC%E8%99%AB/"/>
-    
-    
-      <category term="python" scheme="https://yuanblq.github.io/tags/python/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>三门问题</title>
-    <link href="https://yuanblq.github.io/2017/02/21/%E4%B8%89%E9%97%A8%E9%97%AE%E9%A2%98/"/>
-    <id>https://yuanblq.github.io/2017/02/21/三门问题/</id>
-    <published>2017-02-21T02:07:45.000Z</published>
-    <updated>2017-08-02T13:47:26.731Z</updated>
-    
-    <content type="html"><![CDATA[<div class="note info"><p>三门问题（Monty Hall problem）亦称为蒙提霍尔问题、蒙特霍问题或蒙提霍尔悖论，大致出自美国的电视游戏节目Let’s Make a Deal。问题名字来自该节目的主持人蒙提·霍尔（Monty Hall）。参赛者会看见三扇关闭了的门，其中一扇的后面有一辆汽车，选中后面有车的那扇门可赢得该汽车，另外两扇门后面则各藏有一只山羊。当参赛者选定了一扇门，但未去开启它的时候，节目主持人开启剩下两扇门的其中一扇，露出其中一只山羊。主持人其后会问参赛者要不要换另一扇仍然关上的门。问题是：换另一扇门会否增加参赛者赢得汽车的机率？</p>
-</div>
-<a id="more"></a>
-<h5 id="如果假设只是从三扇门中选，没有交换，则："><a href="#如果假设只是从三扇门中选，没有交换，则：" class="headerlink" title="如果假设只是从三扇门中选，没有交换，则："></a>如果假设只是从三扇门中选，没有交换，则：</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> random</div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">total = <span class="number">100000</span></div><div class="line">bingo = <span class="number">0</span></div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(total):</div><div class="line">    my_choice = random.randint(<span class="number">0</span>, <span class="number">2</span>)</div><div class="line">    car = random.randint(<span class="number">0</span>, <span class="number">2</span>)</div><div class="line">    <span class="keyword">if</span> my_choice == car:</div><div class="line">        bingo += <span class="number">1</span></div><div class="line">print(<span class="string">"一共选中 %d 次"</span> % bingo)</div><div class="line">print(<span class="string">"选中概率为：%.2f"</span> %(bingo / total))</div></pre></td></tr></table></figure>
-<pre><code>一共选中 33164 次
-选中概率为：0.33
-</code></pre><h5 id="加上询问交换这一流程后："><a href="#加上询问交换这一流程后：" class="headerlink" title="加上询问交换这一流程后："></a>加上询问交换这一流程后：</h5><ul>
-<li>先从三扇门中选一个</li>
-<li>然后主持人在剩下的两扇门中选一个打开</li>
-<li>询问是否更换：</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">total = <span class="number">100000</span></div><div class="line">bingo_change = <span class="number">0</span></div><div class="line">change = <span class="number">0</span></div><div class="line">bingo_not_change = <span class="number">0</span></div><div class="line">not_change = <span class="number">0</span></div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(total):</div><div class="line">    car = random.randint(<span class="number">0</span>, <span class="number">2</span>)</div><div class="line">    my_choice = random.randint(<span class="number">0</span>, <span class="number">2</span>)</div><div class="line">    is_switch = random.choice([<span class="keyword">True</span>, <span class="keyword">False</span>])</div><div class="line">    <span class="keyword">if</span> is_switch:</div><div class="line">        change += <span class="number">1</span></div><div class="line">        <span class="keyword">if</span> my_choice != car:</div><div class="line">            bingo_change += <span class="number">1</span></div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        not_change += <span class="number">1</span></div><div class="line">        <span class="keyword">if</span> my_choice == car:</div><div class="line">            bingo_not_change += <span class="number">1</span></div><div class="line">print(<span class="string">"选手更换了 %d 次，选对的次数：%d，即选中的概率为：%.2f"</span> % (change, bingo_change, bingo_change / change))</div><div class="line">print(<span class="string">"选手不更换 %d 次，选对的次数：%d，即选中的概率为：%.2f"</span> % (not_change, bingo_not_change, bingo_not_change / not_change))</div></pre></td></tr></table></figure>
-<pre><code>选手更换了 49956 次，选对的次数：33180，即选中的概率为：0.66
-选手不更换 50044 次，选对的次数：16677，即选中的概率为：0.33
-</code></pre><h5 id="通过暴力计算，可见三门问题的结论就一个字：换。"><a href="#通过暴力计算，可见三门问题的结论就一个字：换。" class="headerlink" title="通过暴力计算，可见三门问题的结论就一个字：换。"></a>通过暴力计算，可见三门问题的结论就一个字：换。</h5><h5 id="有位知友-“邢可”-的答案把三门问题解释得很形象。"><a href="#有位知友-“邢可”-的答案把三门问题解释得很形象。" class="headerlink" title="有位知友 “邢可” 的答案把三门问题解释得很形象。"></a>有位知友<a href="https://www.zhihu.com/question/26709273/answer/65418012?utm_source=com.samsung.android.app.memo&utm_medium=social" target="_blank" rel="external"> “邢可” </a>的答案把三门问题解释得很形象。</h5>]]></content>
-    
-    <summary type="html">
-    
-      &lt;div class=&quot;note info&quot;&gt;&lt;p&gt;三门问题（Monty Hall problem）亦称为蒙提霍尔问题、蒙特霍问题或蒙提霍尔悖论，大致出自美国的电视游戏节目Let’s Make a Deal。问题名字来自该节目的主持人蒙提·霍尔（Monty Hall）。参赛者会看见三扇关闭了的门，其中一扇的后面有一辆汽车，选中后面有车的那扇门可赢得该汽车，另外两扇门后面则各藏有一只山羊。当参赛者选定了一扇门，但未去开启它的时候，节目主持人开启剩下两扇门的其中一扇，露出其中一只山羊。主持人其后会问参赛者要不要换另一扇仍然关上的门。问题是：换另一扇门会否增加参赛者赢得汽车的机率？&lt;/p&gt;
-&lt;/div&gt;
-    
-    </summary>
-    
-      <category term="小练习" scheme="https://yuanblq.github.io/categories/%E5%B0%8F%E7%BB%83%E4%B9%A0/"/>
-    
-    
-      <category term="python" scheme="https://yuanblq.github.io/tags/python/"/>
-    
-      <category term="三门问题" scheme="https://yuanblq.github.io/tags/%E4%B8%89%E9%97%A8%E9%97%AE%E9%A2%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Django设计模式</title>
-    <link href="https://yuanblq.github.io/2017/02/09/Django%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    <id>https://yuanblq.github.io/2017/02/09/Django设计模式/</id>
-    <published>2017-02-09T13:38:12.000Z</published>
-    <updated>2017-08-02T14:52:08.703Z</updated>
-    
-    <content type="html"><![CDATA[<p>Django 大致的逻辑思路是这样的：用户在地址栏输入 url 由 <code>urls.py</code> 通过正则表达式传到 <code>views.py</code>，然后在 views 中处理最终传到 templates 返回渲染生成的页面。</p>
-<a id="more"></a>
-<h2 id="假设前一篇创建的-app-名称为-polls"><a href="#假设前一篇创建的-app-名称为-polls" class="headerlink" title="假设前一篇创建的 app 名称为 polls"></a>假设前一篇创建的 app 名称为 polls</h2><h3 id="在-polls-views-py-中创建第一个视图"><a href="#在-polls-views-py-中创建第一个视图" class="headerlink" title="在 polls/views.py 中创建第一个视图"></a>在 <code>polls/views.py</code> 中创建第一个视图</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">(request)</span>:</span></div><div class="line">	returnHttpResponse(“You’re at the polls index”)</div></pre></td></tr></table></figure>
-<h3 id="在-polls-文件夹中新建-urls-py-文件，并创建-url-和-view-的映射关系"><a href="#在-polls-文件夹中新建-urls-py-文件，并创建-url-和-view-的映射关系" class="headerlink" title="在 polls 文件夹中新建 urls.py 文件，并创建 url 和 view 的映射关系"></a>在 polls 文件夹中新建 <code>urls.py</code> 文件，并创建 <code>url</code> 和 <code>view</code> 的映射关系</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">urlpatterns=[</div><div class="line">	url(r’^$’,view.index, name=’index’)</div><div class="line">]</div></pre></td></tr></table></figure>
-<p>然后在 mysite(项目名)/urls.py 中添加如下代码<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">urlpatterns=[</div><div class="line">	url(r’^polls/’,include(‘polls.url’))   <span class="comment">#这里的正则表达式不能加$，因为要捕获后面的参数</span></div><div class="line">]</div></pre></td></tr></table></figure></p>
-<p><code>include()</code> 函数中指定其他地方的 <code>urlconf</code> ，并把正则表达式中截取的参数传过去</p>
-<h3 id="python-manage-pyrunserver-运行服务器，输入-127-0-0-1-8000-polls-即可看到-views-py-中定义的视图"><a href="#python-manage-pyrunserver-运行服务器，输入-127-0-0-1-8000-polls-即可看到-views-py-中定义的视图" class="headerlink" title="python manage.pyrunserver 运行服务器，输入 127.0.0.1:8000/polls 即可看到 views.py 中定义的视图"></a><code>python manage.pyrunserver</code> 运行服务器，输入 <code>127.0.0.1:8000/polls</code> 即可看到 <code>views.py</code> 中定义的视图</h3>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Django 大致的逻辑思路是这样的：用户在地址栏输入 url 由 &lt;code&gt;urls.py&lt;/code&gt; 通过正则表达式传到 &lt;code&gt;views.py&lt;/code&gt;，然后在 views 中处理最终传到 templates 返回渲染生成的页面。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Django" scheme="https://yuanblq.github.io/categories/Django/"/>
-    
-    
-      <category term="python" scheme="https://yuanblq.github.io/tags/python/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Django创建与链接数据库</title>
-    <link href="https://yuanblq.github.io/2017/02/03/Django%E5%88%9B%E5%BB%BA%E4%B8%8E%E9%93%BE%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
-    <id>https://yuanblq.github.io/2017/02/03/Django创建与链接数据库/</id>
-    <published>2017-02-03T12:40:14.000Z</published>
-    <updated>2017-08-02T14:50:28.325Z</updated>
-    
-    <content type="html"><![CDATA[<p>创建python虚拟环境并安装 Django 和 psycopg2 以及 PostgreSQL</p>
-<ol>
-<li><p>在要创建 python 虚拟环境的地方使用命令行输入 <code>python -m venv XXX（虚拟环境名称）</code></p>
-</li>
-<li><p>运行 Scripts 文件夹中的 activate.bat 进入虚拟环境</p>
-</li>
-<li><p>通过pip命令（pip install XXX）安装 Django 和 psycopg2（可用 <code>pip freeze</code> 查看当前虚拟环境已经安装的库）</p>
-</li>
-<li><p>下载安装 PostgreSQL</p>
-</li>
-</ol>
-<a id="more"></a>
-<p>创建 Django 项目和第一个 app、更改 app 的数据库配置</p>
-<ol>
-<li><p>调用 Scripts 文件夹中的 django-admin 程序新建一个项目（…/Scripts/django-admin startproject 项目名称）</p>
-</li>
-<li><p>在项目中创建第一个app（相当于一个功能）</p>
- <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python manager.py startapp app名称</div></pre></td></tr></table></figure>
-</li>
-<li><p>打开“项目名称”文件夹中的 <code>setting.py</code> ，更改 <code>DATABASES</code> 字典，将 PostgreSQL 的配置信息告诉 Django，然后由 Django 管理数据库。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">DATABASES = &#123;</div><div class="line">    <span class="string">'default'</span>: &#123;</div><div class="line">        <span class="string">'ENGINE'</span>: <span class="string">'django.db.backends.postgresql'</span>,</div><div class="line">        <span class="string">'NAME'</span>: <span class="string">'blog'</span>,   <span class="comment">#对应与PostgreSQL中创建的databases的名字</span></div><div class="line">        <span class="string">'USER'</span>: <span class="string">'postgres'</span>,</div><div class="line">        <span class="string">'PASSWORD'</span>: <span class="string">'325'</span>,</div><div class="line">        <span class="string">'HOST'</span>: <span class="string">'localhost'</span>,</div><div class="line">        <span class="string">'PORT'</span>: <span class="string">'3141'</span>,</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>在 Django 项目的 app 中创建数据表</p>
-<p>在刚才创建的 app 中的 <code>model.py</code> 中创建数据表所需信息<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Article</span><span class="params">(models.Model)</span>:</span></div><div class="line">    title = models.CharField(max_length=<span class="number">30</span>)</div><div class="line">    content = models.TextField()</div><div class="line">    author = models.CharField(max_length=<span class="number">20</span>)</div><div class="line">    created_date = models.DateField(auto_now=<span class="keyword">True</span>)</div><div class="line">    modified_date = models.DateField(auto_now_add=<span class="keyword">True</span>)</div><div class="line">    is_show = models.BooleanField()</div><div class="line"></div><div class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></div><div class="line">        db_table = <span class="string">'article'</span>  <span class="comment">#必须属性，为创建的数据表的名称，即3.3中写入数据库后在数据库显示的名称</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">return</span> self.title</div></pre></td></tr></table></figure></p>
-<p>将创建的数据表写入 PostgreSQL</p>
-<ol>
-<li><p>先将要写入数据库的 app 在 <code>setting.py</code> 中定义</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">INSTALLED_APPS = [</div><div class="line">    <span class="string">'blog'</span>,   <span class="comment">#新建到的app名称</span></div><div class="line">    <span class="string">'django.contrib.admin'</span>,</div><div class="line">    <span class="string">'django.contrib.auth'</span>,</div><div class="line">    <span class="string">'django.contrib.contenttypes'</span>,</div><div class="line">    <span class="string">'django.contrib.sessions'</span>,</div><div class="line">    <span class="string">'django.contrib.messages'</span>,</div><div class="line">    <span class="string">'django.contrib.staticfiles'</span>,</div><div class="line">]</div></pre></td></tr></table></figure>
-</li>
-<li><p>将 app 的 <code>model.py</code> 的表单创建一个历史纪录，方便以后修改数据库</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python manager.py makemigrations blog（app名称）</div></pre></td></tr></table></figure>
-</li>
-<li><p>将表单结构写入 PostgreSQL 数据库</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python manager.py migrate</div></pre></td></tr></table></figure></li>
-</ol>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;创建python虚拟环境并安装 Django 和 psycopg2 以及 PostgreSQL&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;在要创建 python 虚拟环境的地方使用命令行输入 &lt;code&gt;python -m venv XXX（虚拟环境名称）&lt;/code&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;运行 Scripts 文件夹中的 activate.bat 进入虚拟环境&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;通过pip命令（pip install XXX）安装 Django 和 psycopg2（可用 &lt;code&gt;pip freeze&lt;/code&gt; 查看当前虚拟环境已经安装的库）&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;下载安装 PostgreSQL&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
     
     </summary>
     
