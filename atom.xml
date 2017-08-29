@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2017-08-26T05:11:47.956Z</updated>
+  <updated>2017-08-29T11:24:47.525Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -14,6 +14,74 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Django也能玩实时 —— 系列一</title>
+    <link href="https://yuanblq.github.io/2017/08/04/channel-part1/"/>
+    <id>https://yuanblq.github.io/2017/08/04/channel-part1/</id>
+    <published>2017-08-04T11:22:14.000Z</published>
+    <updated>2017-08-29T11:24:47.525Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="什么是-Channels？"><a href="#什么是-Channels？" class="headerlink" title="什么是 Channels？"></a>什么是 Channels？</h2><p>通过 Channels，给 Django 添加了一个新的<a href="http://channels.readthedocs.io/en/latest/concepts.html#what-are-channels" target="_blank" rel="external">传输中间层</a>，通过该层，能实现两个重要的特性：</p>
+<ul>
+<li><a href="http://channels.readthedocs.io/en/latest/getting-started.html#websocket-example" target="_blank" rel="external">像普通 view 视图一样</a>，处理 WebSocket</li>
+<li>作为 Django 的一部分，在同样的服务器中，能运行后台任务</li>
+</ul>
+<p>当然还有其他特性，不过在刚开始时，这两个是我们用的最多的。</p>
+<a id="more"></a>
+<h2 id="如何使用呢？"><a href="#如何使用呢？" class="headerlink" title="如何使用呢？"></a>如何使用呢？</h2><p>他将 Django 的处理过程分成了两类：</p>
+<ul>
+<li>一是处理 HTTP 和 WebSocket</li>
+<li>另一个是运行 view 视图函数、websocket 处理器和后台任务（consumers 消费者）</li>
+</ul>
+<p>他们通过一个叫 <a href="http://channels.readthedocs.io/en/latest/asgi.html" target="_blank" rel="external">ASGI</a> 的协议通信。它和 WSGI 很相似，不过 ASGI 能兼容更多协议类型。</p>
+<p>Channels 不会往你的 Django 代码中引入 asyncio、gevent 或者其他任何异步代码。你的所有业务逻辑都是以同步的方式运行在工作进程/线程。</p>
+<h2 id="我要改变-Django-的运行方式吗？"><a href="#我要改变-Django-的运行方式吗？" class="headerlink" title="我要改变 Django 的运行方式吗？"></a>我要改变 Django 的运行方式吗？</h2><p><strong>不</strong>，所有的额外工作都完全是可选的。如果你愿意，你可以将运行在 WSGI 服务器下的 Django 更改为如下运行方式：</p>
+<ul>
+<li>一个 ASGI 服务器，你可能会选择 <a href="http://github.com/django/daphne/" target="_blank" rel="external">Daphne</a></li>
+<li>Django 的工作服务器，通过 <code>manage.py runworker</code> 来使用</li>
+<li>用来路由 ASGI 请求的东西，比如 Redis</li>
+</ul>
+<p>当你使用 Channels 时，如果默认把所有的 HTTP 请求都路由给 Django view 视图系统，那它就和之前几乎没有任何差异。</p>
+<h2 id="Channels-还能给我什么惊喜？"><a href="#Channels-还能给我什么惊喜？" class="headerlink" title="Channels 还能给我什么惊喜？"></a>Channels 还能给我什么惊喜？</h2><p>还包括如下特性：</p>
+<ul>
+<li>同一时刻，支持上千个简单的 HTTP 长轮询</li>
+<li>对于 websocket，提供完整的 session 和 auth 支持</li>
+<li>对于 websocket，基于站点 cookie 自动完成用户登录</li>
+<li>对于大量的触发事件，拥有内置 primitive 支持（聊天、实时博客…）</li>
+<li>工作服务不停，浏览器暂停的零停机部署</li>
+<li>基于 per-URL 的可选低级 HTTP 控制</li>
+<li>可以扩展到其他协议或事件源（比如：WebRTC、原生 UDP、SMS）</li>
+</ul>
+<h2 id="能扩展吗？"><a href="#能扩展吗？" class="headerlink" title="能扩展吗？"></a>能扩展吗？</h2><p><strong>当然可以，</strong>你可以运行任意数量的协议服务（用于同时处理 HTTP 和 WebSocket）和工作服务（用来运行你的 Django 代码）来满足你的使用案例。</p>
+<p>ASGI 规范这两个部件之间插入允许大量的不同功能特性的 channel 层。而且它被设计用来支持简单分片以及使用自己的协议和服务器运行单独的集群。</p>
+<h2 id="为什么不采用我最喜欢的消息队列？"><a href="#为什么不采用我最喜欢的消息队列？" class="headerlink" title="为什么不采用我最喜欢的消息队列？"></a>为什么不采用我最喜欢的消息队列？</h2><p>Channel 的设计目的优先于低延迟（目标是几毫秒），并且超过保证传送的高吞吐量，这与某些消息队列设计不匹配。</p>
+<p>一些像<a href="http://channels.readthedocs.io/en/latest/getting-started.html#enforcing-ordering" target="_blank" rel="external">保证消息顺序</a>的特性会降低性能，但它能使它更像个消息队列。</p>
+<h2 id="我需要把我所有的代码都变成异步吗？"><a href="#我需要把我所有的代码都变成异步吗？" class="headerlink" title="我需要把我所有的代码都变成异步吗？"></a>我需要把我所有的代码都变成异步吗？</h2><p>不，如果没有任何 socket 或 事件循环阻塞，你的代码都可以同步运行。你也可以在一些 Django 的 view 视图或 channel 的 consumer 消费者函数中使用异步代码 —— 比如，并行获取大量 URL，但这不会影响整个站点的部署。</p>
+<h2 id="Channel-支持哪些-Django-版本？"><a href="#Channel-支持哪些-Django-版本？" class="headerlink" title="Channel 支持哪些 Django 版本？"></a>Channel 支持哪些 Django 版本？</h2><p>你可以在 Django &gt;= 1.8 的版本上将 Channels 最为一个库来安装。另外，它可能需要一些额外的依赖，不过你都可以通过 <code>pip</code> 安装。</p>
+<p>一开始的时候，Channels 并不在 Django 的核心功能中，不过自从 2016.9 月以后，它就成为了 Django 的官方项目。更多关于 Channels 被采纳为 官方项目的信息可以从 <a href="https://www.djangoproject.com/weblog/2016/sep/09/channels-adopted-official-django-project/" target="_blank" rel="external">Django blog</a> 中查询。</p>
+<h2 id="接下来我该读什么？"><a href="#接下来我该读什么？" class="headerlink" title="接下来我该读什么？"></a>接下来我该读什么？</h2><p>首先阅读关于 <a href="http://channels.readthedocs.io/en/latest/concepts.html" target="_blank" rel="external">Channel 的一些概念</a>，然后继续阅读我们的<a href="http://channels.readthedocs.io/en/latest/getting-started.html" target="_blank" rel="external">示例教程</a>。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;什么是-Channels？&quot;&gt;&lt;a href=&quot;#什么是-Channels？&quot; class=&quot;headerlink&quot; title=&quot;什么是 Channels？&quot;&gt;&lt;/a&gt;什么是 Channels？&lt;/h2&gt;&lt;p&gt;通过 Channels，给 Django 添加了一个新的&lt;a href=&quot;http://channels.readthedocs.io/en/latest/concepts.html#what-are-channels&quot;&gt;传输中间层&lt;/a&gt;，通过该层，能实现两个重要的特性：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://channels.readthedocs.io/en/latest/getting-started.html#websocket-example&quot;&gt;像普通 view 视图一样&lt;/a&gt;，处理 WebSocket&lt;/li&gt;
+&lt;li&gt;作为 Django 的一部分，在同样的服务器中，能运行后台任务&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;当然还有其他特性，不过在刚开始时，这两个是我们用的最多的。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="文档" scheme="https://yuanblq.github.io/categories/%E6%96%87%E6%A1%A3/"/>
+    
+    
+      <category term="Django" scheme="https://yuanblq.github.io/tags/Django/"/>
+    
+      <category term="WebSocket" scheme="https://yuanblq.github.io/tags/WebSocket/"/>
+    
+  </entry>
   
   <entry>
     <title>影分身术之-asyncio_part4</title>
@@ -1663,67 +1731,6 @@ $100
 &lt;p&gt;但是，Django 默认的表单样式非常丑陋，别说 BOSS 不同意，我们自己也绝不会容许这么丑的表单出现在网页上。&lt;/p&gt;
 &lt;p&gt;可能有些人通过查看渲染后的网页源码知道，每一个 Django 表单的字段都会有一个 &lt;code&gt;id&lt;/code&gt;，然后直接给对应的 &lt;code&gt;id&lt;/code&gt; 赋上样式就可以了。这样做可以是可以，但是不够优雅。&lt;/p&gt;
 &lt;p&gt;实际上 Django 为我们提供了 2 种优雅的实现方式。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Django" scheme="https://yuanblq.github.io/categories/Django/"/>
-    
-    
-      <category term="python" scheme="https://yuanblq.github.io/tags/python/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Django提交表单以及类视图</title>
-    <link href="https://yuanblq.github.io/2017/03/22/Django%E6%8F%90%E4%BA%A4%E8%A1%A8%E5%8D%95/"/>
-    <id>https://yuanblq.github.io/2017/03/22/Django提交表单/</id>
-    <published>2017-03-22T12:54:14.000Z</published>
-    <updated>2017-08-02T14:05:21.458Z</updated>
-    
-    <content type="html"><![CDATA[<p>使用 Django 提交表单很简单，而且 Django 内置了跨站请求伪造攻击的防御方法。</p>
-<p>先来看下 Django 中简单表单的提交。</p>
-<a id="more"></a>
-<h2 id="现在模板中添加以下代码"><a href="#现在模板中添加以下代码" class="headerlink" title="现在模板中添加以下代码"></a>现在模板中添加以下代码</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- polls/templates/polls/detail.html --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>&#123; &#123;  question.question_text &#125; &#125;<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></div><div class="line">&#123; % if error_message % &#125;</div><div class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span><span class="tag">&lt;<span class="name">strong</span>&gt;</span>&#123; &#123; error_message &#125;  &#125;<span class="tag">&lt;/<span class="name">strong</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></div><div class="line">&#123; % endif % &#125;</div><div class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">”&#123;</span> % <span class="attr">url</span>  ‘<span class="attr">polls:vote</span>’ <span class="attr">question.id</span> % &#125;” <span class="attr">method</span>=<span class="string">”post”</span>&gt;</span></div><div class="line">    &#123; % csrf_token % &#125;</div><div class="line">    &#123; % for choice in question.choice_set.all %  &#125;</div><div class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">”radio”</span> <span class="attr">name</span>=<span class="string">”choice”</span> <span class="attr">id</span>=<span class="string">”choice&#123;</span> &#123; <span class="attr">forloop.counter</span> &#125;  &#125;” <span class="attr">value</span>=<span class="string">”&#123;</span> &#123; <span class="attr">choice.id</span> &#125; &#125;”/&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">”choice&#123;</span> &#123; <span class="attr">forloop.counter</span> &#125; &#125;”&gt;</span>&#123; &#123;  choice.choice_text &#125; &#125;<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span></div><div class="line">    &#123; % endfor % &#125;</div><div class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">”submit”</span> <span class="attr">value</span>=<span class="string">”Vote”/</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>解释一下：</p>
-<ul>
-<li><p>value=”{ { choice.id } }”，name=”choice”，表示提交表单后，POST的数据为choice=choice.id，即把当前选中的choice的id以choice为名发送到{ % url … % }</p>
-</li>
-<li><p>forloop.counter表示for循环当前进行到第几次（从1开始计）</p>
-</li>
-<li><p>label标签的for和radio的name一致，即可实现点击文本也可选中按钮</p>
-</li>
-</ul>
-<h2 id="创建和该-template-对应的-view-视图"><a href="#创建和该-template-对应的-view-视图" class="headerlink" title="创建和该 template 对应的 view 视图"></a>创建和该 template 对应的 view 视图</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># polls/views.py</span></div><div class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> reversefrom .model impore Question,  Choice</div><div class="line"></div><div class="line"><span class="comment">#..</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">vote</span><span class="params">(request, question_id)</span>:</span></div><div class="line">    question = get_object_or_404(Question, pk=question_id)</div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        selected_choice = question.choice_set.get(pk=request.POST[‘choice‘])</div><div class="line">    <span class="keyword">except</span> (KeyError, Choice.DoesNotExist):</div><div class="line">        <span class="keyword">return</span> render(request,  ‘polls/detail.html’, &#123;‘question’: question, ‘error_message’: “You didn’t  select a choice”&#125;)</div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        selected_choice.vote +=<span class="number">1</span></div><div class="line">        selected_choice.save()        </div><div class="line">        <span class="keyword">return</span>  HttpResponseRedirect(reverse(‘polls:results’, args=(question_id, )))</div></pre></td></tr></table></figure>
-<p>同样，先解释一下：</p>
-<ul>
-<li><p>request.POST是一个类字典对象能通过key name访问submit的数据（其值永远是个str类型）</p>
-</li>
-<li><p>票数增加后返回了一个HttpResponseRedirect，接收重定向的url。我们使用reverse()函数，接收重定向的url和所需参数。</p>
-</li>
-</ul>
-<h2 id="现在，我们创建一个-results-模板"><a href="#现在，我们创建一个-results-模板" class="headerlink" title="现在，我们创建一个 results 模板"></a>现在，我们创建一个 results 模板</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- polls/templates/polls/results.html --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>&#123; &#123;  question.question_text &#125; &#125;<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">ul</span>&gt;</span></div><div class="line">&#123; % for choice in question.choice_set.all % &#125;</div><div class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span></div><div class="line">        &#123; &#123; choice.choice_text &#125; &#125; – &#123; &#123;  choice.votes &#125; &#125; vote&#123; &#123; choice.votes|pluralize &#125; &#125;</div><div class="line">    <span class="tag">&lt;/<span class="name">li</span>&gt;</span></div><div class="line">&#123; % endfor % &#125;</div><div class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">”&#123;</span> % <span class="attr">url</span>  ‘<span class="attr">polls:detail</span>’ <span class="attr">question.id</span> % &#125;”&gt;</span>Vote again ? <span class="tag">&lt;/<span class="name">a</span>&gt;</span></div></pre></td></tr></table></figure>
-<h2 id="运行服务器，访问-polls-1-就可以去投票了！"><a href="#运行服务器，访问-polls-1-就可以去投票了！" class="headerlink" title="运行服务器，访问 polls/1 就可以去投票了！"></a>运行服务器，访问 polls/1 就可以去投票了！</h2><h2 id="基于-less-code-is-better-理念，Django-提供了-generic-views-视图模板。因为-detail-和-results-视图有相同的部分（从数据库获取数据，根据-url-传来的参数加载-template，返回渲染后的-template），index-视图也同样，只是展示一个列表而已。所以-Django-提供了-generic-views-这个简便方式，使我们的代码更少更简洁"><a href="#基于-less-code-is-better-理念，Django-提供了-generic-views-视图模板。因为-detail-和-results-视图有相同的部分（从数据库获取数据，根据-url-传来的参数加载-template，返回渲染后的-template），index-视图也同样，只是展示一个列表而已。所以-Django-提供了-generic-views-这个简便方式，使我们的代码更少更简洁" class="headerlink" title="基于 less code is better 理念，Django 提供了 generic views 视图模板。因为 detail() 和 results() 视图有相同的部分（从数据库获取数据，根据 url 传来的参数加载 template，返回渲染后的 template），index() 视图也同样，只是展示一个列表而已。所以 Django 提供了 generic views 这个简便方式，使我们的代码更少更简洁"></a>基于 <code>less code is better</code> 理念，Django 提供了 <code>generic views</code> 视图模板。因为 <code>detail()</code> 和 <code>results()</code> 视图有相同的部分（从数据库获取数据，根据 url 传来的参数加载 template，返回渲染后的 template），<code>index()</code> 视图也同样，只是展示一个列表而已。所以 Django 提供了 <code>generic views</code> 这个简便方式，使我们的代码更少更简洁</h2><ul>
-<li><p>更改URLconf</p>
-</li>
-<li><p>更改view视图</p>
-</li>
-</ul>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"># polls/urls.py</div><div class="line">from django.conf.urls import url</div><div class="line">from . import views</div><div class="line">app_name = ‘polls’</div><div class="line">urlpatterns = [</div><div class="line">    url(r’^$’, views.IndexView.as_view(), name=’index’),</div><div class="line">    url(r’^(?P&lt;pk&gt;[0-9]+)/$’, views.DetailView.as_view(),  name=’detail’),</div><div class="line">    url(r’^(?P&lt;pk&gt;[0-9]+)/results/$’, views.ResultsView.as_view(),  name=’results’),</div><div class="line">    url(r’^(?P&lt;question_id&gt;[0-9]+)/vote/$’, views.vote, name=’vote’),</div><div class="line">]</div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># polls/views.py</span></div><div class="line"><span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> get_object_or_404, render</div><div class="line"><span class="keyword">from</span> django.http <span class="keyword">import</span> HttpResponseRedirect</div><div class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> reversefrom django.views </div><div class="line"><span class="keyword">import</span> genericfrom .models <span class="keyword">import</span> Choice, Question</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">IndexView</span><span class="params">(generic.ListView)</span>:</span></div><div class="line">    template_name =  ‘polls/index.html’</div><div class="line">    context_object_name = ‘latest_question_list’</div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_queryset</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">return</span>  Question.objects.order_by(‘-pub_date’)[:]</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">DetailView</span><span class="params">(generic.DetailView)</span>:</span></div><div class="line">    model = Question</div><div class="line">    template_name =  ‘polls/detail.html’</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ResultsView</span><span class="params">(generic.DetailView)</span>:</span></div><div class="line">    model = Question</div><div class="line">    template_name =  ‘polls/results.html’</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">vote</span><span class="params">(requestion, question_id)</span>:</span></div><div class="line">    <span class="comment">#..same as above</span></div></pre></td></tr></table></figure>
-<ul>
-<li><p>通过 <code>model</code> 属性使 Django 知道在操作什么模型</p>
-</li>
-<li><p><code>template_name</code> 属性使我们能自定义模板</p>
-</li>
-<li><p><code>context_object_name</code> 属性指定 html 中对应的变量，不然 Django 会使用默认变量名</p>
-</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;使用 Django 提交表单很简单，而且 Django 内置了跨站请求伪造攻击的防御方法。&lt;/p&gt;
-&lt;p&gt;先来看下 Django 中简单表单的提交。&lt;/p&gt;
     
     </summary>
     
