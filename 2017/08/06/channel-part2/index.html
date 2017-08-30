@@ -99,7 +99,7 @@
 <meta property="og:description" content="Channels 概念Django 的传统视图围绕着 request 和 response 工作。一个 request 进来，Django 就去服务它，生成一个 response 响应，然后 Django 再等待下一个 request。
 在简单的浏览器交互的时候这么做是可以的，但是在像 WebSocket、HTTP2 服务器推送的现代 Web 模式下，网站还需在这个传统循环外进行通信。
 除此之外，">
-<meta property="og:updated_time" content="2017-08-30T13:29:28.928Z">
+<meta property="og:updated_time" content="2017-08-30T13:32:39.415Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Django也能玩实时 —— chapter 2">
 <meta name="twitter:description" content="Channels 概念Django 的传统视图围绕着 request 和 response 工作。一个 request 进来，Django 就去服务它，生成一个 response 响应，然后 Django 再等待下一个 request。
@@ -396,6 +396,7 @@
 <p>除此之外，我们的应用能在下一个 response 发送前，轻松卸载大量的非关键任务，比如将一些东西保存进缓存或者给新上传的图片做个缩略图。</p>
 <p>它将 Django 的运行模式从简单的 <code>response to request</code>请求响应，改变为 <code>event oriented</code>面向事件，这样 Django 就能处理发送到 channels 通道中的大量事件。但这样的话对于每个 event handler 事件处理器或者 consumer 消费者还是没有一个持久的状态，能够像一个 view 视图函数一样独立调用。</p>
 <p>我们先来看看什么是 channels 吧。</p>
+<a id="more"></a>
 <h2 id="什么是-channel？"><a href="#什么是-channel？" class="headerlink" title="什么是 channel？"></a>什么是 channel？</h2><p>该系统的核心就是一个叫做 channel 的数据结构。什么是 channel？这是一个有序的、先进先出的、有时效的以及一次只能传递给一个监听器的队列。</p>
 <p>你可以认为它就是个任务队列 —— 生产者将消息存入 channel，然后给监听该 channel 的一个消费者监听器。</p>
 <p>“最多一次”假设，要么一个消费者获得该消息，要么就没人获得消息（假设 channel 实现崩溃了）。“至少一次”假设，通常一个消费者获得消息，但当崩溃的时候，不止一个消费者收到消息，这不是我们想要的。</p>
