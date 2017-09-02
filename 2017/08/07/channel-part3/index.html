@@ -101,7 +101,7 @@
 1pip install -U channels
 安装完之后，你需要把 Channels 添加到你 settings 的 INSTALLED_APPS 中：
 12345678INSTALLED_APPS = [    &apos;django.contrib.auth&apos;,    &apos;django.contrib.contenttype">
-<meta property="og:updated_time" content="2017-09-02T03:43:22.632Z">
+<meta property="og:updated_time" content="2017-09-02T09:38:32.309Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Django也能玩实时 —— chapter 3">
 <meta name="twitter:description" content="安装可以直接在 PyPI 上获取 Channels —— 安装，只需运行：
@@ -398,6 +398,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install -U channels</div></pre></td></tr></table></figure>
 <p>安装完之后，你需要把 <code>Channels</code> 添加到你 settings 的 <code>INSTALLED_APPS</code> 中：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">INSTALLED_APPS = [</div><div class="line">    <span class="string">'django.contrib.auth'</span>,</div><div class="line">    <span class="string">'django.contrib.contenttypes'</span>,</div><div class="line">    <span class="string">'django.contrib.sessions'</span>,</div><div class="line">    <span class="string">'django.contrib.sites'</span>,</div><div class="line">    ...</div><div class="line">    <span class="string">'channels'</span>,</div><div class="line">]</div></pre></td></tr></table></figure>
+<a id="more"></a>
 <p>就这样！完成之后，<code>Channels</code> 会自己集成到 Django，并且接管 <code>runserver</code> 命令。详情见 <a href="http://channels.readthedocs.io/en/latest/getting-started.html" target="_blank" rel="external">Getting Started with Channels</a>。</p>
 <blockquote>
 <p><strong>注意</strong><br>注意其他会替换/重载 <code>runserver</code> 命令的第三方 app。Channels 提供了一个独立的 <code>runserver</code> 命令，可能会引起冲突。有这么一个冲突的例子：<a href="https://github.com/evansd/whitenoise" target="_blank" rel="external">whitenoise</a> 的 <a href="https://github.com/evansd/whitenoise/issues/77" target="_blank" rel="external">whitenoise.runserver_nostatic</a>。为了解决这个问题，可以尝试把 <code>channels</code> 移到你 <code>INSTALLED——APPS</code> 的最上面，或者把其他冲突的 app 删了。</p>
