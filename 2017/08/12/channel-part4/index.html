@@ -89,22 +89,22 @@
 
 
 
-<meta name="description" content="开始使用 Channels（确保你已经安装了 Channels）
-我们先来写几个消费者。如果你还不了解，可以去看看Channels 的概念，里面介绍了 channels 和 groups 的基本概念以及阐述了一些重要的实现模式和注意事项。
-第一个消费者当你安装完 Channels 第一次运行 Django 的时候，它会以默认的布局配置 —— 所有的 HTTP 请求（ http.request ch">
+<meta name="description" content="开始使用 Channels（确保你已经&amp;nbsp;安装了 Channels&amp;nbsp;）
+我们先来写几个消费者。如果你还不了解，可以去看看&amp;nbsp;Channels 的概念&amp;nbsp;，里面介绍了 channels 和 groups 的基本概念以及阐述了一些重要的实现模式和注意事项。
+第一个消费者当你安装完 Channels 第一次运行 Django 的时候，它会以默认的布局配置 —— 所有的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Django也能玩实时 —— chapter 4">
 <meta property="og:url" content="https://yuanblq.github.io/2017/08/12/channel-part4/index.html">
 <meta property="og:site_name" content="Yuan">
-<meta property="og:description" content="开始使用 Channels（确保你已经安装了 Channels）
-我们先来写几个消费者。如果你还不了解，可以去看看Channels 的概念，里面介绍了 channels 和 groups 的基本概念以及阐述了一些重要的实现模式和注意事项。
-第一个消费者当你安装完 Channels 第一次运行 Django 的时候，它会以默认的布局配置 —— 所有的 HTTP 请求（ http.request ch">
-<meta property="og:updated_time" content="2017-09-02T09:38:20.075Z">
+<meta property="og:description" content="开始使用 Channels（确保你已经&amp;nbsp;安装了 Channels&amp;nbsp;）
+我们先来写几个消费者。如果你还不了解，可以去看看&amp;nbsp;Channels 的概念&amp;nbsp;，里面介绍了 channels 和 groups 的基本概念以及阐述了一些重要的实现模式和注意事项。
+第一个消费者当你安装完 Channels 第一次运行 Django 的时候，它会以默认的布局配置 —— 所有的">
+<meta property="og:updated_time" content="2017-09-02T09:44:09.269Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Django也能玩实时 —— chapter 4">
-<meta name="twitter:description" content="开始使用 Channels（确保你已经安装了 Channels）
-我们先来写几个消费者。如果你还不了解，可以去看看Channels 的概念，里面介绍了 channels 和 groups 的基本概念以及阐述了一些重要的实现模式和注意事项。
-第一个消费者当你安装完 Channels 第一次运行 Django 的时候，它会以默认的布局配置 —— 所有的 HTTP 请求（ http.request ch">
+<meta name="twitter:description" content="开始使用 Channels（确保你已经&amp;nbsp;安装了 Channels&amp;nbsp;）
+我们先来写几个消费者。如果你还不了解，可以去看看&amp;nbsp;Channels 的概念&amp;nbsp;，里面介绍了 channels 和 groups 的基本概念以及阐述了一些重要的实现模式和注意事项。
+第一个消费者当你安装完 Channels 第一次运行 Django 的时候，它会以默认的布局配置 —— 所有的">
 
 
 
@@ -391,8 +391,8 @@
       
 
       
-        <h2 id="开始使用-Channels"><a href="#开始使用-Channels" class="headerlink" title="开始使用 Channels"></a>开始使用 Channels</h2><p>（确保你已经<a href="../channel-part3">安装了 Channels</a>）</p>
-<p>我们先来写几个消费者。如果你还不了解，可以去看看<a href="../channel-part2">Channels 的概念</a>，里面介绍了 channels 和 groups 的基本概念以及阐述了一些重要的实现模式和注意事项。</p>
+        <h2 id="开始使用-Channels"><a href="#开始使用-Channels" class="headerlink" title="开始使用 Channels"></a>开始使用 Channels</h2><p>（确保你已经<a href="/2017/08/07/channel-part3/" title="&nbsp;安装了 Channels&nbsp;">&nbsp;安装了 Channels&nbsp;</a>）</p>
+<p>我们先来写几个消费者。如果你还不了解，可以去看看<a href="/2017/08/06/channel-part2/" title="&nbsp;Channels 的概念&nbsp;">&nbsp;Channels 的概念&nbsp;</a>，里面介绍了 channels 和 groups 的基本概念以及阐述了一些重要的实现模式和注意事项。</p>
 <h2 id="第一个消费者"><a href="#第一个消费者" class="headerlink" title="第一个消费者"></a>第一个消费者</h2><p>当你安装完 Channels 第一次运行 Django 的时候，它会以默认的布局配置 —— 所有的 HTTP 请求（ <code>http.request</code> channel 中的）都会路由到 Django 的 view 层 —— 和以前基于 Django、views 和静态文件服务的 WSGI 工作方式一样。（就像正常的 <code>runserver</code> 一样）</p>
 <p>作为一个基本介绍，我们写一个覆盖内置处理器的 consumer 来直接处理所有的 HTTP 请求。通常你在一个项目中不会这么做，但是能了解 channels 如何在 DJango 核心下工作 —— 直接在现存的 view 层下添加了一整个新的层。</p>
 <a id="more"></a>
@@ -407,7 +407,7 @@
 <p><strong>注意</strong><br>这里大多数例子，使用的是“in memory” channel 层。方便刚开始使用 channel，但是无法实现跨进程的 channel 传输，而且只能用 <code>runserver</code>。在生产环境中，你需要选择其他的 backend 后端（后面将会讨论）。</p>
 </blockquote>
 <p>如你所见，这有点像 Django 的 <code>DATABASES</code> 配置，有一个名为 <code>default</code> 的 channel 层。每个层都需要一个 channel 层类、一些配置（如果该层需要的话）以及一个路由调度器，用来指向包含路由配置的列表。推荐你起名为 <code>routing.py</code> 并且放在你项目 <code>urls.py</code> 的旁边，但你也可以随便放在哪个地方，只要路径不错。</p>
-<p>如果你用 <code>python manage.py runserver</code> 启动，然后在浏览器输入 <code>http://localhost:8000</code>，你会看见，一个 Django 页面，那就说明一切正常。如果你看不到响应，检查一下你是否正确<a href="../channel-part3">安装了 channels</a>。</p>
+<p>如果你用 <code>python manage.py runserver</code> 启动，然后在浏览器输入 <code>http://localhost:8000</code>，你会看见，一个 Django 页面，那就说明一切正常。如果你看不到响应，检查一下你是否正确<a href="/2017/08/07/channel-part3/" title="&nbsp;安装了 channels&nbsp;">&nbsp;安装了 channels&nbsp;</a>。</p>
 <p>现在看起来没啥值得激动的地方，原生 HTTP 响应 Django 早就能做了。我们来试试 WebSocket，再做一个简单的聊天服务器～</p>
 <p>我们先只做一个 echo 的简单服务器，将客户端发来的消息直接原样发回。虽然没啥用，不过用来入门 channel 还是不错的。</p>
 <p>删除之前的 consumer 和 routing 路由 —— 现在开始，如果你不在 consumer 中特别指定去处理 <code>http.request</code> 那么，Django view 视图来处理 HTTP 请求。然后 consumer 来处理 WebSocket：</p>
@@ -425,7 +425,7 @@
 <blockquote>
 <p><strong>注意</strong><br>如果你重写了 connect，你需要通过 <code>accept: True</code> 来显式地接受 WebSocket 连接，当然，你也可以通过 <code>close: True</code> 来拒绝连接。</p>
 </blockquote>
-<p>当然，如果你读过 <a href="../channel-part2">channels 概念</a>，你就知道如果添加到 groups 的 Channels 的 message 过期了，那么 Channels 也要过期（每个 Channel 的 message 都有一个过期时间，通常在 30 秒至 1 分钟，当然可以自己配置）。但是无论如何 <code>disconnect</code> 处理器都会调用。</p>
+<p>当然，如果你读过<a href="/2017/08/06/channel-part2/" title="&nbsp;channels 概念&nbsp;">&nbsp;channels 概念&nbsp;</a>，你就知道如果添加到 groups 的 Channels 的 message 过期了，那么 Channels 也要过期（每个 Channel 的 message 都有一个过期时间，通常在 30 秒至 1 分钟，当然可以自己配置）。但是无论如何 <code>disconnect</code> 处理器都会调用。</p>
 <blockquote>
 <p><strong>注意：</strong><br>Channels 设计的前提是会失败的，它假设有一小部分的 message 会永远无法传送，所以所有的核心功能设计的时候都要考虑到当发送一个 message 的时候会无法传送，这样就不会使整个系统崩溃。</p>
 <p>我们同样建议你也这么设计你的 app —— 不要期望 Channels 能 100% 可靠的帮你传送消息。查找每一个可能失败的地方，然后用自己用代码去处理 —— 可以是 retry 逻辑、处理部分内容或者不要同时做一些事。HTTP request 也是容易出错的，不然怎么会有人经常收到一个错误的页面！</p>

@@ -390,8 +390,8 @@
 
       
         
-          <h2 id="开始使用-Channels"><a href="#开始使用-Channels" class="headerlink" title="开始使用 Channels"></a>开始使用 Channels</h2><p>（确保你已经<a href="../channel-part3">安装了 Channels</a>）</p>
-<p>我们先来写几个消费者。如果你还不了解，可以去看看<a href="../channel-part2">Channels 的概念</a>，里面介绍了 channels 和 groups 的基本概念以及阐述了一些重要的实现模式和注意事项。</p>
+          <h2 id="开始使用-Channels"><a href="#开始使用-Channels" class="headerlink" title="开始使用 Channels"></a>开始使用 Channels</h2><p>（确保你已经<a href="/2017/08/07/channel-part3/" title="&nbsp;安装了 Channels&nbsp;">&nbsp;安装了 Channels&nbsp;</a>）</p>
+<p>我们先来写几个消费者。如果你还不了解，可以去看看<a href="/2017/08/06/channel-part2/" title="&nbsp;Channels 的概念&nbsp;">&nbsp;Channels 的概念&nbsp;</a>，里面介绍了 channels 和 groups 的基本概念以及阐述了一些重要的实现模式和注意事项。</p>
 <h2 id="第一个消费者"><a href="#第一个消费者" class="headerlink" title="第一个消费者"></a>第一个消费者</h2><p>当你安装完 Channels 第一次运行 Django 的时候，它会以默认的布局配置 —— 所有的 HTTP 请求（ <code>http.request</code> channel 中的）都会路由到 Django 的 view 层 —— 和以前基于 Django、views 和静态文件服务的 WSGI 工作方式一样。（就像正常的 <code>runserver</code> 一样）</p>
 <p>作为一个基本介绍，我们写一个覆盖内置处理器的 consumer 来直接处理所有的 HTTP 请求。通常你在一个项目中不会这么做，但是能了解 channels 如何在 DJango 核心下工作 —— 直接在现存的 view 层下添加了一整个新的层。</p>
           <!--noindex-->
