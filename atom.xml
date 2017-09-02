@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2017-09-01T08:00:35.630Z</updated>
+  <updated>2017-09-02T09:35:45.725Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -16,15 +16,86 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Django也能玩实时 —— chapter 4</title>
+    <link href="https://yuanblq.github.io/2017/08/12/channel-part4/"/>
+    <id>https://yuanblq.github.io/2017/08/12/channel-part4/</id>
+    <published>2017-08-12T09:33:28.000Z</published>
+    <updated>2017-09-02T09:35:45.725Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="开始使用-Channels"><a href="#开始使用-Channels" class="headerlink" title="开始使用 Channels"></a>开始使用 Channels</h2><p>（确保你已经<a href="./channel-part3">安装了 Channels</a>）</p>
+<p>我们先来写几个消费者。如果你还不了解，可以去看看<a href="./channel-part2">Channels 的概念</a>，里面介绍了 channels 和 groups 的基本概念以及阐述了一些重要的实现模式和注意事项。</p>
+<h2 id="第一个消费者"><a href="#第一个消费者" class="headerlink" title="第一个消费者"></a>第一个消费者</h2><p>当你安装完 Channels 第一次运行 Django 的时候，它会以默认的布局配置 —— 所有的 HTTP 请求（ <code>http.request</code> channel 中的）都会路由到 Django 的 view 层 —— 和以前基于 Django、views 和静态文件服务的 WSGI 工作方式一样。（就像正常的 <code>runserver</code> 一样）</p>
+<p>作为一个基本介绍，我们写一个覆盖内置处理器的 consumer 来直接处理所有的 HTTP 请求。通常你在一个项目中不会这么做，但是能了解 channels 如何在 DJango 核心下工作 —— 直接在现存的 view 层下添加了一整个新的层。</p>
+<p>创建一个新项目，一个新 app，然后把这些代码添加到 app 的 <code>consumer.py</code> 文件中：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> django.http <span class="keyword">import</span> HttpResponse</div><div class="line"><span class="keyword">from</span> channels.handler <span class="keyword">import</span> AsgiHandler</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">http_consumer</span><span class="params">(message)</span>:</span></div><div class="line">    <span class="comment"># 生成标准的 HTTP response 响应 - 直接访问 ASGI 的 path 属性</span></div><div class="line">    response = HttpResponse(<span class="string">"Hello world! You asked for %s"</span> % message.content[<span class="string">'path'</span>])</div><div class="line">    <span class="comment"># 将 response 编码成 message 格式（ASGI）</span></div><div class="line">    <span class="keyword">for</span> chunk <span class="keyword">in</span> AsgiHandler.encode_response(response):</div><div class="line">        message.reply_channel.send(chunk)</div></pre></td></tr></table></figure>
+<p><strong>注意：</strong>我们发送的 message 必须是序列化的 JSON 对象，request 和 response 的 message 是 key-value 的键值对形式。你可以从 <a href="http://channels.readthedocs.io/en/latest/asgi.html" target="_blank" rel="external">ASGI 规范</a>中查询更多细节，但你无需过多的关注；只需要知道有一个 <code>AsgiRequest</code> 类将 ASGI 转换成 Django 的 request 对象（上面已经用到了）。通常，当你使用普通的 views 视图时， 所有的事 Django 内置的代码都帮你做好了。</p>
+<p>现在我们要再做些事，告诉 Django 这个消费者应该和哪个 <code>http.request</code> channel 绑定，而不是和 Django 的 view 视图系统绑定。这个需要在 settings 文件中配置，我们需要定义我们名为 <code>default</code> 的 channel 层以及它的路由。</p>
+<p>channel 的路由配置和 URL 的路由配置有点像。channel 和 consumer 之间以字典的形式映射。比如像这样：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># settings.py</span></div><div class="line">CHANNEL_LAYERS = &#123;</div><div class="line">    <span class="string">"default"</span>: &#123;</div><div class="line">        <span class="string">"BACKEND"</span>: <span class="string">"asgiref.inmemory.ChannelLayer"</span>,</div><div class="line">        <span class="string">"ROUTING"</span>: <span class="string">"myproject.routing.channel_routing"</span>,</div><div class="line">    &#125;,</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># routing.py</span></div><div class="line"><span class="keyword">from</span> channels.routing <span class="keyword">import</span> route</div><div class="line">channel_routing = [</div><div class="line">    route(<span class="string">"http.request"</span>, <span class="string">"myapp.consumers.http_consumer"</span>),</div><div class="line">]</div></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>注意</strong><br>这里大多数例子，使用的是“in memory” channel 层。方便刚开始使用 channel，但是无法实现跨进程的 channel 传输，而且只能用 <code>runserver</code>。在生产环境中，你需要选择其他的 backend 后端（后面将会讨论）。</p>
+</blockquote>
+<p>如你所见，这有点像 Django 的 <code>DATABASES</code> 配置，有一个名为 <code>default</code> 的 channel 层。每个层都需要一个 channel 层类、一些配置（如果该层需要的话）以及一个路由调度器，用来指向包含路由配置的列表。推荐你起名为 <code>routing.py</code> 并且放在你项目 <code>urls.py</code> 的旁边，但你也可以随便放在哪个地方，只要路径不错。</p>
+<p>如果你用 <code>python manage.py runserver</code> 启动，然后在浏览器输入 <code>http://localhost:8000</code>，你会看见，一个 Django 页面，那就说明一切正常。如果你看不到响应，检查一下你是否正确<a href="./channel-part3">安装了 channels</a>。</p>
+<p>现在看起来没啥值得激动的地方，原生 HTTP 响应 Django 早就能做了。我们来试试 WebSocket，再做一个简单的聊天服务器～</p>
+<p>我们先只做一个 echo 的简单服务器，将客户端发来的消息直接原样发回。虽然没啥用，不过用来入门 channel 还是不错的。</p>
+<p>删除之前的 consumer 和 routing 路由 —— 现在开始，如果你不在 consumer 中特别指定去处理 <code>http.request</code> 那么，Django view 视图来处理 HTTP 请求。然后 consumer 来处理 WebSocket：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># consumers.py</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">ws_message</span><span class="params">(message)</span>:</span></div><div class="line">    <span class="comment"># ASGI WebSocket 包 —— 接收和发送消息的类型都有一个 “text” 键名</span></div><div class="line">    <span class="comment"># 对应他们的文本数据</span></div><div class="line">    message.reply_channel.send(&#123;</div><div class="line">        <span class="string">"text"</span>: message.content[<span class="string">'text'</span>],</div><div class="line">    &#125;)</div></pre></td></tr></table></figure>
+<p>像下面，将它挂接到 <code>websocket.receive</code> channel：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># routing.py</span></div><div class="line"><span class="keyword">from</span> channels.routing <span class="keyword">import</span> route</div><div class="line"><span class="keyword">from</span> myapp.consumers <span class="keyword">import</span> ws_message</div><div class="line"></div><div class="line">channel_routing = [</div><div class="line">    route(<span class="string">"websocket.receive"</span>, ws_message),</div><div class="line">]</div></pre></td></tr></table></figure>
+<p>我们来看看都做了些什么。它和 <code>websocket.receive</code> channel 绑定，意味着当客户端发送一个 WebSocket 包的时候，它能收到一个 message。</p>
+<p>当它收到这个 message 的时候，从中获取 <code>reply_channel</code> 属性，这是每个客户端都唯一的 response channel，然后通过 <code>send()</code> 方法把同样的内容发回给客户端。</p>
+<p>运行 <code>runserver</code>，打开浏览器，进入该服务器的页面，在控制台输入以下代码来打开一个 WebSocket 连接，并发送一些数据（如果你使用的是 VM 或者类似的，你可能需要更改 socket 的地址）。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// path 和路由没关系; WebSocket连接都是和 consumer 绑定的</span></div><div class="line">socket = <span class="keyword">new</span> WebSocket(<span class="string">"ws://"</span> + <span class="built_in">window</span>.location.host + <span class="string">"/chat/"</span>);</div><div class="line">socket.onmessage = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</div><div class="line">    alert(e.data);</div><div class="line">&#125;</div><div class="line">socket.onopen = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    socket.send(<span class="string">"hello world"</span>);</div><div class="line">&#125;</div><div class="line"><span class="comment">// 如果 socket 打开了，就直接调用 onopen 回调</span></div><div class="line"><span class="keyword">if</span> (socket.readyState == WebSocket.OPEN) socket.onopen();</div></pre></td></tr></table></figure>
+<p>你应该会立刻看见一个 “hello world” 的 alert。你的 message 在服务器绕了一圈又回来触发了 alert。</p>
+<h2 id="Groups"><a href="#Groups" class="headerlink" title="Groups"></a>Groups</h2><p>现在，我们在一个真正的聊天服务器上实现我们的 echo 服务器，这样人们就可以互相聊天了。为了实现这个功能，我们需要用到 Groups，这是 Channels 的一个<a href="http://channels.readthedocs.io/en/latest/concepts.html" target="_blank" rel="external">核心概念</a>，也是我们广播消息的基本方法。</p>
+<p>为了实现这，我们要增加 <code>websocket.connect</code> 和 <code>websocket.disconnect</code> Channels 来往我们的 Groups 中添加或者移除客户端，就像这样：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># consumers.py</span></div><div class="line"><span class="keyword">from</span> channels <span class="keyword">import</span> Group</div><div class="line"></div><div class="line"><span class="comment"># 连接到 websocket.connect</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">ws_add</span><span class="params">(message)</span>:</span></div><div class="line">    <span class="comment"># 接受进来的连接</span></div><div class="line">    message.reply_channel.send(&#123;<span class="string">"accept"</span>: <span class="keyword">True</span>&#125;)</div><div class="line">    <span class="comment"># 把他们加到 chat group</span></div><div class="line">    Group(<span class="string">"chat"</span>).add(message.reply_channel)</div><div class="line"></div><div class="line"><span class="comment"># 连接到 websocket.disconnect</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">ws_disconnect</span><span class="params">(message)</span>:</span></div><div class="line">    Group(<span class="string">"chat"</span>).discard(message.reply_channel)</div></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>注意</strong><br>如果你重写了 connect，你需要通过 <code>accept: True</code> 来显式地接受 WebSocket 连接，当然，你也可以通过 <code>close: True</code> 来拒绝连接。</p>
+</blockquote>
+<p>当然，如果你读过 <a href="./channel-part2">channels 概念</a>，你就知道如果添加到 groups 的 Channels 的 message 过期了，那么 Channels 也要过期（每个 Channel 的 message 都有一个过期时间，通常在 30 秒至 1 分钟，当然可以自己配置）。但是无论如何 <code>disconnect</code> 处理器都会调用。</p>
+<blockquote>
+<p><strong>注意：</strong><br>Channels 设计的前提是会失败的，它假设有一小部分的 message 会永远无法传送，所以所有的核心功能设计的时候都要考虑到当发送一个 message 的时候会无法传送，这样就不会使整个系统崩溃。</p>
+<p>我们同样建议你也这么设计你的 app —— 不要期望 Channels 能 100% 可靠的帮你传送消息。查找每一个可能失败的地方，然后用自己用代码去处理 —— 可以是 retry 逻辑、处理部分内容或者不要同时做一些事。HTTP request 也是容易出错的，不然怎么会有人经常收到一个错误的页面！</p>
+</blockquote>
+<p>现在，我们来关心往 <code>chat</code> group 添加和移除 WebSocket；我们现在要做的就是 message 的发送。不像上面只是重复对话，我们要把它发送到整个 <code>Group</code> 中，也就意味着，所有添加到该 group 的客户端都能获取该消息。下边是所有的代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># consumers.py</span></div><div class="line"><span class="keyword">from</span> channels <span class="keyword">import</span> Group</div><div class="line"></div><div class="line"><span class="comment"># 连接到 websocket.connect</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">ws_add</span><span class="params">(message)</span>:</span></div><div class="line">    <span class="comment"># 接受 connection</span></div><div class="line">    message.reply_channel.send(&#123;<span class="string">"accept"</span>: <span class="keyword">True</span>&#125;)</div><div class="line">    <span class="comment"># 添加到 chat group</span></div><div class="line">    Group(<span class="string">"chat"</span>).add(message.reply_channel)</div><div class="line"></div><div class="line"><span class="comment"># 连接到 websocket.receive</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">ws_message</span><span class="params">(message)</span>:</span></div><div class="line">    Group(<span class="string">"chat"</span>).send(&#123;</div><div class="line">        <span class="string">"text"</span>: <span class="string">"[user] %s"</span> % message.content[<span class="string">'text'</span>],</div><div class="line">    &#125;)</div><div class="line"></div><div class="line"><span class="comment"># 连接到 websocket.disconnect</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">ws_disconnect</span><span class="params">(message)</span>:</span></div><div class="line">    Group(<span class="string">"chat"</span>).discard(message.reply_channel)</div></pre></td></tr></table></figure>
+<p>然后，我们在路由 <code>routing.py</code> 中这么配置：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> channels.routing <span class="keyword">import</span> route</div><div class="line"><span class="keyword">from</span> myapp.consumers <span class="keyword">import</span> ws_add, ws_message, ws_disconnect</div><div class="line"></div><div class="line">channel_routing = [</div><div class="line">    route(<span class="string">"websocket.connect"</span>, ws_add),</div><div class="line">    route(<span class="string">"websocket.receive"</span>, ws_message),</div><div class="line">    route(<span class="string">"websocket.disconnect"</span>, ws_disconnect),</div><div class="line">]</div></pre></td></tr></table></figure>
+<p>注意，<code>http.request</code> 的路由不在这配置了 —— 如果我们不在这配，Django 将会以默认的 view 视图系统来路由 HTTP 请求，可能这就是你想要的。即使你在这配了 <code>http.request</code> 的路由，但是只匹配一部分的 path 或 method，那么其他不匹配的还是会由默认的处理器处理，也就是说还是会传到 URL 路由和 view 视图。</p>
+<p>这些代码已经可以处理 chat 服务器了。现在运行 <code>runserver</code>，打开浏览器，在开发者控制台使用同样的 JavaScript 代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// path 和路由没关系; WebSocket连接都是和 consumer 绑定的</span></div><div class="line">socket = <span class="keyword">new</span> WebSocket(<span class="string">"ws://"</span> + <span class="built_in">window</span>.location.host + <span class="string">"/chat/"</span>);</div><div class="line">socket.onmessage = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</div><div class="line">    alert(e.data);</div><div class="line">&#125;</div><div class="line">socket.onopen = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    socket.send(<span class="string">"hello world"</span>);</div><div class="line">&#125;</div><div class="line"><span class="comment">// 如果 socket 打开了，就直接调用 onopen 回调</span></div><div class="line"><span class="keyword">if</span> (socket.readyState == WebSocket.OPEN) socket.onopen();</div></pre></td></tr></table></figure>
+<p>你应该能立刻看见一个“hello world” 的 alert，但这次，你可以再打开一个浏览器 tab 页，然后做同样的事，之后两个浏览器窗口都会显示 alert。任何发来的 message 都会由 <code>ws_message</code> 消费者发送到 <code>chat</code> group，然后你的浏览器 tab 页会在 connect 后加入到 <code>chat</code> group。</p>
+<p>你可以在你的处理函数中加上一些 <code>print</code>，这样你或许能更理解是怎么调用的。你也可以使用 <code>pdb</code> 像普通的 Django 项目一样进行调试。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;开始使用-Channels&quot;&gt;&lt;a href=&quot;#开始使用-Channels&quot; class=&quot;headerlink&quot; title=&quot;开始使用 Channels&quot;&gt;&lt;/a&gt;开始使用 Channels&lt;/h2&gt;&lt;p&gt;（确保你已经&lt;a href=&quot;./channel-p
+    
+    </summary>
+    
+      <category term="文档" scheme="https://yuanblq.github.io/categories/%E6%96%87%E6%A1%A3/"/>
+    
+    
+      <category term="Django" scheme="https://yuanblq.github.io/tags/Django/"/>
+    
+      <category term="WebSocket" scheme="https://yuanblq.github.io/tags/WebSocket/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Django也能玩实时 —— chapter 3</title>
     <link href="https://yuanblq.github.io/2017/08/07/channel-part3/"/>
     <id>https://yuanblq.github.io/2017/08/07/channel-part3/</id>
     <published>2017-08-07T07:59:02.000Z</published>
-    <updated>2017-09-01T08:00:35.630Z</updated>
+    <updated>2017-09-02T03:43:22.632Z</updated>
     
     <content type="html"><![CDATA[<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>可以直接在 PyPI 上获取 Channels —— 安装，只需运行：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install -U channels</div></pre></td></tr></table></figure>
-<p>安装完之后，你需要把 <code>Channels</code> 添加到你 settings 的 <code>INSTALLED——APPS</code> 中：</p>
+<p>安装完之后，你需要把 <code>Channels</code> 添加到你 settings 的 <code>INSTALLED_APPS</code> 中：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">INSTALLED_APPS = [</div><div class="line">    <span class="string">'django.contrib.auth'</span>,</div><div class="line">    <span class="string">'django.contrib.contenttypes'</span>,</div><div class="line">    <span class="string">'django.contrib.sessions'</span>,</div><div class="line">    <span class="string">'django.contrib.sites'</span>,</div><div class="line">    ...</div><div class="line">    <span class="string">'channels'</span>,</div><div class="line">]</div></pre></td></tr></table></figure>
 <p>就这样！完成之后，<code>Channels</code> 会自己集成到 Django，并且接管 <code>runserver</code> 命令。详情见 <a href="http://channels.readthedocs.io/en/latest/getting-started.html" target="_blank" rel="external">Getting Started with Channels</a>。</p>
 <blockquote>
@@ -199,7 +270,7 @@
     <link href="https://yuanblq.github.io/2017/07/31/asyncio4/"/>
     <id>https://yuanblq.github.io/2017/07/31/asyncio4/</id>
     <published>2017-07-31T07:08:14.000Z</published>
-    <updated>2017-08-26T05:11:47.956Z</updated>
+    <updated>2017-08-26T05:11:47.955Z</updated>
     
     <content type="html"><![CDATA[<h2 id="不同线程的事件循环"><a href="#不同线程的事件循环" class="headerlink" title="不同线程的事件循环"></a>不同线程的事件循环</h2><p>通过前面的介绍，我们现在能在单线程中实现多协程的工作。</p>
 <p>这节就说说怎么在多线程中管理协程。</p>
@@ -306,7 +377,7 @@ TIME:  0.649970531463623
     <link href="https://yuanblq.github.io/2017/07/29/asyncio2/"/>
     <id>https://yuanblq.github.io/2017/07/29/asyncio2/</id>
     <published>2017-07-29T01:14:37.000Z</published>
-    <updated>2017-08-26T05:16:53.410Z</updated>
+    <updated>2017-08-26T05:16:53.409Z</updated>
     
     <content type="html"><![CDATA[<h2 id="异步实现"><a href="#异步实现" class="headerlink" title="异步实现"></a>异步实现</h2><p>要想使用 <code>asyncio</code> 实现异步，和 <code>gevent</code> 差不多，都需要相应的代码支持。<code>gevent</code> 是通过打上“猴子补丁”来实现的，而 <code>asyncio</code> 和 <code>yield from</code> 有着千丝万缕的关系，所以先实现就比较简单了。</p>
 <p>你可以自己用 <code>yield from</code> 写个协程方法，要么就只能用用别人实现的协程模块。</p>
@@ -433,7 +504,7 @@ TIME:  2.0026657581329346
     <link href="https://yuanblq.github.io/2017/07/26/Redis/"/>
     <id>https://yuanblq.github.io/2017/07/26/Redis/</id>
     <published>2017-07-26T06:18:49.000Z</published>
-    <updated>2017-08-26T05:17:43.879Z</updated>
+    <updated>2017-08-26T05:17:43.878Z</updated>
     
     <content type="html"><![CDATA[<p>Redis 是键值对存储的，通过键存入的值会永久存储。<a href="http://try.redis.io/" target="_blank" rel="external">入门 Redis 最好的网站</a></p>
 <h2 id="set-get"><a href="#set-get" class="headerlink" title="set / get"></a>set / get</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">set name &quot;fido&quot;</div></pre></td></tr></table></figure>
@@ -498,7 +569,7 @@ TIME:  2.0026657581329346
     <link href="https://yuanblq.github.io/2017/07/26/MongoDB/"/>
     <id>https://yuanblq.github.io/2017/07/26/MongoDB/</id>
     <published>2017-07-26T04:43:02.000Z</published>
-    <updated>2017-08-26T05:17:53.942Z</updated>
+    <updated>2017-08-26T05:17:53.941Z</updated>
     
     <content type="html"><![CDATA[<h2 id="数据库操作"><a href="#数据库操作" class="headerlink" title="数据库操作"></a>数据库操作</h2><h3 id="show-dbs-db-use-xx"><a href="#show-dbs-db-use-xx" class="headerlink" title="show dbs / db / use xx"></a>show dbs / db / use xx</h3><ul>
 <li><code>show dbs</code> 显示当前所有数据库</li>
@@ -670,7 +741,7 @@ TIME:  2.0026657581329346
     <link href="https://yuanblq.github.io/2017/07/03/insertion-sort/"/>
     <id>https://yuanblq.github.io/2017/07/03/insertion-sort/</id>
     <published>2017-07-02T17:15:11.000Z</published>
-    <updated>2017-08-26T05:18:05.723Z</updated>
+    <updated>2017-08-26T05:18:05.722Z</updated>
     
     <content type="html"><![CDATA[<h2 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h2><p>对于少量元素的排序，插入排序算是一个比较有效的算法。</p>
 <p>它的执行流程和打扑克摸牌时候的插牌差不多。</p>
@@ -949,7 +1020,7 @@ TIME:  2.0026657581329346
     <link href="https://yuanblq.github.io/2017/05/21/itertools%E6%A8%A1%E5%9D%97%E8%A7%A3%E6%9E%90/"/>
     <id>https://yuanblq.github.io/2017/05/21/itertools模块解析/</id>
     <published>2017-05-21T11:32:55.000Z</published>
-    <updated>2017-05-20T16:39:37.523Z</updated>
+    <updated>2017-05-20T16:39:37.522Z</updated>
     
     <content type="html"><![CDATA[<p>python 的内建模块 <code>itertools</code> 提供了非常有用的用于操作可迭代对象的函数.<br>通过这些函数, 我们能更好更快的解决许多有关可迭代对象的问题.<br>对于这些函数, 大体分成三类来描述 :  </p>
 <ul>
@@ -1126,7 +1197,7 @@ ab
     <link href="https://yuanblq.github.io/2017/05/14/%E4%BB%8E%E8%BE%93%E5%85%A5url%E5%88%B0%E6%98%BE%E7%A4%BA%E9%A1%B5%E9%9D%A2%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/"/>
     <id>https://yuanblq.github.io/2017/05/14/从输入url到显示页面发生了什么/</id>
     <published>2017-05-14T09:59:04.000Z</published>
-    <updated>2017-05-20T16:27:56.007Z</updated>
+    <updated>2017-05-20T16:27:56.006Z</updated>
     
     <content type="html"><![CDATA[<p><strong>当我们在浏览器的地址栏输入访问的 URL，然后回车，到浏览器显示对应的页面。这期间，到底发生了什么？</strong>  </p>
 <p>以下，我大概按如这几部分来探索关于浏览器是怎么呈现出我们想要的页面：  </p>
@@ -1193,7 +1264,7 @@ ab
     <link href="https://yuanblq.github.io/2017/05/08/yield%E7%90%86%E8%A7%A3/"/>
     <id>https://yuanblq.github.io/2017/05/08/yield理解/</id>
     <published>2017-05-08T12:54:59.000Z</published>
-    <updated>2017-05-19T14:34:24.288Z</updated>
+    <updated>2017-05-19T14:34:24.287Z</updated>
     
     <content type="html"><![CDATA[<h3 id="这是-StackOverflow-上的一个很热的帖子-这里是投票最高的一个答案"><a href="#这是-StackOverflow-上的一个很热的帖子-这里是投票最高的一个答案" class="headerlink" title="这是 StackOverflow 上的一个很热的帖子, 这里是投票最高的一个答案"></a>这是 StackOverflow 上的一个很热的帖子, 这里是投票最高的一个答案</h3><p>原文: <a href="http://stackoverflow.com/questions/231767/the-python-yield-keyword-explained" target="_blank" rel="external">http://stackoverflow.com/questions/231767/the-python-yield-keyword-explained</a></p>
 <h4 id="提问者的问题"><a href="#提问者的问题" class="headerlink" title="提问者的问题"></a>提问者的问题</h4><p>Python 关键字 yield 的作用是什么? 用来干什么的?</p>
@@ -1599,57 +1670,6 @@ $100
     
     
       <category term="mySQL" scheme="https://yuanblq.github.io/tags/mySQL/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>词云小例子</title>
-    <link href="https://yuanblq.github.io/2017/04/17/%E8%AF%8D%E4%BA%91%E5%B0%8F%E4%BE%8B%E5%AD%90/"/>
-    <id>https://yuanblq.github.io/2017/04/17/词云小例子/</id>
-    <published>2017-04-17T14:52:09.000Z</published>
-    <updated>2017-08-02T14:08:04.481Z</updated>
-    
-    <content type="html"><![CDATA[<p><font size="4">在<a href="/2017/04/10/WordCloud/" title="&nbsp;上一篇&nbsp;">&nbsp;上一篇&nbsp;</a>中介绍了 word cloud 的一些用法，下面是几个实战小例子。</font></p>
-<h2 id="使用默认参数从文本中生成矩形词云"><a href="#使用默认参数从文本中生成矩形词云" class="headerlink" title="使用默认参数从文本中生成矩形词云"></a>使用默认参数从文本中生成矩形词云</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span> WordCloud</div></pre></td></tr></table></figure>
-<h3 id="读取文件"><a href="#读取文件" class="headerlink" title="读取文件"></a>读取文件</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">with</span> open(<span class="string">'JaneEyre.txt'</span>) <span class="keyword">as</span> f:</div><div class="line">    text = f.read()</div></pre></td></tr></table></figure>
-<h3 id="生成词云图"><a href="#生成词云图" class="headerlink" title="生成词云图"></a>生成词云图</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">wordcloud = WordCloud().generate(text)</div></pre></td></tr></table></figure>
-<a id="more"></a>
-<h3 id="展示生成的图片"><a href="#展示生成的图片" class="headerlink" title="展示生成的图片"></a>展示生成的图片</h3><h4 id="matplotlib-方式："><a href="#matplotlib-方式：" class="headerlink" title="matplotlib 方式："></a>matplotlib 方式：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</div><div class="line">plt.imshow(wordcloud, interpolation=<span class="string">'bilinear'</span>)</div><div class="line">plt.axis(<span class="string">'off'</span>)</div><div class="line">plt.show()</div></pre></td></tr></table></figure>
-<p><img src="/2017/04/17/词云小例子/output_8_0.png" alt="png"></p>
-<h5 id="把最大字体尺寸改小点"><a href="#把最大字体尺寸改小点" class="headerlink" title="把最大字体尺寸改小点"></a>把最大字体尺寸改小点</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">wordcloud = WordCloud(max_font_size=<span class="number">40</span>).generate(text)</div><div class="line">plt.figure()</div><div class="line">plt.imshow(wordcloud, interpolation=<span class="string">'bilinear'</span>)</div><div class="line">plt.axis(<span class="string">'off'</span>)</div><div class="line">plt.show()</div></pre></td></tr></table></figure>
-<p><img src="/2017/04/17/词云小例子/output_10_0.png" alt="png"></p>
-<h4 id="用PIL方式（这种方式需要有管理员权限才可以运行）："><a href="#用PIL方式（这种方式需要有管理员权限才可以运行）：" class="headerlink" title="用PIL方式（这种方式需要有管理员权限才可以运行）："></a>用PIL方式（这种方式需要有管理员权限才可以运行）：</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 运行之后会自动打开生成的图片文件</span></div><div class="line">image = wordcloud.to_image()</div><div class="line">image.show()</div></pre></td></tr></table></figure>
-<h2 id="在mask中生成词云图"><a href="#在mask中生成词云图" class="headerlink" title="在mask中生成词云图"></a>在mask中生成词云图</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</div><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div><div class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</div><div class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span> WordCloud, STOPWORDS</div></pre></td></tr></table></figure>
-<h3 id="读取文本文件"><a href="#读取文本文件" class="headerlink" title="读取文本文件"></a>读取文本文件</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">with</span> open(<span class="string">'JaneEyre.txt'</span>) <span class="keyword">as</span> f:</div><div class="line">    text = f.read()</div></pre></td></tr></table></figure>
-<h3 id="读取用作mask的图片"><a href="#读取用作mask的图片" class="headerlink" title="读取用作mask的图片"></a>读取用作mask的图片</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">with</span> Image.open(<span class="string">'mask.jpg'</span>) <span class="keyword">as</span> p:</div><div class="line">    mask = np.array(p)</div></pre></td></tr></table></figure>
-<h3 id="生成词云"><a href="#生成词云" class="headerlink" title="生成词云"></a>生成词云</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">wc = WordCloud(background_color=<span class="string">'white'</span>, max_words=<span class="number">2000</span>, mask=mask)</div><div class="line">wc.generate(text)</div></pre></td></tr></table></figure>
-<pre><code>&lt;wordcloud.wordcloud.WordCloud at 0x7c849b0&gt;
-</code></pre><h3 id="存储到文件中"><a href="#存储到文件中" class="headerlink" title="存储到文件中"></a>存储到文件中</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">wc.to_file(<span class="string">'wc.png'</span>)</div></pre></td></tr></table></figure>
-<pre><code>&lt;wordcloud.wordcloud.WordCloud at 0x7c849b0&gt;
-</code></pre><h3 id="或者直接显示出来"><a href="#或者直接显示出来" class="headerlink" title="或者直接显示出来"></a>或者直接显示出来</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">plt.imshow(wc, interpolation=<span class="string">'bilinear'</span>)</div><div class="line">plt.axis(<span class="string">'off'</span>)</div><div class="line">plt.figure()</div><div class="line">plt.imshow(mask, cmap=plt.cm.gray, interpolation=<span class="string">'bilinear'</span>)</div><div class="line">plt.axis(<span class="string">'off'</span>)</div><div class="line">plt.show()</div></pre></td></tr></table></figure>
-<p><img src="/2017/04/17/词云小例子/output_11_0.png" alt="png"></p>
-<p><img src="/2017/04/17/词云小例子/output_11_1.png" alt="png"></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;&lt;font size=&quot;4&quot;&gt;在&lt;a href=&quot;/2017/04/10/WordCloud/&quot; title=&quot;&amp;nbsp;上一篇&amp;nbsp;&quot;&gt;&amp;nbsp;上一篇&amp;nbsp;&lt;/a&gt;中介绍了 word cloud 的一些用法，下面是几个实战小例子。&lt;/font&gt;&lt;/p&gt;
-&lt;h2 id=&quot;使用默认参数从文本中生成矩形词云&quot;&gt;&lt;a href=&quot;#使用默认参数从文本中生成矩形词云&quot; class=&quot;headerlink&quot; title=&quot;使用默认参数从文本中生成矩形词云&quot;&gt;&lt;/a&gt;使用默认参数从文本中生成矩形词云&lt;/h2&gt;&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;from&lt;/span&gt; wordcloud &lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; WordCloud&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;h3 id=&quot;读取文件&quot;&gt;&lt;a href=&quot;#读取文件&quot; class=&quot;headerlink&quot; title=&quot;读取文件&quot;&gt;&lt;/a&gt;读取文件&lt;/h3&gt;&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;with&lt;/span&gt; open(&lt;span class=&quot;string&quot;&gt;&#39;JaneEyre.txt&#39;&lt;/span&gt;) &lt;span class=&quot;keyword&quot;&gt;as&lt;/span&gt; f:&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    text = f.read()&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-&lt;h3 id=&quot;生成词云图&quot;&gt;&lt;a href=&quot;#生成词云图&quot; class=&quot;headerlink&quot; title=&quot;生成词云图&quot;&gt;&lt;/a&gt;生成词云图&lt;/h3&gt;&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;wordcloud = WordCloud().generate(text)&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-    
-    </summary>
-    
-      <category term="小练习" scheme="https://yuanblq.github.io/categories/%E5%B0%8F%E7%BB%83%E4%B9%A0/"/>
-    
-    
-      <category term="python" scheme="https://yuanblq.github.io/tags/python/"/>
-    
-      <category term="词云" scheme="https://yuanblq.github.io/tags/%E8%AF%8D%E4%BA%91/"/>
-    
-      <category term="wordcloud" scheme="https://yuanblq.github.io/tags/wordcloud/"/>
-    
-      <category term="mask" scheme="https://yuanblq.github.io/tags/mask/"/>
     
   </entry>
   
