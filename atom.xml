@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2017-09-03T15:09:47.750Z</updated>
+  <updated>2017-09-04T05:14:48.207Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -14,6 +14,67 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>celery 解决 web 耗时操作</title>
+    <link href="https://yuanblq.github.io/2017/08/20/flask-celery/"/>
+    <id>https://yuanblq.github.io/2017/08/20/flask-celery/</id>
+    <published>2017-08-20T05:13:08.000Z</published>
+    <updated>2017-09-04T05:14:48.207Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>开发环境<br>flask 0.12.2、celery 4.1.0、redis 3.2.8</p>
+</blockquote>
+<p>进入虚拟环境，安装依赖：</p>
+<ul>
+<li>flask: pip install flask</li>
+<li>celery: pip install celery</li>
+<li>redis: sudo apt-get install redis-server</li>
+<li>redis Python驱动包：pip install redis</li>
+</ul>
+<a id="more"></a>
+<h2 id="配置-flask-主页路由"><a href="#配置-flask-主页路由" class="headerlink" title="配置 flask 主页路由"></a>配置 flask 主页路由</h2><p>创建项目文件夹:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ mkdir pro_demo</div></pre></td></tr></table></figure></p>
+<p>创建 app 文件夹，以及 app/__init__.py、app/views.py 和 run.py</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># __init__.py</span></div><div class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</div><div class="line"></div><div class="line">flask_app = Flask(__name__)</div><div class="line"></div><div class="line"><span class="keyword">from</span> app <span class="keyword">import</span> views</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># views.py</span></div><div class="line"><span class="keyword">from</span> app <span class="keyword">import</span> flask_app</div><div class="line"></div><div class="line"><span class="meta">@app.route("/")</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">return</span> <span class="string">"Hello world!"</span></div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># run.py</span></div><div class="line"><span class="keyword">from</span> app <span class="keyword">import</span> flask_app</div><div class="line"></div><div class="line">flask_app.debug = <span class="keyword">True</span></div><div class="line">flask_app.run()</div></pre></td></tr></table></figure>
+<h2 id="查看网页"><a href="#查看网页" class="headerlink" title="查看网页"></a>查看网页</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ python run.py</div><div class="line"> * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)</div><div class="line"> * Restarting with <span class="built_in">stat</span></div><div class="line"> * Debugger is active!</div><div class="line"> * Debugger PIN: 906-478-811</div></pre></td></tr></table></figure>
+<p>在浏览器输入 127.0.0.1:5000，就会看见熟悉的“Hello world!”了。</p>
+<h2 id="集成-celery"><a href="#集成-celery" class="headerlink" title="集成 celery"></a>集成 celery</h2><p>在 flask 中 celery 的简单使用很容易，不需要安装第三方插件。</p>
+<h3 id="添加-celery-代码"><a href="#添加-celery-代码" class="headerlink" title="添加 celery 代码"></a>添加 celery 代码</h3><p>在 __init__.py 中添加我们的 celery 代码：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># __init__.py</span></div><div class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</div><div class="line"><span class="keyword">from</span> celery <span class="keyword">import</span> Celery</div><div class="line"></div><div class="line"></div><div class="line">flask_app = Flask(__name__)</div><div class="line">celery_app = Celery(</div><div class="line">	flask_app.name,</div><div class="line">	broker=<span class="string">"redis://localhost:6379/2"</span>,</div><div class="line">	backend=<span class="string">"redis://localhost:6379/3"</span>,</div><div class="line">	)</div><div class="line">celery_app.conf.update(flask_app.config)</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">from</span> app <span class="keyword">import</span> views</div></pre></td></tr></table></figure></p>
+<p>其中 <code>broker</code> 中间人用 redis 的 2 号数据库，<code>backend</code> 结果存储在 redis 的 3 号数据库，当然你可以按自己需要选择其他数据库，不过 celery 官方推荐使用 RabbitMQ 和 Redis，如果使用其他数据库，官方不保证你会遇到什么 bug。</p>
+<h3 id="添加-control-代码"><a href="#添加-control-代码" class="headerlink" title="添加 control 代码"></a>添加 control 代码</h3><p>新建 <code>control.py</code> 文件，并在 <code>control.py</code> 中添加我们的耗时操作任务：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># control.py</span></div><div class="line"><span class="keyword">from</span> app <span class="keyword">import</span> celery_app</div><div class="line"><span class="keyword">import</span> time</div><div class="line"></div><div class="line"><span class="meta">@celery_app.task</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">long_time_work</span><span class="params">(how_long=<span class="number">2</span>)</span>:</span></div><div class="line">	time.sleep(how_long)</div><div class="line">	print(<span class="string">"耗时任务已完成！"</span>)</div></pre></td></tr></table></figure>
+<p>这里我们使用 <code>time.sleep()</code> 来模拟耗时任务。</p>
+<h3 id="调用耗时任务"><a href="#调用耗时任务" class="headerlink" title="调用耗时任务"></a>调用耗时任务</h3><p>最后在我们的 view 视图中调用我们的耗时任务：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> app <span class="keyword">import</span> flask_app</div><div class="line"><span class="keyword">from</span> app <span class="keyword">import</span> control</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@flask_app.route("/")</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">welcome</span><span class="params">()</span>:</span></div><div class="line">	<span class="keyword">return</span> <span class="string">"Hello world!"</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@flask_app.route("/work/")</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">work</span><span class="params">()</span>:</span></div><div class="line">	control.long_time_work.delay(<span class="number">5</span>)</div><div class="line">	<span class="keyword">return</span> <span class="string">"long time work!"</span></div></pre></td></tr></table></figure>
+<h3 id="启动-celery"><a href="#启动-celery" class="headerlink" title="启动 celery"></a>启动 celery</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ celery -A app worker <span class="_">-l</span> info</div></pre></td></tr></table></figure>
+<p>现在我们启动 flask 服务器，在浏览器中输入 <code>127.0.0.1:5000/work/</code>，我们发现页面会马上显示 <code>long time work</code>，不会阻塞 5 秒才返回响应。</p>
+<p>5 秒之后，我们会在 celery 的终端看到任务完成打印的消息：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[2017-08-20 12:37:35,528: INFO/MainProcess] Received task: app.control.long_time_work[062766ef-5e20-4453-8d53-3d1290eaacc1]  </div><div class="line">[2017-08-20 12:37:37,533: WARNING/ForkPoolWorker-4] 耗时任务已完成！</div><div class="line">[2017-08-20 12:37:37,540: INFO/ForkPoolWorker-4] Task app.control.long_time_work[062766ef-5e20-4453-8d53-3d1290eaacc1] succeeded <span class="keyword">in</span> 2.00878114400075s: None</div></pre></td></tr></table></figure></p>
+<p>以上</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;开发环境&lt;br&gt;flask 0.12.2、celery 4.1.0、redis 3.2.8&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;进入虚拟环境，安装依赖：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;flask: pip install flask&lt;/li&gt;
+&lt;li&gt;celery: pip install celery&lt;/li&gt;
+&lt;li&gt;redis: sudo apt-get install redis-server&lt;/li&gt;
+&lt;li&gt;redis Python驱动包：pip install redis&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+      <category term="小练习" scheme="https://yuanblq.github.io/categories/%E5%B0%8F%E7%BB%83%E4%B9%A0/"/>
+    
+    
+      <category term="celery" scheme="https://yuanblq.github.io/tags/celery/"/>
+    
+  </entry>
   
   <entry>
     <title>Django也能玩实时 —— chapter 4</title>
@@ -84,9 +145,9 @@
       <category term="文档" scheme="https://yuanblq.github.io/categories/%E6%96%87%E6%A1%A3/"/>
     
     
-      <category term="WebSocket" scheme="https://yuanblq.github.io/tags/WebSocket/"/>
-    
       <category term="Django" scheme="https://yuanblq.github.io/tags/Django/"/>
+    
+      <category term="WebSocket" scheme="https://yuanblq.github.io/tags/WebSocket/"/>
     
   </entry>
   
@@ -122,9 +183,9 @@
       <category term="文档" scheme="https://yuanblq.github.io/categories/%E6%96%87%E6%A1%A3/"/>
     
     
-      <category term="WebSocket" scheme="https://yuanblq.github.io/tags/WebSocket/"/>
-    
       <category term="Django" scheme="https://yuanblq.github.io/tags/Django/"/>
+    
+      <category term="WebSocket" scheme="https://yuanblq.github.io/tags/WebSocket/"/>
     
   </entry>
   
@@ -198,9 +259,9 @@
       <category term="文档" scheme="https://yuanblq.github.io/categories/%E6%96%87%E6%A1%A3/"/>
     
     
-      <category term="WebSocket" scheme="https://yuanblq.github.io/tags/WebSocket/"/>
-    
       <category term="Django" scheme="https://yuanblq.github.io/tags/Django/"/>
+    
+      <category term="WebSocket" scheme="https://yuanblq.github.io/tags/WebSocket/"/>
     
   </entry>
   
@@ -266,9 +327,9 @@
       <category term="文档" scheme="https://yuanblq.github.io/categories/%E6%96%87%E6%A1%A3/"/>
     
     
-      <category term="WebSocket" scheme="https://yuanblq.github.io/tags/WebSocket/"/>
-    
       <category term="Django" scheme="https://yuanblq.github.io/tags/Django/"/>
+    
+      <category term="WebSocket" scheme="https://yuanblq.github.io/tags/WebSocket/"/>
     
   </entry>
   
@@ -800,7 +861,7 @@ TIME:  2.0026657581329346
     <link href="https://yuanblq.github.io/2017/06/22/%E5%90%8D%E4%BA%BA%E7%9A%84%E9%A2%9C%E5%80%BC%E6%9C%89%E5%A4%9A%E9%AB%98%EF%BC%9F/"/>
     <id>https://yuanblq.github.io/2017/06/22/名人的颜值有多高？/</id>
     <published>2017-06-22T14:22:37.000Z</published>
-    <updated>2017-09-03T15:02:58.623Z</updated>
+    <updated>2017-09-04T04:32:34.094Z</updated>
     
     <content type="html"><![CDATA[<p>玩弄微软小冰的时候发现有个颜值查询功能，作为一枚颜值正无穷的帅比简直高处不胜寒。<br>后来突发奇想：是不是要想被人民群众记住，不仅仅要有才华，而且颜值也必须得高？</p>
 <a id="more"></a>
@@ -820,8 +881,10 @@ TIME:  2.0026657581329346
     
     </summary>
     
+      <category term="爬虫" scheme="https://yuanblq.github.io/categories/%E7%88%AC%E8%99%AB/"/>
     
-      <category term="爬虫" scheme="https://yuanblq.github.io/tags/%E7%88%AC%E8%99%AB/"/>
+    
+      <category term="Python" scheme="https://yuanblq.github.io/tags/Python/"/>
     
   </entry>
   
@@ -1469,218 +1532,6 @@ $100
       <category term="itchat" scheme="https://yuanblq.github.io/tags/itchat/"/>
     
       <category term="小冰" scheme="https://yuanblq.github.io/tags/%E5%B0%8F%E5%86%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>mySQL操作</title>
-    <link href="https://yuanblq.github.io/2017/04/21/mySQL%E6%93%8D%E4%BD%9C/"/>
-    <id>https://yuanblq.github.io/2017/04/21/mySQL操作/</id>
-    <published>2017-04-21T11:38:36.000Z</published>
-    <updated>2017-09-03T14:57:53.428Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="SQL"><a href="#SQL" class="headerlink" title="SQL"></a>SQL</h1><p>SQL分为三个部分：</p>
-<p>DDL：Data Definition<br>Language，数据定义语言，用来维护存储数据的结构（数据库，表），代表指令：create，drop，alter等。</p>
-<p>DML：Data Manipulation<br>Language，数据操作语言，用来对数据进行操作（数据表中的内容），代表指令：insert，delete，update等；其中DML内部又单独进行了一个分类：DQL（Data<br>Query Language：数据查询语言，如select）。</p>
-<p>DCL：Data Control<br>Language，数据控制语言，主要是负责权限管理（用户），代表指令：grant，revoke等。</p>
-<p>SQL是关系型数据库的操作指令，SQL是一种约束，但不强制（类似W3C），不同产品（如Oracle，mysql）可能内部会有一些细微的区别。</p>
-<a id="more"></a>
-<h1 id="MySQL数据库"><a href="#MySQL数据库" class="headerlink" title="MySQL数据库"></a>MySQL数据库</h1><p>Mysql数据库是一种c/s结构的软件：客户端/服务端，若想访问服务器必须通过客户端（服务器一直运行，客户端在需要使用的时候运行）。</p>
-<p>交互方式</p>
-<ol>
-<li><p>客户端连接认证：连接服务器，认证身份：mysql.exe -hPup（hP连接，up认证）</p>
-<p> <img src="/2017/04/21/mySQL操作/1.png" alt="png"></p>
-</li>
-<li><p>发送SQL指令</p>
-</li>
-<li><p>服务器接收SQL指令，处理SQL指令，返回操作结果</p>
-</li>
-<li><p>客户端接受结果，显示结果</p>
-<p> <img src="/2017/04/21/mySQL操作/2.png" alt="png"></p>
-</li>
-<li><p>断开连接（释放资源：服务器并发限制）：exit / quit / \q</p>
-<p> <img src="/2017/04/21/mySQL操作/3.png" alt="png"></p>
-</li>
-</ol>
-<h1 id="MySQL服务器对象"><a href="#MySQL服务器对象" class="headerlink" title="MySQL服务器对象"></a>MySQL服务器对象</h1><p>将mysql服务器内部对象分成四层：系统（DBMS）-> 数据库（DB）-><br>数据表（table）-> 字段（field）</p>
-<p><img src="/2017/04/21/mySQL操作/4.png" alt="png"></p>
-<h1 id="SQL基本操作"><a href="#SQL基本操作" class="headerlink" title="SQL基本操作"></a>SQL基本操作</h1><p>基本操作：CRUD</p>
-<p>将SQL的基本操作根据操作对象分为三类：库操作，表操作（字段），数据操作</p>
-<h2 id="库操作"><a href="#库操作" class="headerlink" title="库操作"></a>库操作</h2><p>对数据库的增删改查</p>
-<h3 id="新增数据库"><a href="#新增数据库" class="headerlink" title="新增数据库"></a>新增数据库</h3><p>基本语法</p>
-<p>create database 数据库名字 [库选项];</p>
-<p>库选项：用来约束数据库，分为两个选项</p>
-<p>字符集设定：charset / character set<br>具体字符集（数据存储的编码格式）：常用字符集：gbk和utf8</p>
-<p>校对集设定：collate 具体校对集（数据比较的规则）</p>
-<p><img src="/2017/04/21/mySQL操作/5.png" alt="png"></p>
-<p>其中：数据库名字不能用关键字或者保留字，非要用可以在前后加上反引号（`）</p>
-<p>当创建数据库的SQL语句执行后，发生了什么？</p>
-<ol>
-<li><p>在数据库系统中，增加了对应的数据库信息</p>
-</li>
-<li><p>会在保存数据的文件夹下：Data目录，创建一个对应数据库名字的文件夹</p>
-<p><img src="/2017/04/21/mySQL操作/6.png" alt="png"></p>
-</li>
-<li><p>每个数据库下都有一个opt文件：保存了库选项</p>
-<p><img src="/2017/04/21/mySQL操作/7.png" alt="png"></p>
-</li>
-</ol>
-<h3 id="查看数据库"><a href="#查看数据库" class="headerlink" title="查看数据库"></a>查看数据库</h3><ol>
-<li><p>查看所有数据库</p>
-<p>show databases;</p>
-<p><img src="/2017/04/21/mySQL操作/8.png" alt="png"></p>
-</li>
-<li><p>查看指定部分的数据库：模糊查询</p>
-<p>show databases like ‘pattern’ – pattern是匹配模式</p>
-<p>%：表示匹配多个字符</p>
-<p>_：表示匹配单个字符</p>
-</li>
-<li><p>查看数据库的创建语句</p>
-<p>show create database 数据库名字;</p>
-<p><img src="/2017/04/21/mySQL操作/9.png" alt="png"></p>
-<p>数据库在执行SQL语句之前会优化SQL，系统保存优化之后的结果。</p>
-</li>
-</ol>
-<h3 id="更新数据库"><a href="#更新数据库" class="headerlink" title="更新数据库"></a>更新数据库</h3><p>数据库的名字不可以修改。 – 修改数据库名字不安全</p>
-<p>数据库的修改仅限库选项：字符集和校对集（校对集依赖字符集）</p>
-<p>alter database 数据库名字 [库选项];</p>
-<p>库选项：charset / character set [=] 字符集</p>
-<p>collate 校对集</p>
-<p><img src="/2017/04/21/mySQL操作/10.png" alt="png"></p>
-<h3 id="删除数据库"><a href="#删除数据库" class="headerlink" title="删除数据库"></a>删除数据库</h3><p>drop database 数据库名字;</p>
-<p><img src="/2017/04/21/mySQL操作/11.png" alt="png"></p>
-<p>当执行删除数据库语句时，发生了什么？</p>
-<ol>
-<li><p>在数据库内部看不到对应的数据库</p>
-</li>
-<li><p>在对应的数据库存储的文件夹内：数据库名字对应的文件夹也被删除（级联删除：里面的数据表全部删除）</p>
-</li>
-</ol>
-<h2 id="表操作"><a href="#表操作" class="headerlink" title="表操作"></a>表操作</h2><p>表与字段是不可分的。</p>
-<h3 id="新增数据表"><a href="#新增数据表" class="headerlink" title="新增数据表"></a>新增数据表</h3><p>create table [if not exists] 表名(</p>
-<p>字段名字 数据类型,</p>
-<p>字段名字 数据类型,</p>
-<p>…</p>
-<p>)[表选项];</p>
-<p>if not exists：如果表名不存在，那就创建，否则不执行创建代码：检查功能</p>
-<p>表选项：控制表的表现</p>
-<p>字符集：charset / character set 具体字符集; – 保证表中数据存储的字符集</p>
-<p>校对集：collate 具体校对集;</p>
-<p>存储引擎：engin 具体的存储引擎（innodb和myisam）</p>
-<p><img src="/2017/04/21/mySQL操作/12.png" alt="png"></p>
-<p>任何一个表的设计都必须指定数据库。</p>
-<p>方案1：显式的指定表所属的数据库</p>
-<p>create table 数据库名.表名(); – 将当前的数据表创建到指定的数据库下</p>
-<p><img src="/2017/04/21/mySQL操作/13.png" alt="png"></p>
-<p>方案2：隐式的指定表所属的数据库：先进入到某个数据库环境，这样创建的表自动归属到某个指定的数据库。</p>
-<p>进入数据库环境：use 数据库名字</p>
-<p><img src="/2017/04/21/mySQL操作/14.png" alt="png"></p>
-<p>当创建表的SQL指令执行之后，发生了什么？</p>
-<ol>
-<li><p>指定数据库下已经存在对应的表</p>
-</li>
-<li><p>在数据库对应的文件夹下，会产生对应表的机构文件（跟存储引擎有关）</p>
-<p><img src="/2017/04/21/mySQL操作/15.png" alt="png"></p>
-</li>
-</ol>
-<h3 id="查看数据表"><a href="#查看数据表" class="headerlink" title="查看数据表"></a>查看数据表</h3><p>数据库能查看的方式表都能用。</p>
-<ol>
-<li><p>查看所有表：show tables;</p>
-<p><img src="/2017/04/21/mySQL操作/16.png" alt="png"></p>
-</li>
-<li><p>查看部分表：show tables like ‘pattren’; – pattern 匹配模式</p>
-</li>
-<li><p>查看表创建语句：show create table 表名;</p>
-<p>show create table student\g – \g 等价于分号（;）</p>
-<p>show create table student\G; – \G将查到的结构旋转90°（纵向）</p>
-<p><img src="/2017/04/21/mySQL操作/17.png" alt="png"></p>
-</li>
-<li><p>查看表结构：查看表中的字段信息</p>
-<p>desc/ describe / show columns from 表名;</p>
-<p><img src="/2017/04/21/mySQL操作/18.png" alt="png"></p>
-</li>
-</ol>
-<h3 id="更新数据表"><a href="#更新数据表" class="headerlink" title="更新数据表"></a>更新数据表</h3><p>表的修改分为两部分：修改表本身和修改字段</p>
-<h4 id="修改表本身"><a href="#修改表本身" class="headerlink" title="修改表本身"></a>修改表本身</h4><p>表本身可以修改：表名和表选项</p>
-<ol>
-<li><p>修改表名：rename table 老表名 to 新表名;</p>
-<p><img src="/2017/04/21/mySQL操作/19.png" alt="png"></p>
-</li>
-<li><p>修改表选项：字符集，校对集和存储引擎</p>
-<p>alter table 表名 表选项 [=] 值</p>
-<p><img src="/2017/04/21/mySQL操作/20.png" alt="png"></p>
-</li>
-</ol>
-<h4 id="修改字段"><a href="#修改字段" class="headerlink" title="修改字段"></a>修改字段</h4><p>字段操作有很多：新增，修改，重名，删除</p>
-<ol>
-<li><p>新增字段</p>
-<p>alter table 表名 add [column] 字段名 数据类型 [列属性] [位置];</p>
-<p>位置：字段名可以存放到表中的任意位置：</p>
-<p>first：第一个位置</p>
-<p>after：在哪个字段之后：after 字段名；默认的是在最后一个字段之后</p>
-<p><img src="/2017/04/21/mySQL操作/21.png" alt="png"></p>
-</li>
-<li><p>修改字段：通常修改属性或者数据类型</p>
-<p>alter table 表名 modify 字段名 数据类型 [属性] [位置];</p>
-<p><img src="/2017/04/21/mySQL操作/22.png" alt="png"></p>
-</li>
-<li><p>重命名字段</p>
-<p>alter table 表名 change 旧字段名 新字段名 数据类型 [属性] [位置];</p>
-<p><img src="/2017/04/21/mySQL操作/23.png" alt="png"></p>
-</li>
-<li><p>删除字段</p>
-<p>alter table 表名 drop 字段名;</p>
-<p><img src="/2017/04/21/mySQL操作/24.png" alt="png"></p>
-</li>
-</ol>
-<h4 id="删除数据表"><a href="#删除数据表" class="headerlink" title="删除数据表"></a>删除数据表</h4><p>drop table 表名1，表名2…; – 可以删除多张数据表</p>
-<p><img src="/2017/04/21/mySQL操作/25.png" alt="png"></p>
-<p>当删除数据表的指令执行后发生了什么？</p>
-<ol>
-<li><p>在表空间中，没有了指定的表（数据也没有了）</p>
-</li>
-<li><p>在数据库对用的文件夹下，表对应的文件（与存储引擎有关）也会被删除</p>
-<p><img src="/2017/04/21/mySQL操作/26.png" alt="png"></p>
-</li>
-</ol>
-<h2 id="数据操作"><a href="#数据操作" class="headerlink" title="数据操作"></a>数据操作</h2><h3 id="新增数据"><a href="#新增数据" class="headerlink" title="新增数据"></a>新增数据</h3><p>有两种方法</p>
-<p>方案1：给全表字段插入数据，不需要指定字段列表：要求数据的值出现的顺序必须与表中设计的字段出现的顺序一致：凡是非数值数据，都需要使用引号（建议是单引号）包裹</p>
-<p>insert into 表名 values(值列表)[,(值列表)]; – 可以一次性插入多条记录</p>
-<p><img src="/2017/04/21/mySQL操作/27.png" alt="png"></p>
-<p>方案2：给部分字段插入数据，需要选定字段列表：字段列表出现的顺序与字段的顺序无关，但是值列表的顺序必须与选定的字段的顺序一致。</p>
-<p>inset into 表名 (字段列表) values (值列表)[,(值列表)];</p>
-<p><img src="/2017/04/21/mySQL操作/28.png" alt="png"></p>
-<h3 id="查看数据"><a href="#查看数据" class="headerlink" title="查看数据"></a>查看数据</h3><p>select */字段列表 from 表名 [where 条件];</p>
-<ol>
-<li><p>查看所有数据</p>
-<p><img src="/2017/04/21/mySQL操作/29.png" alt="png"></p>
-</li>
-<li><p>查看指定字段，指定条件的数据</p>
-<p><img src="/2017/04/21/mySQL操作/30.png" alt="png"></p>
-</li>
-</ol>
-<h3 id="更新数据"><a href="#更新数据" class="headerlink" title="更新数据"></a>更新数据</h3><p>update 表名 set 字段 = 值 [where 条件]; – 不加where条件就是更新全部数据</p>
-<p><img src="/2017/04/21/mySQL操作/31.png" alt="png"></p>
-<h3 id="删除数据库-1"><a href="#删除数据库-1" class="headerlink" title="删除数据库"></a>删除数据库</h3><p>delete from 表名 [where条件];</p>
-<p><img src="/2017/04/21/mySQL操作/32.png" alt="png"></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;SQL&quot;&gt;&lt;a href=&quot;#SQL&quot; class=&quot;headerlink&quot; title=&quot;SQL&quot;&gt;&lt;/a&gt;SQL&lt;/h1&gt;&lt;p&gt;SQL分为三个部分：&lt;/p&gt;
-&lt;p&gt;DDL：Data Definition&lt;br&gt;Language，数据定义语言，用来维护存储数据的结构（数据库，表），代表指令：create，drop，alter等。&lt;/p&gt;
-&lt;p&gt;DML：Data Manipulation&lt;br&gt;Language，数据操作语言，用来对数据进行操作（数据表中的内容），代表指令：insert，delete，update等；其中DML内部又单独进行了一个分类：DQL（Data&lt;br&gt;Query Language：数据查询语言，如select）。&lt;/p&gt;
-&lt;p&gt;DCL：Data Control&lt;br&gt;Language，数据控制语言，主要是负责权限管理（用户），代表指令：grant，revoke等。&lt;/p&gt;
-&lt;p&gt;SQL是关系型数据库的操作指令，SQL是一种约束，但不强制（类似W3C），不同产品（如Oracle，mysql）可能内部会有一些细微的区别。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="文档" scheme="https://yuanblq.github.io/categories/%E6%96%87%E6%A1%A3/"/>
-    
-    
-      <category term="Database" scheme="https://yuanblq.github.io/tags/Database/"/>
-    
-      <category term="mySQL" scheme="https://yuanblq.github.io/tags/mySQL/"/>
     
   </entry>
   
