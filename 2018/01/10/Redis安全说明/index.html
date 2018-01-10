@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="celery," />
+  <meta name="keywords" content="Database," />
 
 
 
@@ -89,37 +89,22 @@
 
 
 
-<meta name="description" content="开发环境flask 0.12.2、celery 4.1.0、redis 3.2.8
-
-进入虚拟环境，安装依赖：
-
-flask: pip install flask
-celery: pip install celery
-redis: sudo apt-get install redis-server
-redis Python驱动包：pip install redis">
+<meta name="description" content="Redis 安全普通安全模型redis 设计的初衷就是用来给在可信环境的可信客户端访问的，也就是说直接把 redis 实例暴露在网络或者不可信的环境中不是一个明智的选择。
+比如在一个普通的 web 应用上下文中，使用 redis 作为数据库、缓存、消息系统，位于 web 前端的客户端应用或者甚至是用户都可以通过查询 redis 来获取请求的操作页面。
+这种情况下，web 应用暴露在 redis 和">
 <meta property="og:type" content="article">
-<meta property="og:title" content="celery 解决 web 耗时操作">
-<meta property="og:url" content="https://yuanblq.github.io/2017/08/20/flask-celery/index.html">
+<meta property="og:title" content="Redis安全说明">
+<meta property="og:url" content="https://yuanblq.github.io/2018/01/10/Redis安全说明/index.html">
 <meta property="og:site_name" content="Yuan">
-<meta property="og:description" content="开发环境flask 0.12.2、celery 4.1.0、redis 3.2.8
-
-进入虚拟环境，安装依赖：
-
-flask: pip install flask
-celery: pip install celery
-redis: sudo apt-get install redis-server
-redis Python驱动包：pip install redis">
-<meta property="og:updated_time" content="2017-09-20T15:36:58.000Z">
+<meta property="og:description" content="Redis 安全普通安全模型redis 设计的初衷就是用来给在可信环境的可信客户端访问的，也就是说直接把 redis 实例暴露在网络或者不可信的环境中不是一个明智的选择。
+比如在一个普通的 web 应用上下文中，使用 redis 作为数据库、缓存、消息系统，位于 web 前端的客户端应用或者甚至是用户都可以通过查询 redis 来获取请求的操作页面。
+这种情况下，web 应用暴露在 redis 和">
+<meta property="og:updated_time" content="2018-01-10T06:22:13.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="celery 解决 web 耗时操作">
-<meta name="twitter:description" content="开发环境flask 0.12.2、celery 4.1.0、redis 3.2.8
-
-进入虚拟环境，安装依赖：
-
-flask: pip install flask
-celery: pip install celery
-redis: sudo apt-get install redis-server
-redis Python驱动包：pip install redis">
+<meta name="twitter:title" content="Redis安全说明">
+<meta name="twitter:description" content="Redis 安全普通安全模型redis 设计的初衷就是用来给在可信环境的可信客户端访问的，也就是说直接把 redis 实例暴露在网络或者不可信的环境中不是一个明智的选择。
+比如在一个普通的 web 应用上下文中，使用 redis 作为数据库、缓存、消息系统，位于 web 前端的客户端应用或者甚至是用户都可以通过查询 redis 来获取请求的操作页面。
+这种情况下，web 应用暴露在 redis 和">
 
 
 
@@ -147,13 +132,13 @@ redis Python驱动包：pip install redis">
 
 
 
-  <link rel="canonical" href="https://yuanblq.github.io/2017/08/20/flask-celery/"/>
+  <link rel="canonical" href="https://yuanblq.github.io/2018/01/10/Redis安全说明/"/>
 
 
 
 
 
-  <title> celery 解决 web 耗时操作 | Yuan </title>
+  <title> Redis安全说明 | Yuan </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -301,7 +286,7 @@ redis Python驱动包：pip install redis">
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://yuanblq.github.io/2017/08/20/flask-celery/">
+    <link itemprop="mainEntityOfPage" href="https://yuanblq.github.io/2018/01/10/Redis安全说明/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Yuan">
@@ -322,7 +307,7 @@ redis Python驱动包：pip install redis">
             
             
               
-                celery 解决 web 耗时操作
+                Redis安全说明
               
             
           </h1>
@@ -337,8 +322,8 @@ redis Python驱动包：pip install redis">
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-20T13:13:08+08:00">
-                2017-08-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-10T14:20:58+08:00">
+                2018-01-10
               </time>
             
 
@@ -360,8 +345,8 @@ redis Python驱动包：pip install redis">
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/小练习/" itemprop="url" rel="index">
-                    <span itemprop="name">小练习</span>
+                  <a href="/categories/文档/" itemprop="url" rel="index">
+                    <span itemprop="name">文档</span>
                   </a>
                 </span>
 
@@ -377,7 +362,7 @@ redis Python驱动包：pip install redis">
 
           
           
-             <span id="/2017/08/20/flask-celery/" class="leancloud_visitors" data-flag-title="celery 解决 web 耗时操作">
+             <span id="/2018/01/10/Redis安全说明/" class="leancloud_visitors" data-flag-title="Redis安全说明">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -406,36 +391,32 @@ redis Python驱动包：pip install redis">
       
 
       
-        <blockquote>
-<p>开发环境<br>flask 0.12.2、celery 4.1.0、redis 3.2.8</p>
-</blockquote>
-<p>进入虚拟环境，安装依赖：</p>
+        <h2 id="Redis-安全"><a href="#Redis-安全" class="headerlink" title="Redis 安全"></a>Redis 安全</h2><h3 id="普通安全模型"><a href="#普通安全模型" class="headerlink" title="普通安全模型"></a>普通安全模型</h3><p>redis 设计的初衷就是用来给在可信环境的可信客户端访问的，也就是说直接把 redis 实例暴露在网络或者不可信的环境中不是一个明智的选择。</p>
+<p>比如在一个普通的 web 应用上下文中，使用 redis 作为数据库、缓存、消息系统，位于 web 前端的客户端应用或者甚至是用户都可以通过查询 redis 来获取请求的操作页面。</p>
+<p>这种情况下，web 应用暴露在 redis 和不可信的客户端之间（用户通过 web 应用访问）。</p>
+<p>这是一个特殊案例，但通常对于连接到 redis 的不可信访问都必须通过一层 ACL 层来验证用户的输入，判断应该做出什么样的操作行为。</p>
+<h3 id="网络安全"><a href="#网络安全" class="headerlink" title="网络安全"></a>网络安全</h3><p>如果你只是在自己电脑上用用 redis，那么就没必要把 redis 的端口暴露在网络中。通过在 <code>redis.conf</code> 文件中的以下命令可以实现只是自己电脑的 redis 客户端通过回环接口访问：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bind 127.0.0.1</div></pre></td></tr></table></figure></p>
+<p>如果防止 redis 端口暴露在外部环境的尝试失败，那么将可能引发不可想象的毁灭。比如一个简单的 <code>FLUSHALL</code> 命令能删光你的所有数据。</p>
+<h3 id="保护模式"><a href="#保护模式" class="headerlink" title="保护模式"></a>保护模式</h3><p>从 3.2.0 版本开始，默认情况下，redis 处于“保护模式”状态。该模式下，redis 只回复回环接口的 query 请求。保护请求依然可以被手动取消或者可以开放其他接口。</p>
+<h3 id="设置密码"><a href="#设置密码" class="headerlink" title="设置密码"></a>设置密码</h3><p>对于访问操作，redis 并没有做处理，而是加了一层验证层，可以在 <code>redis.conf</code> 配置文件中设置。</p>
+<p>设置完密码后可以通过 <code>AUTH &lt;password&gt;</code> 命令发送验证。该密码一般有系统管理员在 <code>redis.conf</code> 文件中配置，而且应尽量的复杂：</p>
 <ul>
-<li>flask: pip install flask</li>
-<li>celery: pip install celery</li>
-<li>redis: sudo apt-get install redis-server</li>
-<li>redis Python驱动包：pip install redis</li>
+<li>redis 查询速度很快，所以短时间内攻击者可以尝试很多次</li>
+<li>密码以明文的形式配置在 <code>redis.conf</code> 文件中，所以即使很复杂也不必担心忘记</li>
 </ul>
-<a id="more"></a>
-<h2 id="配置-flask-主页路由"><a href="#配置-flask-主页路由" class="headerlink" title="配置 flask 主页路由"></a>配置 flask 主页路由</h2><p>创建项目文件夹:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ mkdir pro_demo</div></pre></td></tr></table></figure></p>
-<p>创建 app 文件夹，以及 app/__init__.py、app/views.py 和 run.py</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># __init__.py</span></div><div class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</div><div class="line"></div><div class="line">flask_app = Flask(__name__)</div><div class="line"></div><div class="line"><span class="keyword">from</span> app <span class="keyword">import</span> views</div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># views.py</span></div><div class="line"><span class="keyword">from</span> app <span class="keyword">import</span> flask_app</div><div class="line"></div><div class="line"><span class="meta">@app.route("/")</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">return</span> <span class="string">"Hello world!"</span></div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># run.py</span></div><div class="line"><span class="keyword">from</span> app <span class="keyword">import</span> flask_app</div><div class="line"></div><div class="line">flask_app.debug = <span class="keyword">True</span></div><div class="line">flask_app.run()</div></pre></td></tr></table></figure>
-<h2 id="查看网页"><a href="#查看网页" class="headerlink" title="查看网页"></a>查看网页</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ python run.py</div><div class="line"> * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)</div><div class="line"> * Restarting with <span class="built_in">stat</span></div><div class="line"> * Debugger is active!</div><div class="line"> * Debugger PIN: 906-478-811</div></pre></td></tr></table></figure>
-<p>在浏览器输入 127.0.0.1:5000，就会看见熟悉的“Hello world!”了。</p>
-<h2 id="集成-celery"><a href="#集成-celery" class="headerlink" title="集成 celery"></a>集成 celery</h2><p>在 flask 中 celery 的简单使用很容易，不需要安装第三方插件。</p>
-<h3 id="添加-celery-代码"><a href="#添加-celery-代码" class="headerlink" title="添加 celery 代码"></a>添加 celery 代码</h3><p>在 __init__.py 中添加我们的 celery 代码：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># __init__.py</span></div><div class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</div><div class="line"><span class="keyword">from</span> celery <span class="keyword">import</span> Celery</div><div class="line"></div><div class="line"></div><div class="line">flask_app = Flask(__name__)</div><div class="line">celery_app = Celery(</div><div class="line">	flask_app.name,</div><div class="line">	broker=<span class="string">"redis://localhost:6379/2"</span>,</div><div class="line">	backend=<span class="string">"redis://localhost:6379/3"</span>,</div><div class="line">	)</div><div class="line">celery_app.conf.update(flask_app.config)</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">from</span> app <span class="keyword">import</span> views</div></pre></td></tr></table></figure></p>
-<p>其中 <code>broker</code> 中间人用 redis 的 2 号数据库，<code>backend</code> 结果存储在 redis 的 3 号数据库，当然你可以按自己需要选择其他数据库，不过 celery 官方推荐使用 RabbitMQ 和 Redis，如果使用其他数据库，官方不保证你会遇到什么 bug。</p>
-<h3 id="添加-control-代码"><a href="#添加-control-代码" class="headerlink" title="添加 control 代码"></a>添加 control 代码</h3><p>新建 <code>control.py</code> 文件，并在 <code>control.py</code> 中添加我们的耗时操作任务：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># control.py</span></div><div class="line"><span class="keyword">from</span> app <span class="keyword">import</span> celery_app</div><div class="line"><span class="keyword">import</span> time</div><div class="line"></div><div class="line"><span class="meta">@celery_app.task</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">long_time_work</span><span class="params">(how_long=<span class="number">2</span>)</span>:</span></div><div class="line">	time.sleep(how_long)</div><div class="line">	print(<span class="string">"耗时任务已完成！"</span>)</div></pre></td></tr></table></figure>
-<p>这里我们使用 <code>time.sleep()</code> 来模拟耗时任务。</p>
-<h3 id="调用耗时任务"><a href="#调用耗时任务" class="headerlink" title="调用耗时任务"></a>调用耗时任务</h3><p>最后在我们的 view 视图中调用我们的耗时任务：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> app <span class="keyword">import</span> flask_app</div><div class="line"><span class="keyword">from</span> app <span class="keyword">import</span> control</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@flask_app.route("/")</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">welcome</span><span class="params">()</span>:</span></div><div class="line">	<span class="keyword">return</span> <span class="string">"Hello world!"</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@flask_app.route("/work/")</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">work</span><span class="params">()</span>:</span></div><div class="line">	control.long_time_work.delay(<span class="number">5</span>)</div><div class="line">	<span class="keyword">return</span> <span class="string">"long time work!"</span></div></pre></td></tr></table></figure>
-<h3 id="启动-celery"><a href="#启动-celery" class="headerlink" title="启动 celery"></a>启动 celery</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ celery -A app worker <span class="_">-l</span> info</div></pre></td></tr></table></figure>
-<p>现在我们启动 flask 服务器，在浏览器中输入 <code>127.0.0.1:5000/work/</code>，我们发现页面会马上显示 <code>long time work</code>，不会阻塞 5 秒才返回响应。</p>
-<p>5 秒之后，我们会在 celery 的终端看到任务完成打印的消息：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[2017-08-20 12:37:35,528: INFO/MainProcess] Received task: app.control.long_time_work[062766ef-5e20-4453-8d53-3d1290eaacc1]  </div><div class="line">[2017-08-20 12:37:40,533: WARNING/ForkPoolWorker-4] 耗时任务已完成！</div><div class="line">[2017-08-20 12:37:40,540: INFO/ForkPoolWorker-4] Task app.control.long_time_work[062766ef-5e20-4453-8d53-3d1290eaacc1] succeeded <span class="keyword">in</span> 5.00878114400075s: None</div></pre></td></tr></table></figure></p>
-<p>以上</p>
+<p>但 <code>AUTH</code> 命令和其他 redis 命令一样是不加密处理的。所以还是抵御不了一些有足够权限的攻击者。</p>
+<h3 id="数据加密支持"><a href="#数据加密支持" class="headerlink" title="数据加密支持"></a>数据加密支持</h3><p>redis 本身不支持加密处理，但可以添加额外的层来实现，比如增加 SSL 代理，推荐使用 <a href="http://www.tarsnap.com/spiped.html" target="_blank" rel="external">spiped</a></p>
+<h3 id="禁用指定命令"><a href="#禁用指定命令" class="headerlink" title="禁用指定命令"></a>禁用指定命令</h3><p>redis 有个 <code>CONFIG</code> 命令，用来操作 redis 的配置。如任何人都能操作这个命令那也是件很危险的事情。还好有两种方法可以解决这个问题：</p>
+<ul>
+<li>重命名 <code>CONFIG</code> 命令</li>
+<li>隐藏 <code>CONFIG</code> 命令</li>
+</ul>
+<p>这两种方法实际上是同一种操作。redis 提供对命令的重命名操作：在 <code>redis.conf</code> 配置文件中通过添加如下一行即可对一个命令进行重命名：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rename-command CONFIG b840fc02d524045429941cc15f59e41cb7be6c52</div></pre></td></tr></table></figure></p>
+<p>通过上面的配置之后 <code>redis-cli</code> 中就再也没有 <code>CONFIG</code> 这个命令了，取而代之的是 <code>b840fc02d524045429941cc15f59e41cb7be6c52</code>。蛤蛤，想不到吧，别人得猜到什么时候才能知道原来 <code>CONFIG</code> 的名字被改成了 <code>b840fc02d524045429941cc15f59e41cb7be6c52</code>。</p>
+<p>当然如果你把 <code>CONFIG</code> 直接命名为 <code>&quot;&quot;</code>，那就是把这个命令隐藏了。</p>
+<h3 id="字符串转义和-NoSQL-注入"><a href="#字符串转义和-NoSQL-注入" class="headerlink" title="字符串转义和 NoSQL 注入"></a>字符串转义和 NoSQL 注入</h3><p>redis 协议不存在字符串转义这个概念，所以对于一个正常的客户端来说，注入不存在的，都是安全的二进制。</p>
+<h3 id="代码安全性"><a href="#代码安全性" class="headerlink" title="代码安全性"></a>代码安全性</h3><p>由于可以通过 <code>CONFIG</code> 命令来改变程序的工作目录或者改变 dump file 的名字。这也意味着客户端可能会随意地在任何地方写人 redis 的 RDB 文件。这个<a href="http://antirez.com/news/96" target="_blank" rel="external">安全问题</a>。</p>
+<p>redis 的运行不需要 root 权限。redis 的作者正在调研是否要添加新的配置参数来禁止 <code>CONFIG SET/GET dir</code> 和类似的运行时配置。</p>
 
       
     </div>
@@ -465,7 +446,7 @@ redis Python驱动包：pip install redis">
       
         <div class="post-tags">
           
-            <a href="/tags/celery/" rel="tag"># celery</a>
+            <a href="/tags/Database/" rel="tag"># Database</a>
           
         </div>
       
@@ -478,8 +459,8 @@ redis Python驱动包：pip install redis">
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/08/12/channel-part4/" rel="next" title="Django也能玩实时 —— chapter 4⅓">
-                <i class="fa fa-chevron-left"></i> Django也能玩实时 —— chapter 4⅓
+              <a href="/2018/01/05/Django-F对象/" rel="next" title="Django F对象">
+                <i class="fa fa-chevron-left"></i> Django F对象
               </a>
             
           </div>
@@ -487,10 +468,6 @@ redis Python驱动包：pip install redis">
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/08/25/channel-part5/" rel="prev" title="Django也能玩实时 —— chapter 4⅔">
-                Django也能玩实时 —— chapter 4⅔ <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -639,7 +616,7 @@ redis Python驱动包：pip install redis">
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置-flask-主页路由"><span class="nav-number">1.</span> <span class="nav-text">配置 flask 主页路由</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看网页"><span class="nav-number">2.</span> <span class="nav-text">查看网页</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集成-celery"><span class="nav-number">3.</span> <span class="nav-text">集成 celery</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加-celery-代码"><span class="nav-number">3.1.</span> <span class="nav-text">添加 celery 代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加-control-代码"><span class="nav-number">3.2.</span> <span class="nav-text">添加 control 代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调用耗时任务"><span class="nav-number">3.3.</span> <span class="nav-text">调用耗时任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动-celery"><span class="nav-number">3.4.</span> <span class="nav-text">启动 celery</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-安全"><span class="nav-number">1.</span> <span class="nav-text">Redis 安全</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#普通安全模型"><span class="nav-number">1.1.</span> <span class="nav-text">普通安全模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络安全"><span class="nav-number">1.2.</span> <span class="nav-text">网络安全</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#保护模式"><span class="nav-number">1.3.</span> <span class="nav-text">保护模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置密码"><span class="nav-number">1.4.</span> <span class="nav-text">设置密码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据加密支持"><span class="nav-number">1.5.</span> <span class="nav-text">数据加密支持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#禁用指定命令"><span class="nav-number">1.6.</span> <span class="nav-text">禁用指定命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串转义和-NoSQL-注入"><span class="nav-number">1.7.</span> <span class="nav-text">字符串转义和 NoSQL 注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码安全性"><span class="nav-number">1.8.</span> <span class="nav-text">代码安全性</span></a></li></ol></li></ol></div>
             
 
           </div>
