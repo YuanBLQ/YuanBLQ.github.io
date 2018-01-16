@@ -281,6 +281,165 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://yuanblq.github.io/2018/01/16/celery入门到使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yuan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yuan">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/16/celery入门到使用/" itemprop="url">
+                  celery入门到使用
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-16T17:10:46+08:00">
+                2018-01-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/文档/" itemprop="url" rel="index">
+                    <span itemprop="name">文档</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/01/16/celery入门到使用/" class="leancloud_visitors" data-flag-title="celery入门到使用">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="celery入门到使用"><a href="#celery入门到使用" class="headerlink" title="celery入门到使用"></a>celery入门到使用</h2><h3 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ pip install celery</div><div class="line">$ pip install redis</div></pre></td></tr></table></figure>
+<h3 id="celery应用"><a href="#celery应用" class="headerlink" title="celery应用"></a>celery应用</h3><p>使用 celery 的前提是你得有一个 Celery 的实例。我们可以称之为 Celery 应用或者简单地说 app。该实例是用来创建 task 任务、管理 worker 等等，所以必须保证在我们得其他模块中能将它导入过来。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/01/16/celery入门到使用/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="https://yuanblq.github.io/2018/01/10/Redis安全说明/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -390,35 +549,17 @@
 
       
         
-          
-            <h2 id="Redis-安全"><a href="#Redis-安全" class="headerlink" title="Redis 安全"></a>Redis 安全</h2><h3 id="普通安全模型"><a href="#普通安全模型" class="headerlink" title="普通安全模型"></a>普通安全模型</h3><p>redis 设计的初衷就是用来给在可信环境的可信客户端访问的，也就是说直接把 redis 实例暴露在网络或者不可信的环境中不是一个明智的选择。</p>
+          <h2 id="Redis-安全"><a href="#Redis-安全" class="headerlink" title="Redis 安全"></a>Redis 安全</h2><h3 id="普通安全模型"><a href="#普通安全模型" class="headerlink" title="普通安全模型"></a>普通安全模型</h3><p>redis 设计的初衷就是用来给在可信环境的可信客户端访问的，也就是说直接把 redis 实例暴露在网络或者不可信的环境中不是一个明智的选择。</p>
 <p>比如在一个普通的 web 应用上下文中，使用 redis 作为数据库、缓存、消息系统，位于 web 前端的客户端应用或者甚至是用户都可以通过查询 redis 来获取请求的操作页面。</p>
 <p>这种情况下，web 应用暴露在 redis 和不可信的客户端之间（用户通过 web 应用访问）。</p>
 <p>这是一个特殊案例，但通常对于连接到 redis 的不可信访问都必须通过一层 ACL 层来验证用户的输入，判断应该做出什么样的操作行为。</p>
-<h3 id="网络安全"><a href="#网络安全" class="headerlink" title="网络安全"></a>网络安全</h3><p>如果你只是在自己电脑上用用 redis，那么就没必要把 redis 的端口暴露在网络中。通过在 <code>redis.conf</code> 文件中的以下命令可以实现只是自己电脑的 redis 客户端通过回环接口访问：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bind 127.0.0.1</div></pre></td></tr></table></figure></p>
-<p>如果防止 redis 端口暴露在外部环境的尝试失败，那么将可能引发不可想象的毁灭。比如一个简单的 <code>FLUSHALL</code> 命令能删光你的所有数据。</p>
-<h3 id="保护模式"><a href="#保护模式" class="headerlink" title="保护模式"></a>保护模式</h3><p>从 3.2.0 版本开始，默认情况下，redis 处于“保护模式”状态。该模式下，redis 只回复回环接口的 query 请求。保护请求依然可以被手动取消或者可以开放其他接口。</p>
-<h3 id="设置密码"><a href="#设置密码" class="headerlink" title="设置密码"></a>设置密码</h3><p>对于访问操作，redis 并没有做处理，而是加了一层验证层，可以在 <code>redis.conf</code> 配置文件中设置。</p>
-<p>设置完密码后可以通过 <code>AUTH &lt;password&gt;</code> 命令发送验证。该密码一般有系统管理员在 <code>redis.conf</code> 文件中配置，而且应尽量的复杂：</p>
-<ul>
-<li>redis 查询速度很快，所以短时间内攻击者可以尝试很多次</li>
-<li>密码以明文的形式配置在 <code>redis.conf</code> 文件中，所以即使很复杂也不必担心忘记</li>
-</ul>
-<p>但 <code>AUTH</code> 命令和其他 redis 命令一样是不加密处理的。所以还是抵御不了一些有足够权限的攻击者。</p>
-<h3 id="数据加密支持"><a href="#数据加密支持" class="headerlink" title="数据加密支持"></a>数据加密支持</h3><p>redis 本身不支持加密处理，但可以添加额外的层来实现，比如增加 SSL 代理，推荐使用 <a href="http://www.tarsnap.com/spiped.html" target="_blank" rel="external">spiped</a></p>
-<h3 id="禁用指定命令"><a href="#禁用指定命令" class="headerlink" title="禁用指定命令"></a>禁用指定命令</h3><p>redis 有个 <code>CONFIG</code> 命令，用来操作 redis 的配置。如任何人都能操作这个命令那也是件很危险的事情。还好有两种方法可以解决这个问题：</p>
-<ul>
-<li>重命名 <code>CONFIG</code> 命令</li>
-<li>隐藏 <code>CONFIG</code> 命令</li>
-</ul>
-<p>这两种方法实际上是同一种操作。redis 提供对命令的重命名操作：在 <code>redis.conf</code> 配置文件中通过添加如下一行即可对一个命令进行重命名：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rename-command CONFIG b840fc02d524045429941cc15f59e41cb7be6c52</div></pre></td></tr></table></figure></p>
-<p>通过上面的配置之后 <code>redis-cli</code> 中就再也没有 <code>CONFIG</code> 这个命令了，取而代之的是 <code>b840fc02d524045429941cc15f59e41cb7be6c52</code>。蛤蛤，想不到吧，别人得猜到什么时候才能知道原来 <code>CONFIG</code> 的名字被改成了 <code>b840fc02d524045429941cc15f59e41cb7be6c52</code>。</p>
-<p>当然如果你把 <code>CONFIG</code> 直接命名为 <code>&quot;&quot;</code>，那就是把这个命令隐藏了。</p>
-<h3 id="字符串转义和-NoSQL-注入"><a href="#字符串转义和-NoSQL-注入" class="headerlink" title="字符串转义和 NoSQL 注入"></a>字符串转义和 NoSQL 注入</h3><p>redis 协议不存在字符串转义这个概念，所以对于一个正常的客户端来说，注入不存在的，都是安全的二进制。</p>
-<h3 id="代码安全性"><a href="#代码安全性" class="headerlink" title="代码安全性"></a>代码安全性</h3><p>由于可以通过 <code>CONFIG</code> 命令来改变程序的工作目录或者改变 dump file 的名字。这也意味着客户端可能会随意地在任何地方写人 redis 的 RDB 文件。这个<a href="http://antirez.com/news/96" target="_blank" rel="external">安全问题</a>。</p>
-<p>redis 的运行不需要 root 权限。redis 的作者正在调研是否要添加新的配置参数来禁止 <code>CONFIG SET/GET dir</code> 和类似的运行时配置。</p>
-
-          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/01/10/Redis安全说明/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1743,171 +1884,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://yuanblq.github.io/2017/07/30/asyncio3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Yuan">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yuan">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/07/30/asyncio3/" itemprop="url">
-                  影分身术之-asyncio_part3
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-30T11:27:31+08:00">
-                2017-07-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/知识点/" itemprop="url" rel="index">
-                    <span itemprop="name">知识点</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2017/07/30/asyncio3/" class="leancloud_visitors" data-flag-title="影分身术之-asyncio_part3">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="停止协程"><a href="#停止协程" class="headerlink" title="停止协程"></a>停止协程</h2><p><code>Future</code> 对象有几种状态：</p>
-<ul>
-<li>pending</li>
-<li>running</li>
-<li>done</li>
-<li>cancelled</li>
-</ul>
-<p><code>Future</code> 对象刚创建的时候是 pending 状态，处于调用状态为 running，执行完毕就是 done，如果在执行期间停止事件，则是 cancelled。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/07/30/asyncio3/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1957,7 +1933,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1979,7 +1955,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

@@ -99,7 +99,7 @@
 <meta property="og:description" content="Redis 安全普通安全模型redis 设计的初衷就是用来给在可信环境的可信客户端访问的，也就是说直接把 redis 实例暴露在网络或者不可信的环境中不是一个明智的选择。
 比如在一个普通的 web 应用上下文中，使用 redis 作为数据库、缓存、消息系统，位于 web 前端的客户端应用或者甚至是用户都可以通过查询 redis 来获取请求的操作页面。
 这种情况下，web 应用暴露在 redis 和">
-<meta property="og:updated_time" content="2018-01-10T06:22:13.000Z">
+<meta property="og:updated_time" content="2018-01-10T09:27:49.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis安全说明">
 <meta name="twitter:description" content="Redis 安全普通安全模型redis 设计的初衷就是用来给在可信环境的可信客户端访问的，也就是说直接把 redis 实例暴露在网络或者不可信的环境中不是一个明智的选择。
@@ -395,6 +395,7 @@
 <p>比如在一个普通的 web 应用上下文中，使用 redis 作为数据库、缓存、消息系统，位于 web 前端的客户端应用或者甚至是用户都可以通过查询 redis 来获取请求的操作页面。</p>
 <p>这种情况下，web 应用暴露在 redis 和不可信的客户端之间（用户通过 web 应用访问）。</p>
 <p>这是一个特殊案例，但通常对于连接到 redis 的不可信访问都必须通过一层 ACL 层来验证用户的输入，判断应该做出什么样的操作行为。</p>
+<a id="more"></a>
 <h3 id="网络安全"><a href="#网络安全" class="headerlink" title="网络安全"></a>网络安全</h3><p>如果你只是在自己电脑上用用 redis，那么就没必要把 redis 的端口暴露在网络中。通过在 <code>redis.conf</code> 文件中的以下命令可以实现只是自己电脑的 redis 客户端通过回环接口访问：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bind 127.0.0.1</div></pre></td></tr></table></figure></p>
 <p>如果防止 redis 端口暴露在外部环境的尝试失败，那么将可能引发不可想象的毁灭。比如一个简单的 <code>FLUSHALL</code> 命令能删光你的所有数据。</p>
 <h3 id="保护模式"><a href="#保护模式" class="headerlink" title="保护模式"></a>保护模式</h3><p>从 3.2.0 版本开始，默认情况下，redis 处于“保护模式”状态。该模式下，redis 只回复回环接口的 query 请求。保护请求依然可以被手动取消或者可以开放其他接口。</p>
@@ -469,6 +470,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2018/01/16/celery入门到使用/" rel="prev" title="celery入门到使用">
+                celery入门到使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -541,7 +546,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -563,7 +568,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
