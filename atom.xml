@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2018-01-16T09:12:07.000Z</updated>
+  <updated>2018-01-17T07:25:10.000Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -14,6 +14,46 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Celery 后台运行</title>
+    <link href="https://yuanblq.github.io/2018/01/17/Celery-%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C/"/>
+    <id>https://yuanblq.github.io/2018/01/17/Celery-后台运行/</id>
+    <published>2018-01-17T07:20:15.000Z</published>
+    <updated>2018-01-17T07:25:10.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Celery-后台运行"><a href="#Celery-后台运行" class="headerlink" title="Celery 后台运行"></a>Celery 后台运行</h2><p>测试的时候我们可以直接在不同的终端直接运行 Celery 进程，但是如果要在服务器上运行，那我们岂不是得开好几个终端，而且退出终端之后 Celery 进程也就停止了，能不能让 Celery 在后台以守护进程的方式运行？</p>
+<p>不用说，当然是可以的，而且还不止一种方式。这里先介绍 <code>init-script</code> 方法。</p>
+<a id="more"></a>
+<h3 id="使用通用的-init-script"><a href="#使用通用的-init-script" class="headerlink" title="使用通用的 init-script"></a>使用通用的 init-script</h3><p>首先获取 Celery 的 GitHub 仓库 <a href="https://github.com/celery/celery/tree/3.1/extra/generic-init.d/" target="_blank" rel="external"><code>extra/generic-init.d/</code></a> 文件夹下的文件。</p>
+<h4 id="启动-worker"><a href="#启动-worker" class="headerlink" title="启动 worker"></a>启动 worker</h4><p>将上面 GitHub 仓库文件夹下的 <code>celeryd</code> 文件复制到本地的 <code>/etc/init.d/celeryd</code> 文件中并赋予可执行的权限: <code>sudo chmod +x /etc/init.d/celeryd</code>，然后在 <code>/etc/default/</code> 文件夹下创建 <code>celeryd</code> 配置文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Names of nodes to start</span></div><div class="line"><span class="comment">#   most people will only start one node:</span></div><div class="line">CELERYD_NODES=<span class="string">"worker1"</span></div><div class="line"><span class="comment">#   but you can also start multiple and configure settings</span></div><div class="line"><span class="comment">#   for each in CELERYD_OPTS</span></div><div class="line"><span class="comment">#CELERYD_NODES="worker1 worker2 worker3"</span></div><div class="line"><span class="comment">#   alternatively, you can specify the number of nodes to start:</span></div><div class="line"><span class="comment">#CELERYD_NODES=10</span></div><div class="line"></div><div class="line"><span class="comment"># Absolute or relative path to the 'celery' command:</span></div><div class="line">CELERY_BIN=<span class="string">"/usr/local/bin/celery"</span></div><div class="line"><span class="comment">#CELERY_BIN="/virtualenvs/def/bin/celery"</span></div><div class="line"></div><div class="line"><span class="comment"># App instance to use</span></div><div class="line"><span class="comment"># comment out this line if you don't use an app</span></div><div class="line">CELERY_APP=<span class="string">"proj"</span></div><div class="line"><span class="comment"># or fully qualified:</span></div><div class="line"><span class="comment">#CELERY_APP="proj.tasks:app"</span></div><div class="line"></div><div class="line"><span class="comment"># Where to chdir at start.</span></div><div class="line">CELERYD_CHDIR=<span class="string">"/opt/Myproject/"</span></div><div class="line"></div><div class="line"><span class="comment"># Extra command-line arguments to the worker</span></div><div class="line">CELERYD_OPTS=<span class="string">"--time-limit=300 --concurrency=8"</span></div><div class="line"><span class="comment"># Configure node-specific settings by appending node name to arguments:</span></div><div class="line"><span class="comment">#CELERYD_OPTS="--time-limit=300 -c 8 -c:worker2 4 -c:worker3 2 -Ofair:worker1"</span></div><div class="line"></div><div class="line"><span class="comment"># Set logging level to DEBUG</span></div><div class="line"><span class="comment">#CELERYD_LOG_LEVEL="DEBUG"</span></div><div class="line"></div><div class="line"><span class="comment"># %n will be replaced with the first part of the nodename.</span></div><div class="line">CELERYD_LOG_FILE=<span class="string">"/var/log/celery/%n%I.log"</span></div><div class="line">CELERYD_PID_FILE=<span class="string">"/var/run/celery/%n.pid"</span></div><div class="line"></div><div class="line"><span class="comment"># Workers should run as an unprivileged user.</span></div><div class="line"><span class="comment">#   You need to create this user manually (or you can choose</span></div><div class="line"><span class="comment">#   a user/group combination that already exists (e.g., nobody).</span></div><div class="line">CELERYD_USER=<span class="string">"celery"</span></div><div class="line">CELERYD_GROUP=<span class="string">"celery"</span></div><div class="line"></div><div class="line"><span class="comment"># If enabled pid and log directories will be created if missing,</span></div><div class="line"><span class="comment"># and owned by the userid/group configured.</span></div><div class="line">CELERY_CREATE_DIRS=1</div></pre></td></tr></table></figure>
+<p>这个配置文件中，你可能需要更改 <code>CELERY_BIN</code>, <code>CELERY_APP</code>, <code>CELERYD_CHDIR</code>, <code>CELERYD_USER</code>, <code>CELERYD_GROUP</code>。</p>
+<p>根据你自身项目配置好上述配置后就可以通过 <code>/etc/init.d/celeryd {start|stop|restart|graceful|kill|dryrun|create-paths}</code> 这些命令来控制 Celery worker 进程。</p>
+<h4 id="启动-beat"><a href="#启动-beat" class="headerlink" title="启动 beat"></a>启动 beat</h4><p>如果你的项目中还有周期任务，那么还得把 Celery beat 启动起来。</p>
+<p>把 GitHub 仓库中的 <code>celerybeat</code> 文件复制到 <code>/etc/init.d/celerybeat</code> 文件中，然后赋予可执行权限: <code>sudo chmod +x /etc/init.d/celerybeat</code>。</p>
+<p>然后同样得有一个 <code>/etc/default/celerybeat</code> 配置文件。不过，如果没有什么特殊配置，可以直接使用 <code>/etc/default/celeryd</code> 配置文件，不必创建 <code>/etc/default/celerybeat</code> 配置文件。</p>
+<p>如果你依然要创建的，那么这个文件可能是长这样的：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Absolute or relative path to the 'celery' command:</span></div><div class="line">CELERY_BIN=<span class="string">"/usr/local/bin/celery"</span></div><div class="line"><span class="comment">#CELERY_BIN="/virtualenvs/def/bin/celery"</span></div><div class="line"></div><div class="line"><span class="comment"># App instance to use</span></div><div class="line"><span class="comment"># comment out this line if you don't use an app</span></div><div class="line">CELERY_APP=<span class="string">"proj"</span></div><div class="line"><span class="comment"># or fully qualified:</span></div><div class="line"><span class="comment">#CELERY_APP="proj.tasks:app"</span></div><div class="line"></div><div class="line"><span class="comment"># Where to chdir at start.</span></div><div class="line">CELERYBEAT_CHDIR=<span class="string">"/opt/Myproject/"</span></div><div class="line"></div><div class="line"><span class="comment"># Extra arguments to celerybeat</span></div><div class="line">CELERYBEAT_OPTS=<span class="string">"--schedule=/var/run/celery/celerybeat-schedule"</span></div></pre></td></tr></table></figure>
+<p>完成配置后，同样通过 <code>/etc/init.d/celerybeat {start|stop|restart|create-paths|status}</code> 这些命令控制 Celery beat 进程。</p>
+<blockquote>
+<p>参考文档：<br><a href="http://docs.celeryproject.org/en/latest/userguide/daemonizing.html" target="_blank" rel="external">Celery daemon</a><br><a href="https://pythad.github.io/articles/2016-12/how-to-run-celery-as-a-daemon-in-production" target="_blank" rel="external">How to run celery as a daemon?</a></p>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Celery-后台运行&quot;&gt;&lt;a href=&quot;#Celery-后台运行&quot; class=&quot;headerlink&quot; title=&quot;Celery 后台运行&quot;&gt;&lt;/a&gt;Celery 后台运行&lt;/h2&gt;&lt;p&gt;测试的时候我们可以直接在不同的终端直接运行 Celery 进程，但是如果要在服务器上运行，那我们岂不是得开好几个终端，而且退出终端之后 Celery 进程也就停止了，能不能让 Celery 在后台以守护进程的方式运行？&lt;/p&gt;
+&lt;p&gt;不用说，当然是可以的，而且还不止一种方式。这里先介绍 &lt;code&gt;init-script&lt;/code&gt; 方法。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="文档" scheme="https://yuanblq.github.io/categories/%E6%96%87%E6%A1%A3/"/>
+    
+    
+      <category term="Celery" scheme="https://yuanblq.github.io/tags/Celery/"/>
+    
+  </entry>
   
   <entry>
     <title>celery入门到使用</title>
@@ -957,9 +997,9 @@ TIME:  2.0026657581329346
       <category term="文档" scheme="https://yuanblq.github.io/categories/%E6%96%87%E6%A1%A3/"/>
     
     
-      <category term="MongoDB" scheme="https://yuanblq.github.io/tags/MongoDB/"/>
-    
       <category term="Database" scheme="https://yuanblq.github.io/tags/Database/"/>
+    
+      <category term="MongoDB" scheme="https://yuanblq.github.io/tags/MongoDB/"/>
     
   </entry>
   
@@ -1179,115 +1219,6 @@ TIME:  2.0026657581329346
     </summary>
     
       <category term="Django" scheme="https://yuanblq.github.io/categories/Django/"/>
-    
-    
-      <category term="Python" scheme="https://yuanblq.github.io/tags/Python/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>python 版本控制神器</title>
-    <link href="https://yuanblq.github.io/2017/05/27/python-%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6%E7%A5%9E%E5%99%A8/"/>
-    <id>https://yuanblq.github.io/2017/05/27/python-版本控制神器/</id>
-    <published>2017-05-27T08:26:32.000Z</published>
-    <updated>2017-09-20T15:36:58.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>由于 python 拥有众多的版本，以及不同模块也有不同的版本。如果每个版本之间相互都不兼容那也就无所谓什么版本控制了，可是同一机器上各个版本的 python 可以相互兼容并存，而且同一模块不同版本有时需要的 python 版本是不相同的，所以 python 的版本控制显得尤为重要。</p>
-<p><code>pyenv</code> 是个 shell 脚本，能够轻松得实现各个不同版本 python 的相互间切换，而且各个版本的 python 切换不限于全局切换，甚至不同文件夹都可以拥有不同的 python 版本。</p>
-<a id="more"></a>
-<p>下面我们就来看看如何使用 <code>pyenv</code>。</p>
-<h2 id="管理-python-版本"><a href="#管理-python-版本" class="headerlink" title="管理 python 版本"></a>管理 python 版本</h2><p>如果你既需要使用 <code>python2</code>，也需要使用 <code>python3</code>，<code>pyenv</code> 将是一个很高效的 python 版本管理工具。</p>
-<p>由于 <code>pyenv</code> 是脚本插件，所以只能在类 UNIX 系统上使用。所以，如果你想在 windows 上安装，那就点击左上角去隔壁 <code>virtualenv</code> 瞧瞧。</p>
-<h3 id="安装-pyenv（Ubuntu）"><a href="#安装-pyenv（Ubuntu）" class="headerlink" title="安装 pyenv（Ubuntu）"></a>安装 pyenv（Ubuntu）</h3><ol>
-<li><p><strong>确定你想把 <code>pyenv</code> 安装在哪。</strong>推荐安装在 <code>$HOME/.pyenv</code>，但你也可以安装在任意位置。  </p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git clone https://github.com/pyenv/pyenv.git ~/.pyenv</div></pre></td></tr></table></figure>
-</li>
-<li><p><strong>定义你 <code>PYENV_ROOT</code> 的环境变量</strong>来指定你把 pyenv 仓库克隆到了哪，并把 <code>$PYENV_ROOT/bin</code> 添加到你的 <code>$PATH</code> 中，这样就能在命令行使用 <code>pyenv</code> 命令。  </p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ echo &apos;export PYENV_ROOT=&quot;$HOME/.pyenv&quot;&apos; &gt;&gt; ~/.bashrc</div><div class="line">$ echo &apos;export PATH=&quot;$PYENV_ROOT/bin:$PATH&quot;&apos; &gt;&gt; ~/.bashrc</div></pre></td></tr></table></figure>
-</li>
-<li><p><strong>设置启动 shell 时自动加载 pyenv 脚本。</strong>在 shell 配置文件的最后面加上 <code>eval &quot;$(pyenv init -)&quot;</code>。  </p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ echo &apos;eval &quot;$(pyenv init -)&quot;&apos; &gt;&gt; ~/.bashrc</div></pre></td></tr></table></figure>
-</li>
-<li><p><strong>重启 shell，使脚本生效。</strong>  </p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ exec $SHELL</div></pre></td></tr></table></figure>
-</li>
-<li><p><strong>安装不同的 python 版本到 <code>$(pyenv root)/versions</code> 文件夹。</strong><br> 在 <code>pyenv</code> 安装之前的所有 python 版本都归为 <code>system</code> 版本。 （可以用 <code>pyenv versions</code> 查看当前安装的 python 版本）<br> 在安装 python 之前，可以使用 <code>pyenv install -l</code> 查看当前可以安装哪些 python 版本。<br> 然后使用 <code>pyenv install 选择的版本</code> 来安装你所选择的 python 版本。比如 <code>pyenv install 3.6.1</code> 安装 python 官网的版本。  </p>
-</li>
-<li><p><strong>如果在安装 python 时报了如下错误，</strong>那就有可能是你的环境依赖没有装好，一般安装以下几个依赖就可以了。  </p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 报错信息</div><div class="line">WARNING: The Python bz2 extension was not compiled. Missing the bzip2 lib</div><div class="line"></div><div class="line">WARNING: The Python readline extension was not compiled. Missing the GNU readline lib</div><div class="line"></div><div class="line">ERROR: The Python ssl extension was not compiled. Missing the OpenSSL lib</div></pre></td></tr></table></figure>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"># 安装以下依赖</div><div class="line">$ sudo apt-get install libbz2-dev</div><div class="line"></div><div class="line">$ sudo apt-get install libssl-dev</div><div class="line"></div><div class="line">$ sudo apt-get install libreadline6 libreadline6-dev</div><div class="line"></div><div class="line">$ sudo apt-get install libsqlite3-dev</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<h3 id="使用-git-更新-pyenv"><a href="#使用-git-更新-pyenv" class="headerlink" title="使用 git 更新 pyenv"></a>使用 git 更新 pyenv</h3><p>如果你是按照上面的方法安装的 <code>pyenv</code>，那你可以使用 git 来更新。</p>
-<h4 id="更新为最新的开发版"><a href="#更新为最新的开发版" class="headerlink" title="更新为最新的开发版"></a>更新为最新的开发版</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ cd $(pyenv root)</div><div class="line">$ git pull</div></pre></td></tr></table></figure>
-<h4 id="更新为指定的版本"><a href="#更新为指定的版本" class="headerlink" title="更新为指定的版本"></a>更新为指定的版本</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ cd $(pyenv root)</div><div class="line">$ git fetch</div><div class="line">$ git tag</div><div class="line">v0.1.0</div><div class="line">$ git checkout v0.1.0</div></pre></td></tr></table></figure>
-<h3 id="pyenv-的基本操作命令"><a href="#pyenv-的基本操作命令" class="headerlink" title="pyenv 的基本操作命令"></a>pyenv 的基本操作命令</h3><ul>
-<li><code>pyenv versions</code> 查看当前已安装的 python 版本</li>
-<li><code>pyenv install ...</code> 安装指定版本的 python</li>
-<li><code>pyenv global python版本</code> 切换全局 python 版本</li>
-<li><code>pyenv local python版本</code> 切换当前文件夹下的 python 版本</li>
-<li><code>pyenv shell python版本</code> 切换当前 shell 中的 python 版本</li>
-<li><code>pyenv version</code> 查看当前使用的 python 版本</li>
-</ul>
-<h3 id="卸载-pyenv"><a href="#卸载-pyenv" class="headerlink" title="卸载 pyenv"></a>卸载 pyenv</h3><ul>
-<li>如果你只是想禁用 <code>pyenv</code>，那么把 <code>pyenv init</code> 从 shell 的配置文件中移除，然后重启 shell 就行了（移除后 <code>pyenv</code> 命令仍然能使用，但是版本切换命令不会生效）。  </li>
-<li>完整卸载 pyenv。执行上一步，然后把 pyenv 的根目录删除即可全部删除 pyenv（通过 <code>pyenv install ...</code> 安装的 python 版本都会删除）。    <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rm -rf $(pyenv root)</div></pre></td></tr></table></figure>
-</li>
-</ul>
-<h3 id="卸载-pyenv-安装的-python-版本"><a href="#卸载-pyenv-安装的-python-版本" class="headerlink" title="卸载 pyenv 安装的 python 版本"></a>卸载 pyenv 安装的 python 版本</h3><ul>
-<li>使用 <code>pyenv uninstall ...</code> 命令。  </li>
-<li>直接删除 <code>versions</code> 文件夹下的对应 python 版本文件夹。  </li>
-</ul>
-<h3 id="pyenv-其他操作命令"><a href="#pyenv-其他操作命令" class="headerlink" title="pyenv 其他操作命令"></a>pyenv 其他操作命令</h3><p>参见 <a href="https://github.com/pyenv/pyenv/blob/master/COMMANDS.md" target="_blank" rel="external">commands.md</a></p>
-<p><br><br><br></p>
-<h2 id="管理-python-模块版本"><a href="#管理-python-模块版本" class="headerlink" title="管理 python 模块版本"></a>管理 python 模块版本</h2><p>使用 <code>virtualenv</code> 和 <code>virtualenvwrapper</code> 管理 python 虚拟环境，每次都需要手动激活或退出。对于懒癌晚期患者，<code>pyenv-virtual</code> 的自动激活和退出虚拟环境功能简直不能再赞。另外搭配 <code>pyenv</code> 食用效果更佳。</p>
-<h3 id="安装-pyenv-virtualenv（Ubuntu）"><a href="#安装-pyenv-virtualenv（Ubuntu）" class="headerlink" title="安装 pyenv-virtualenv（Ubuntu）"></a>安装 pyenv-virtualenv（Ubuntu）</h3><p>由于 <code>pyenv-virtualenv</code> 是 <code>pyenv</code> 的一个插件，所以安装之前需要先安装 <code>pyenv</code>。</p>
-<p><strong>注意：</strong>如果 <code>pyenv</code> 的安装目录不是 <code>$HOME/.pyenv</code> 需要确保克隆下来的仓库位于你所安装的 <code>pyenv</code> 目录下的 <code>plugin</code> 文件夹下。</p>
-<p>接下来就可以执行安装步骤了：</p>
-<ol>
-<li>克隆 <code>pyenv-virtual</code> 仓库到 <code>plugin</code> 文件夹下。</li>
-<li><p>（可选/重点）添加 <code>pyenv virtualenv-init</code> 到你的 shell 配置文件中，这样进入指定文件夹自动进入虚拟环境，离开文件夹退出虚拟环境。</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ echo &apos;eval &quot;$(pyenv virtualenv-init -)&quot;&apos; &gt;&gt; ~/.bashrc</div></pre></td></tr></table></figure>
-</li>
-<li><p>重启 shell。</p>
-</li>
-</ol>
-<h3 id="创建-pyenv-virtualenv-虚拟环境"><a href="#创建-pyenv-virtualenv-虚拟环境" class="headerlink" title="创建 pyenv-virtualenv 虚拟环境"></a>创建 pyenv-virtualenv 虚拟环境</h3><ul>
-<li><code>pyenv virtualenv 指定python版本 虚拟环境名字</code></li>
-<li><code>pyenv virtualenv 虚拟环境名字</code></li>
-</ul>
-<p>如果不指定 python 版本，则默认使用当前 <code>pyenv version</code> 的 python 版本。</p>
-<p>创建的虚拟环境位于 <code>$(pyenv root)/versions/</code> 下的指定 python 版本的文件夹中 <code>envs/</code> 文件夹下。</p>
-<h3 id="激活虚拟环境"><a href="#激活虚拟环境" class="headerlink" title="激活虚拟环境"></a>激活虚拟环境</h3><ul>
-<li>自动激活/退出</li>
-<li>手动激活/退出</li>
-</ul>
-<p>自动激活环境：</p>
-<ul>
-<li>在 <code>.bashrc</code> 文件的最后添加 <code>eval &quot;$(pyenv virtualenv-init -)&quot;</code>，然后在 shell 中输入 <code>exec &quot;$SHELL&quot;</code> 重启 shell，或者手动重启 shell。</li>
-<li>在想要激活虚拟环境的文件夹中新建 <code>.python-version</code> 文件，并写入虚拟环境的名字（<code>pyenv local python版本</code> 该命令也是通过创建该文件来达到进入该文件夹后自动使用指定 python 版本的目的）。</li>
-<li>以后进入该的文件夹就会自动激活虚拟环境，离开该文件夹就会退出虚拟环境。</li>
-</ul>
-<p>手动激活环境：</p>
-<ul>
-<li><code>pyenv activate 虚拟环境名字</code> 激活虚拟环境。</li>
-<li><code>pyenv deactivate</code> 退出虚拟环境。</li>
-</ul>
-<h3 id="删除虚拟环境"><a href="#删除虚拟环境" class="headerlink" title="删除虚拟环境"></a>删除虚拟环境</h3><p>有 2 种方法：  </p>
-<ol>
-<li>删除 <code>$(pyenv root)/versions</code> 和 <code>$(pyenv root)/versions/{version}/envs</code> 的相关文件夹即可。  </li>
-<li>命令行运行 <code>pyenv uninstall 虚拟环境的名字</code></li>
-</ol>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;由于 python 拥有众多的版本，以及不同模块也有不同的版本。如果每个版本之间相互都不兼容那也就无所谓什么版本控制了，可是同一机器上各个版本的 python 可以相互兼容并存，而且同一模块不同版本有时需要的 python 版本是不相同的，所以 python 的版本控制显得尤为重要。&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;pyenv&lt;/code&gt; 是个 shell 脚本，能够轻松得实现各个不同版本 python 的相互间切换，而且各个版本的 python 切换不限于全局切换，甚至不同文件夹都可以拥有不同的 python 版本。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="文档" scheme="https://yuanblq.github.io/categories/%E6%96%87%E6%A1%A3/"/>
     
     
       <category term="Python" scheme="https://yuanblq.github.io/tags/Python/"/>

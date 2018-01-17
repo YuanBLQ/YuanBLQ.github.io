@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Database," />
+  <meta name="keywords" content="Celery," />
 
 
 
@@ -89,22 +89,19 @@
 
 
 
-<meta name="description" content="Redis 安全普通安全模型redis 设计的初衷就是用来给在可信环境的可信客户端访问的，也就是说直接把 redis 实例暴露在网络或者不可信的环境中不是一个明智的选择。
-比如在一个普通的 web 应用上下文中，使用 redis 作为数据库、缓存、消息系统，位于 web 前端的客户端应用或者甚至是用户都可以通过查询 redis 来获取请求的操作页面。
-这种情况下，web 应用暴露在 redis 和">
+<meta name="description" content="Celery 后台运行测试的时候我们可以直接在不同的终端直接运行 Celery 进程，但是如果要在服务器上运行，那我们岂不是得开好几个终端，而且退出终端之后 Celery 进程也就停止了，能不能让 Celery 在后台以守护进程的方式运行？
+不用说，当然是可以的，而且还不止一种方式。这里先介绍 init-script 方法。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Redis安全说明">
-<meta property="og:url" content="https://yuanblq.github.io/2018/01/10/Redis安全说明/index.html">
+<meta property="og:title" content="Celery 后台运行">
+<meta property="og:url" content="https://yuanblq.github.io/2018/01/17/Celery-后台运行/index.html">
 <meta property="og:site_name" content="Yuan">
-<meta property="og:description" content="Redis 安全普通安全模型redis 设计的初衷就是用来给在可信环境的可信客户端访问的，也就是说直接把 redis 实例暴露在网络或者不可信的环境中不是一个明智的选择。
-比如在一个普通的 web 应用上下文中，使用 redis 作为数据库、缓存、消息系统，位于 web 前端的客户端应用或者甚至是用户都可以通过查询 redis 来获取请求的操作页面。
-这种情况下，web 应用暴露在 redis 和">
-<meta property="og:updated_time" content="2018-01-10T09:27:49.000Z">
+<meta property="og:description" content="Celery 后台运行测试的时候我们可以直接在不同的终端直接运行 Celery 进程，但是如果要在服务器上运行，那我们岂不是得开好几个终端，而且退出终端之后 Celery 进程也就停止了，能不能让 Celery 在后台以守护进程的方式运行？
+不用说，当然是可以的，而且还不止一种方式。这里先介绍 init-script 方法。">
+<meta property="og:updated_time" content="2018-01-17T07:25:10.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Redis安全说明">
-<meta name="twitter:description" content="Redis 安全普通安全模型redis 设计的初衷就是用来给在可信环境的可信客户端访问的，也就是说直接把 redis 实例暴露在网络或者不可信的环境中不是一个明智的选择。
-比如在一个普通的 web 应用上下文中，使用 redis 作为数据库、缓存、消息系统，位于 web 前端的客户端应用或者甚至是用户都可以通过查询 redis 来获取请求的操作页面。
-这种情况下，web 应用暴露在 redis 和">
+<meta name="twitter:title" content="Celery 后台运行">
+<meta name="twitter:description" content="Celery 后台运行测试的时候我们可以直接在不同的终端直接运行 Celery 进程，但是如果要在服务器上运行，那我们岂不是得开好几个终端，而且退出终端之后 Celery 进程也就停止了，能不能让 Celery 在后台以守护进程的方式运行？
+不用说，当然是可以的，而且还不止一种方式。这里先介绍 init-script 方法。">
 
 
 
@@ -132,13 +129,13 @@
 
 
 
-  <link rel="canonical" href="https://yuanblq.github.io/2018/01/10/Redis安全说明/"/>
+  <link rel="canonical" href="https://yuanblq.github.io/2018/01/17/Celery-后台运行/"/>
 
 
 
 
 
-  <title> Redis安全说明 | Yuan </title>
+  <title> Celery 后台运行 | Yuan </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -286,7 +283,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://yuanblq.github.io/2018/01/10/Redis安全说明/">
+    <link itemprop="mainEntityOfPage" href="https://yuanblq.github.io/2018/01/17/Celery-后台运行/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Yuan">
@@ -307,7 +304,7 @@
             
             
               
-                Redis安全说明
+                Celery 后台运行
               
             
           </h1>
@@ -322,8 +319,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-10T14:20:58+08:00">
-                2018-01-10
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-17T15:20:15+08:00">
+                2018-01-17
               </time>
             
 
@@ -362,7 +359,7 @@
 
           
           
-             <span id="/2018/01/10/Redis安全说明/" class="leancloud_visitors" data-flag-title="Redis安全说明">
+             <span id="/2018/01/17/Celery-后台运行/" class="leancloud_visitors" data-flag-title="Celery 后台运行">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -391,33 +388,23 @@
       
 
       
-        <h2 id="Redis-安全"><a href="#Redis-安全" class="headerlink" title="Redis 安全"></a>Redis 安全</h2><h3 id="普通安全模型"><a href="#普通安全模型" class="headerlink" title="普通安全模型"></a>普通安全模型</h3><p>redis 设计的初衷就是用来给在可信环境的可信客户端访问的，也就是说直接把 redis 实例暴露在网络或者不可信的环境中不是一个明智的选择。</p>
-<p>比如在一个普通的 web 应用上下文中，使用 redis 作为数据库、缓存、消息系统，位于 web 前端的客户端应用或者甚至是用户都可以通过查询 redis 来获取请求的操作页面。</p>
-<p>这种情况下，web 应用暴露在 redis 和不可信的客户端之间（用户通过 web 应用访问）。</p>
-<p>这是一个特殊案例，但通常对于连接到 redis 的不可信访问都必须通过一层 ACL 层来验证用户的输入，判断应该做出什么样的操作行为。</p>
+        <h2 id="Celery-后台运行"><a href="#Celery-后台运行" class="headerlink" title="Celery 后台运行"></a>Celery 后台运行</h2><p>测试的时候我们可以直接在不同的终端直接运行 Celery 进程，但是如果要在服务器上运行，那我们岂不是得开好几个终端，而且退出终端之后 Celery 进程也就停止了，能不能让 Celery 在后台以守护进程的方式运行？</p>
+<p>不用说，当然是可以的，而且还不止一种方式。这里先介绍 <code>init-script</code> 方法。</p>
 <a id="more"></a>
-<h3 id="网络安全"><a href="#网络安全" class="headerlink" title="网络安全"></a>网络安全</h3><p>如果你只是在自己电脑上用用 redis，那么就没必要把 redis 的端口暴露在网络中。通过在 <code>redis.conf</code> 文件中的以下命令可以实现只是自己电脑的 redis 客户端通过回环接口访问：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bind 127.0.0.1</div></pre></td></tr></table></figure></p>
-<p>如果防止 redis 端口暴露在外部环境的尝试失败，那么将可能引发不可想象的毁灭。比如一个简单的 <code>FLUSHALL</code> 命令能删光你的所有数据。</p>
-<h3 id="保护模式"><a href="#保护模式" class="headerlink" title="保护模式"></a>保护模式</h3><p>从 3.2.0 版本开始，默认情况下，redis 处于“保护模式”状态。该模式下，redis 只回复回环接口的 query 请求。保护请求依然可以被手动取消或者可以开放其他接口。</p>
-<h3 id="设置密码"><a href="#设置密码" class="headerlink" title="设置密码"></a>设置密码</h3><p>对于访问操作，redis 并没有做处理，而是加了一层验证层，可以在 <code>redis.conf</code> 配置文件中设置。</p>
-<p>设置完密码后可以通过 <code>AUTH &lt;password&gt;</code> 命令发送验证。该密码一般有系统管理员在 <code>redis.conf</code> 文件中配置，而且应尽量的复杂：</p>
-<ul>
-<li>redis 查询速度很快，所以短时间内攻击者可以尝试很多次</li>
-<li>密码以明文的形式配置在 <code>redis.conf</code> 文件中，所以即使很复杂也不必担心忘记</li>
-</ul>
-<p>但 <code>AUTH</code> 命令和其他 redis 命令一样是不加密处理的。所以还是抵御不了一些有足够权限的攻击者。</p>
-<h3 id="数据加密支持"><a href="#数据加密支持" class="headerlink" title="数据加密支持"></a>数据加密支持</h3><p>redis 本身不支持加密处理，但可以添加额外的层来实现，比如增加 SSL 代理，推荐使用 <a href="http://www.tarsnap.com/spiped.html" target="_blank" rel="external">spiped</a></p>
-<h3 id="禁用指定命令"><a href="#禁用指定命令" class="headerlink" title="禁用指定命令"></a>禁用指定命令</h3><p>redis 有个 <code>CONFIG</code> 命令，用来操作 redis 的配置。如任何人都能操作这个命令那也是件很危险的事情。还好有两种方法可以解决这个问题：</p>
-<ul>
-<li>重命名 <code>CONFIG</code> 命令</li>
-<li>隐藏 <code>CONFIG</code> 命令</li>
-</ul>
-<p>这两种方法实际上是同一种操作。redis 提供对命令的重命名操作：在 <code>redis.conf</code> 配置文件中通过添加如下一行即可对一个命令进行重命名：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rename-command CONFIG b840fc02d524045429941cc15f59e41cb7be6c52</div></pre></td></tr></table></figure></p>
-<p>通过上面的配置之后 <code>redis-cli</code> 中就再也没有 <code>CONFIG</code> 这个命令了，取而代之的是 <code>b840fc02d524045429941cc15f59e41cb7be6c52</code>。蛤蛤，想不到吧，别人得猜到什么时候才能知道原来 <code>CONFIG</code> 的名字被改成了 <code>b840fc02d524045429941cc15f59e41cb7be6c52</code>。</p>
-<p>当然如果你把 <code>CONFIG</code> 直接命名为 <code>&quot;&quot;</code>，那就是把这个命令隐藏了。</p>
-<h3 id="字符串转义和-NoSQL-注入"><a href="#字符串转义和-NoSQL-注入" class="headerlink" title="字符串转义和 NoSQL 注入"></a>字符串转义和 NoSQL 注入</h3><p>redis 协议不存在字符串转义这个概念，所以对于一个正常的客户端来说，注入不存在的，都是安全的二进制。</p>
-<h3 id="代码安全性"><a href="#代码安全性" class="headerlink" title="代码安全性"></a>代码安全性</h3><p>由于可以通过 <code>CONFIG</code> 命令来改变程序的工作目录或者改变 dump file 的名字。这也意味着客户端可能会随意地在任何地方写人 redis 的 RDB 文件。这个<a href="http://antirez.com/news/96" target="_blank" rel="external">安全问题</a>。</p>
-<p>redis 的运行不需要 root 权限。redis 的作者正在调研是否要添加新的配置参数来禁止 <code>CONFIG SET/GET dir</code> 和类似的运行时配置。</p>
+<h3 id="使用通用的-init-script"><a href="#使用通用的-init-script" class="headerlink" title="使用通用的 init-script"></a>使用通用的 init-script</h3><p>首先获取 Celery 的 GitHub 仓库 <a href="https://github.com/celery/celery/tree/3.1/extra/generic-init.d/" target="_blank" rel="external"><code>extra/generic-init.d/</code></a> 文件夹下的文件。</p>
+<h4 id="启动-worker"><a href="#启动-worker" class="headerlink" title="启动 worker"></a>启动 worker</h4><p>将上面 GitHub 仓库文件夹下的 <code>celeryd</code> 文件复制到本地的 <code>/etc/init.d/celeryd</code> 文件中并赋予可执行的权限: <code>sudo chmod +x /etc/init.d/celeryd</code>，然后在 <code>/etc/default/</code> 文件夹下创建 <code>celeryd</code> 配置文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Names of nodes to start</span></div><div class="line"><span class="comment">#   most people will only start one node:</span></div><div class="line">CELERYD_NODES=<span class="string">"worker1"</span></div><div class="line"><span class="comment">#   but you can also start multiple and configure settings</span></div><div class="line"><span class="comment">#   for each in CELERYD_OPTS</span></div><div class="line"><span class="comment">#CELERYD_NODES="worker1 worker2 worker3"</span></div><div class="line"><span class="comment">#   alternatively, you can specify the number of nodes to start:</span></div><div class="line"><span class="comment">#CELERYD_NODES=10</span></div><div class="line"></div><div class="line"><span class="comment"># Absolute or relative path to the 'celery' command:</span></div><div class="line">CELERY_BIN=<span class="string">"/usr/local/bin/celery"</span></div><div class="line"><span class="comment">#CELERY_BIN="/virtualenvs/def/bin/celery"</span></div><div class="line"></div><div class="line"><span class="comment"># App instance to use</span></div><div class="line"><span class="comment"># comment out this line if you don't use an app</span></div><div class="line">CELERY_APP=<span class="string">"proj"</span></div><div class="line"><span class="comment"># or fully qualified:</span></div><div class="line"><span class="comment">#CELERY_APP="proj.tasks:app"</span></div><div class="line"></div><div class="line"><span class="comment"># Where to chdir at start.</span></div><div class="line">CELERYD_CHDIR=<span class="string">"/opt/Myproject/"</span></div><div class="line"></div><div class="line"><span class="comment"># Extra command-line arguments to the worker</span></div><div class="line">CELERYD_OPTS=<span class="string">"--time-limit=300 --concurrency=8"</span></div><div class="line"><span class="comment"># Configure node-specific settings by appending node name to arguments:</span></div><div class="line"><span class="comment">#CELERYD_OPTS="--time-limit=300 -c 8 -c:worker2 4 -c:worker3 2 -Ofair:worker1"</span></div><div class="line"></div><div class="line"><span class="comment"># Set logging level to DEBUG</span></div><div class="line"><span class="comment">#CELERYD_LOG_LEVEL="DEBUG"</span></div><div class="line"></div><div class="line"><span class="comment"># %n will be replaced with the first part of the nodename.</span></div><div class="line">CELERYD_LOG_FILE=<span class="string">"/var/log/celery/%n%I.log"</span></div><div class="line">CELERYD_PID_FILE=<span class="string">"/var/run/celery/%n.pid"</span></div><div class="line"></div><div class="line"><span class="comment"># Workers should run as an unprivileged user.</span></div><div class="line"><span class="comment">#   You need to create this user manually (or you can choose</span></div><div class="line"><span class="comment">#   a user/group combination that already exists (e.g., nobody).</span></div><div class="line">CELERYD_USER=<span class="string">"celery"</span></div><div class="line">CELERYD_GROUP=<span class="string">"celery"</span></div><div class="line"></div><div class="line"><span class="comment"># If enabled pid and log directories will be created if missing,</span></div><div class="line"><span class="comment"># and owned by the userid/group configured.</span></div><div class="line">CELERY_CREATE_DIRS=1</div></pre></td></tr></table></figure>
+<p>这个配置文件中，你可能需要更改 <code>CELERY_BIN</code>, <code>CELERY_APP</code>, <code>CELERYD_CHDIR</code>, <code>CELERYD_USER</code>, <code>CELERYD_GROUP</code>。</p>
+<p>根据你自身项目配置好上述配置后就可以通过 <code>/etc/init.d/celeryd {start|stop|restart|graceful|kill|dryrun|create-paths}</code> 这些命令来控制 Celery worker 进程。</p>
+<h4 id="启动-beat"><a href="#启动-beat" class="headerlink" title="启动 beat"></a>启动 beat</h4><p>如果你的项目中还有周期任务，那么还得把 Celery beat 启动起来。</p>
+<p>把 GitHub 仓库中的 <code>celerybeat</code> 文件复制到 <code>/etc/init.d/celerybeat</code> 文件中，然后赋予可执行权限: <code>sudo chmod +x /etc/init.d/celerybeat</code>。</p>
+<p>然后同样得有一个 <code>/etc/default/celerybeat</code> 配置文件。不过，如果没有什么特殊配置，可以直接使用 <code>/etc/default/celeryd</code> 配置文件，不必创建 <code>/etc/default/celerybeat</code> 配置文件。</p>
+<p>如果你依然要创建的，那么这个文件可能是长这样的：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Absolute or relative path to the 'celery' command:</span></div><div class="line">CELERY_BIN=<span class="string">"/usr/local/bin/celery"</span></div><div class="line"><span class="comment">#CELERY_BIN="/virtualenvs/def/bin/celery"</span></div><div class="line"></div><div class="line"><span class="comment"># App instance to use</span></div><div class="line"><span class="comment"># comment out this line if you don't use an app</span></div><div class="line">CELERY_APP=<span class="string">"proj"</span></div><div class="line"><span class="comment"># or fully qualified:</span></div><div class="line"><span class="comment">#CELERY_APP="proj.tasks:app"</span></div><div class="line"></div><div class="line"><span class="comment"># Where to chdir at start.</span></div><div class="line">CELERYBEAT_CHDIR=<span class="string">"/opt/Myproject/"</span></div><div class="line"></div><div class="line"><span class="comment"># Extra arguments to celerybeat</span></div><div class="line">CELERYBEAT_OPTS=<span class="string">"--schedule=/var/run/celery/celerybeat-schedule"</span></div></pre></td></tr></table></figure>
+<p>完成配置后，同样通过 <code>/etc/init.d/celerybeat {start|stop|restart|create-paths|status}</code> 这些命令控制 Celery beat 进程。</p>
+<blockquote>
+<p>参考文档：<br><a href="http://docs.celeryproject.org/en/latest/userguide/daemonizing.html" target="_blank" rel="external">Celery daemon</a><br><a href="https://pythad.github.io/articles/2016-12/how-to-run-celery-as-a-daemon-in-production" target="_blank" rel="external">How to run celery as a daemon?</a></p>
+</blockquote>
 
       
     </div>
@@ -447,7 +434,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Database/" rel="tag"># Database</a>
+            <a href="/tags/Celery/" rel="tag"># Celery</a>
           
         </div>
       
@@ -460,8 +447,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/01/05/Django-F对象/" rel="next" title="Django F对象">
-                <i class="fa fa-chevron-left"></i> Django F对象
+              <a href="/2018/01/16/celery入门到使用/" rel="next" title="celery入门到使用">
+                <i class="fa fa-chevron-left"></i> celery入门到使用
               </a>
             
           </div>
@@ -469,10 +456,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/01/16/celery入门到使用/" rel="prev" title="celery入门到使用">
-                celery入门到使用 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -621,7 +604,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-安全"><span class="nav-number">1.</span> <span class="nav-text">Redis 安全</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#普通安全模型"><span class="nav-number">1.1.</span> <span class="nav-text">普通安全模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络安全"><span class="nav-number">1.2.</span> <span class="nav-text">网络安全</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#保护模式"><span class="nav-number">1.3.</span> <span class="nav-text">保护模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置密码"><span class="nav-number">1.4.</span> <span class="nav-text">设置密码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据加密支持"><span class="nav-number">1.5.</span> <span class="nav-text">数据加密支持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#禁用指定命令"><span class="nav-number">1.6.</span> <span class="nav-text">禁用指定命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串转义和-NoSQL-注入"><span class="nav-number">1.7.</span> <span class="nav-text">字符串转义和 NoSQL 注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码安全性"><span class="nav-number">1.8.</span> <span class="nav-text">代码安全性</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Celery-后台运行"><span class="nav-number">1.</span> <span class="nav-text">Celery 后台运行</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用通用的-init-script"><span class="nav-number">1.1.</span> <span class="nav-text">使用通用的 init-script</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#启动-worker"><span class="nav-number">1.1.1.</span> <span class="nav-text">启动 worker</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#启动-beat"><span class="nav-number">1.1.2.</span> <span class="nav-text">启动 beat</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
