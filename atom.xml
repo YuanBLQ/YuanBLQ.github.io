@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2018-03-13T08:16:31.000Z</updated>
+  <updated>2018-03-13T08:20:52.000Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -16,11 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>ELK-ABC</title>
+    <title>集中式日志系统ELK协议栈简介与入门</title>
     <link href="https://yuanblq.github.io/2018/03/13/ELK-ABC/"/>
     <id>https://yuanblq.github.io/2018/03/13/ELK-ABC/</id>
     <published>2018-03-13T08:14:25.000Z</published>
-    <updated>2018-03-13T08:16:31.000Z</updated>
+    <updated>2018-03-13T08:20:52.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="集中式日志系统ELK协议栈简介与入门"><a href="#集中式日志系统ELK协议栈简介与入门" class="headerlink" title="集中式日志系统ELK协议栈简介与入门"></a>集中式日志系统ELK协议栈简介与入门</h1><p>什么是“ELK”？</p>
 <p>“ELK”是三大开源软件的缩写：Elasticsearch、Logstash、Kibana。</p>
