@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2018-03-13T08:20:52.000Z</updated>
+  <updated>2018-03-13T08:23:29.000Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -17,12 +17,12 @@
   
   <entry>
     <title>集中式日志系统ELK协议栈简介与入门</title>
-    <link href="https://yuanblq.github.io/2018/03/13/ELK-ABC/"/>
-    <id>https://yuanblq.github.io/2018/03/13/ELK-ABC/</id>
+    <link href="https://yuanblq.github.io/2018/03/13/%E9%9B%86%E4%B8%AD%E5%BC%8F%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9FELK%E5%8D%8F%E8%AE%AE%E6%A0%88%E7%AE%80%E4%BB%8B%E4%B8%8E%E5%85%A5%E9%97%A8/"/>
+    <id>https://yuanblq.github.io/2018/03/13/集中式日志系统ELK协议栈简介与入门/</id>
     <published>2018-03-13T08:14:25.000Z</published>
-    <updated>2018-03-13T08:20:52.000Z</updated>
+    <updated>2018-03-13T08:23:29.000Z</updated>
     
-    <content type="html"><![CDATA[<h1 id="集中式日志系统ELK协议栈简介与入门"><a href="#集中式日志系统ELK协议栈简介与入门" class="headerlink" title="集中式日志系统ELK协议栈简介与入门"></a>集中式日志系统ELK协议栈简介与入门</h1><p>什么是“ELK”？</p>
+    <content type="html"><![CDATA[<p>什么是“ELK”？</p>
 <p>“ELK”是三大开源软件的缩写：Elasticsearch、Logstash、Kibana。</p>
 <p>Elasticsearch 负责搜索和分析，Logstash 负责从各个来源搜集、转换数据，kibana 以图表的形式在 Elasticsearch 中展示数据。</p>
 <a id="more"></a>
@@ -113,7 +113,7 @@
     
     <summary type="html">
     
-      &lt;h1 id=&quot;集中式日志系统ELK协议栈简介与入门&quot;&gt;&lt;a href=&quot;#集中式日志系统ELK协议栈简介与入门&quot; class=&quot;headerlink&quot; title=&quot;集中式日志系统ELK协议栈简介与入门&quot;&gt;&lt;/a&gt;集中式日志系统ELK协议栈简介与入门&lt;/h1&gt;&lt;p&gt;什么是“ELK”？&lt;/p&gt;
+      &lt;p&gt;什么是“ELK”？&lt;/p&gt;
 &lt;p&gt;“ELK”是三大开源软件的缩写：Elasticsearch、Logstash、Kibana。&lt;/p&gt;
 &lt;p&gt;Elasticsearch 负责搜索和分析，Logstash 负责从各个来源搜集、转换数据，kibana 以图表的形式在 Elasticsearch 中展示数据。&lt;/p&gt;
     
