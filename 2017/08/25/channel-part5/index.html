@@ -1,0 +1,939 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Django,WebSocket," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Yuan" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="运行带 Channels 的 Django 项目当然，Channels 使 Django 引进了多进程的模型，你不再使用 WSGI 服务器以进程的形式来运行所有的东西（当然，如果你不想使用 Channels 的话，也是可以这么做的）。现在，你会在通过 channel layer（你之前配置的）连接的一个或多个 interface server 以及 一个或多个 worker server 上运行。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django也能玩实时 —— chapter 4⅔">
+<meta property="og:url" content="https://yuanblq.github.io/2017/08/25/channel-part5/index.html">
+<meta property="og:site_name" content="Yuan">
+<meta property="og:description" content="运行带 Channels 的 Django 项目当然，Channels 使 Django 引进了多进程的模型，你不再使用 WSGI 服务器以进程的形式来运行所有的东西（当然，如果你不想使用 Channels 的话，也是可以这么做的）。现在，你会在通过 channel layer（你之前配置的）连接的一个或多个 interface server 以及 一个或多个 worker server 上运行。">
+<meta property="og:updated_time" content="2017-09-20T15:36:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Django也能玩实时 —— chapter 4⅔">
+<meta name="twitter:description" content="运行带 Channels 的 Django 项目当然，Channels 使 Django 引进了多进程的模型，你不再使用 WSGI 服务器以进程的形式来运行所有的东西（当然，如果你不想使用 Channels 的话，也是可以这么做的）。现在，你会在通过 channel layer（你之前配置的）连接的一个或多个 interface server 以及 一个或多个 worker server 上运行。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://yuanblq.github.io/2017/08/25/channel-part5/"/>
+
+
+
+
+
+  <title> Django也能玩实时 —— chapter 4⅔ | Yuan </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?c6ca950bfc34c4509d0199a9d95b605c";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=62805963";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yuan</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://yuanblq.github.io/2017/08/25/channel-part5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yuan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yuan">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Django也能玩实时 —— chapter 4⅔
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-25T10:22:57+08:00">
+                2017-08-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/文档/" itemprop="url" rel="index">
+                    <span itemprop="name">文档</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/08/25/channel-part5/" class="leancloud_visitors" data-flag-title="Django也能玩实时 —— chapter 4⅔">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="运行带-Channels-的-Django-项目"><a href="#运行带-Channels-的-Django-项目" class="headerlink" title="运行带 Channels 的 Django 项目"></a>运行带 Channels 的 Django 项目</h2><p>当然，Channels 使 Django 引进了多进程的模型，你不再使用 WSGI 服务器以进程的形式来运行所有的东西（当然，如果你不想使用 Channels 的话，也是可以这么做的）。现在，你会在通过 <code>channel layer</code>（你之前配置的）连接的一个或多个 <code>interface server</code> 以及 一个或多个 <code>worker server</code> 上运行。</p>
+<a id="more"></a>
+<p><code>interface server</code> 有多种类型，每一个都服务于不同类型的 request，比如同时能处理 WebSocket 和 HTTP 请求的，或者可能扮演一个 SMS 消息网关的角色。</p>
+<p>Django 在不同 <code>worker server</code> 中，运行的逻辑是独立的，所以 <code>channel layer</code> 可以跨网络传输 channels 的内容。在生产环境中，你可能经常会把 <code>worker server</code> 和 <code>interface server</code> 独立开，作为一个独立的集群，但你当然可以把他们放在同一台机器的不同进程中运行。</p>
+<p>默认情况下，Django 没有配置 <code>channel layer</code> —— 毕竟没必要用它来运行 WSGI 请求。所以，只要你添加了 consumer，你就需要配置一下。</p>
+<p>在上面的例子中，我们使用 in-memory 形式的 <code>channel layer</code> 实现我们的默认 <code>channel layer</code>。它会把所有的 channel 数据以字典的形式存储在内存中，所以实际上不是跨进程的；它只能在 <code>runserver</code> 的进程中运行，也就是说它是在同一个进程中以多个线程的形式在运行。当我们部署到生产环境，你就需要使用 Redis 后端的 <code>channel layer</code>（<code>asgi_redis</code>）来实现跨进程工作。更多细节请看<a href="http://channels.readthedocs.io/en/latest/backends.html" target="_blank" rel="external">Channel Layer Types</a>。</p>
+<p>当我们建立好 channel 后端之后，第二件需要我们考虑的事是，确保我们运行的 <code>interface server</code> 能处理 WebSocket。为了解决这个问题，<code>daphne</code> 应运而生，这是一个能同时处理 HTTP 和 WebSocket 的一个 <code>interface server</code>。前面你运行 <code>runserver</code> 的时候就已经和它绑定好了 —— 虽然看上去和 Django 的 <code>runserver</code> 没什么区别，但是有些配置还是不一样的。</p>
+<blockquote>
+<p>在处理引擎内部，<code>runserver</code> 现在在一个线程中运行着 Daphne，在另外一个线程中自动加载了一个 worker —— 这就是一个微型版本的部署，在一个进程中运行</p>
+</blockquote>
+<p>现在来试试 Redis 后端 —— Redis 几乎能在每一台机器上运行，而且开销很少，这就使得它很适合做这件事。</p>
+<p>通过 <code>pip</code> 安装 <code>asgi_redis</code> 包。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pip install asgi_redis</div></pre></td></tr></table></figure></p>
+<p>在你的 channel layer 中做如下配置：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># setting.py</span></div><div class="line">CHANNEL_LAYERS = [</div><div class="line">    <span class="string">"default"</span>: &#123;</div><div class="line">        <span class="string">"BACKEND"</span>: <span class="string">"asgi_redis.RedisChannelLayer"</span>,</div><div class="line">        <span class="string">"CONFIG"</span>: &#123;</div><div class="line">            <span class="string">"hosts"</span>: [(<span class="string">"localhost"</span>, <span class="number">6379</span>)],</div><div class="line">        &#125;,</div><div class="line">        <span class="string">"ROUTING"</span>: <span class="string">"myproject.routing.channel_routing"</span>,</div><div class="line">    &#125;,</div><div class="line">]</div></pre></td></tr></table></figure>
+<p>当然，在这之前你得安装过 Redis server，在 Ubuntu 中安装很方便，你只需：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo apt-get install redis-server</div></pre></td></tr></table></figure></p>
+<p>现在可以把 <code>runserver</code> 解雇了，当然你也可以用一种比较原生的方式实现跨进程，在两个终端中执行以下两条命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ python manage.py runserver --noworker</div></pre></td></tr></table></figure></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ python manage.py runworker</div></pre></td></tr></table></figure>
+<p>你可能已经猜到，在 <code>runserver</code> 中禁止掉 <code>worker</code> 线程，然后在别的进程中开启 <code>worker</code> 来处理它们。如果你想在它运行 consumer 的时候查看日志，你可以给 <code>runwoker</code> 添加 <code>-v 2</code> 参数。</p>
+<p>如果 Django 以 debug 模式运行（DEBUG=True），那么 <code>runworker</code> 会处理静态文件，就像以前 <code>runserver</code> 一样。和以前一样，如果你关闭了 <code>DEBUG</code> 模式，那你就需要配置你的静态文件服务。</p>
+<h2 id="持久化数据"><a href="#持久化数据" class="headerlink" title="持久化数据"></a>持久化数据</h2><p>echo message 是一个很不错的简单案例，但是它忽略了像这样一个系统的一个实际需求 —— 为每个连接保存状态。</p>
+<p>正如我们之前看到的，<code>reply_channel</code> 属性是指向打开 WebSocket 的唯一指针 —— 因为不同的客户端对应的 WebSocket 都是不同的。我们就是根据这个来追踪是谁发的消息。记住，Channels 是网络透明的并且可以在多个 worker 中运行，所以你不能只是以全局变量的形式来存储局部的信息。</p>
+<p>解决的办法就是是以 <code>reply_channel</code> 为 key 把数据存储起来 —— 听起来很熟悉？Django 的session 框架就是使用一个 cookie 作为 key 来处理 HTTP 请求的。</p>
+<p>如果我们使用 <code>reply_channel</code> 作为 key 来获取 session 会不会没用？</p>
+<p>对此，Channels 提供了 <code>channel_session</code> 装饰器来解决这个问题 —— 它为你提供了一个叫 <code>message.channel_seesion</code> 的属性，就好像 Django 中的 session 一样。</p>
+<p>现在，我们构建一个聊天服务，你可以在 WebSocket 的请求路径中传入一个聊天室的名字，以及用你用户名作为查询的一个字符串（暂时忽略验证一这块，这是我们接下来考虑的事）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># consumers.py</span></div><div class="line"><span class="keyword">import</span> json</div><div class="line"><span class="keyword">from</span> channels <span class="keyword">import</span> Group</div><div class="line"><span class="keyword">from</span> channels.sessions <span class="keyword">import</span> channel_session</div><div class="line"><span class="keyword">from</span> urllib.parse <span class="keyword">import</span> parse_qs</div><div class="line"></div><div class="line"><span class="comment"># 与 websocket.connect 建立连接</span></div><div class="line"><span class="meta">@channel_session</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">ws_connect</span><span class="params">(message, room_name)</span>:</span></div><div class="line">    <span class="comment"># 接受 connection</span></div><div class="line">    message.reply_channel.send(&#123;<span class="string">"accept"</span>: <span class="keyword">True</span>&#125;)</div><div class="line">    <span class="comment"># 解析 query string</span></div><div class="line">    params = parse_qs(message.content[<span class="string">"query_string"</span>])</div><div class="line">    <span class="keyword">if</span> <span class="string">b"username"</span> <span class="keyword">in</span> params:</div><div class="line">        <span class="comment"># 在 session 中设置 username</span></div><div class="line">        message.channel_session[<span class="string">"username"</span>] = params[<span class="string">b"username"</span>][<span class="number">0</span>].decode(<span class="string">"utf8"</span>)</div><div class="line">        <span class="comment"># 将用户加入到 room_name 组</span></div><div class="line">        Group(<span class="string">"chat-%s"</span> % room_name).add(message.reply_channel)</div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        <span class="comment"># 关闭 connection</span></div><div class="line">        message.reply_channel.send(&#123;<span class="string">"close"</span>: <span class="keyword">True</span>&#125;)</div><div class="line"></div><div class="line"><span class="comment"># 与 websocket.receive 连接</span></div><div class="line"><span class="meta">@channel_session</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">ws_message</span><span class="params">(message, room_name)</span>:</span></div><div class="line">    Group(<span class="string">"chat-%s"</span> % room_name).send(&#123;</div><div class="line">        <span class="string">"text"</span>: json.dumps(&#123;</div><div class="line">            <span class="string">"text"</span>: message[<span class="string">"text"</span>],</div><div class="line">            <span class="string">"username"</span>: message.channel_session[<span class="string">"username"</span>],</div><div class="line">        &#125;),</div><div class="line">    &#125;)</div><div class="line"></div><div class="line"><span class="comment"># 与 websocket.disconnect 连接</span></div><div class="line"><span class="meta">@channel_session</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">ws_disconnect</span><span class="params">(message, room_name)</span>:</span></div><div class="line">    Group(<span class="string">"chat-%s"</span> % room_name).discard(message.reply_channel)</div></pre></td></tr></table></figure>
+<p>然后更新下 <code>routing.py</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># routing.py</span></div><div class="line"><span class="keyword">from</span> channels.routing <span class="keyword">import</span> route</div><div class="line"><span class="keyword">from</span> myapp.consumers <span class="keyword">import</span> ws_connect, ws_message, ws_disconnect</div><div class="line"></div><div class="line">channel_routing = [</div><div class="line">    route(<span class="string">"websocket.connect"</span>, ws_connect, path=<span class="string">r"^/(?P&lt;room_name&gt;[a-zA-Z0-9_]+)/$"</span>),</div><div class="line">    route(<span class="string">"websocket.receive"</span>, ws_message, path=<span class="string">r"^/(?P&lt;room_name&gt;[a-zA-Z0-9_]+)/$"</span>),</div><div class="line">    route(<span class="string">"websocket.disconnect"</span>, ws_disconnect, path=<span class="string">r"^/(?P&lt;room_name&gt;[a-zA-Z0-9_]+)/$"</span>),</div><div class="line">]</div></pre></td></tr></table></figure>
+<p>如果你能在 console 中控制它，或者用简单的 JavaScript 构建了一个聊天客户端，把收到的消息追加到一个 div 中，那你已经可以通过初始请求建立一个聊天室了。</p>
+<h2 id="权限验证"><a href="#权限验证" class="headerlink" title="权限验证"></a>权限验证</h2><p>现在，WebSocket 的解决方案在某些方面可能还没法和你网站的其余部分共存 —— 特别是，我们想确保我们知道我们到底是在和谁聊天，万一我们有些私人聊天通道呢（我们不能通过让客户端自己请求正确的 channel 来解决这问题，因为这样任何人都可以通过输入私人聊天室名字进入其中）。</p>
+<p>由于 WebSocket 是基于 HTTP 协议的，他们有很多相似的特征，包括 path、GET 参数以及 cookie。我们可以像使用 Django 的 session 和 验证系统一样来使用它们，毕竟如果我们无法分别他们是谁，或者无法安全地做事的话，那么 WebSocket 就不是个好东西。</p>
+<p>另外，我们不想让 <code>interface server</code> 来存储数据或者执行验证，它们应该是简单、快速、可靠、无需过多状态的一个处理，我们需要在我们自己的 consumer 中做我们的验证逻辑。</p>
+<p>辛运的是，Channels 对于 WebSocket 和 其他 message 有个底层规范（ASGI），它附带了一些装饰器，能帮你完成验证以及获取底层 Django 的 session。</p>
+<p>Channels 可以从 cookies 中获取 Django 的 session （如果在同一域名内使用像 Daphne 这类来运行 WebSocket 服务），或者从 <code>session_key</code> 的 GET 参数中获取 Django 的 session （如果你想继续使用 WSGI 服务器来运行你的 HTTP 请求，并在另一个域名上运行一个服务进程来处理 WebSocket）。</p>
+<p>你可以使用 <code>http_session</code> 装饰器来访问一个用户的 Django session —— 这个装饰器会给你提供一个 <code>message.http_session</code> 属性，就像 <code>request.session</code> 一样。你还可以使用 <code>http_seesion_user</code> 装饰器，这个会给你提供一个 <code>message.user</code> 属性，当然和之前 session 的那个属性一样。</p>
+<p>现在，需要注意的是，你只能从 WebSocket 连接时的 <code>connect</code> message 中获取到详细的 HTTP 信息（你可能需要了解更多关于 <a href="http://channels.readthedocs.io/en/latest/asgi.html" target="_blank" rel="external">ASGI</a> 的规范）。也就意味着我们不会浪费带宽，去发送同样的信息。</p>
+<p>这就意味着，我们需要在连接处理中抓取到用户的信息，并把它存在 session 中。幸好，Channels 自带的 <code>channel_session_user</code> 装饰器和上面我们提到的 <code>http_session_user</code> 装饰器差不多，但是它是从 <em>channel</em> 的 session 中加载用户信息，而不是从 <em>http</em> 的session。另外有个叫 <code>transfer_user</code> 的函数，能从一个 session 往另外一个 session 中复制用户信息。甚至有个更好的东西，<code>channel_session_user_from_http</code> 装饰器能把所有的这些集合在了一起。</p>
+<p>现在，我们把这些组合起来，让我们的聊天服务器，只能是姓氏一样的用户才能在一个聊天室中聊天：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># consumers.py</span></div><div class="line"><span class="keyword">from</span> channels <span class="keyword">import</span> Channel, Group</div><div class="line"><span class="keyword">from</span> channels.sessions <span class="keyword">import</span> channel_session</div><div class="line"><span class="keyword">from</span> channels.auth <span class="keyword">import</span> channel_session_user, channel_session_user_from_http</div><div class="line"></div><div class="line"><span class="comment"># 与 websocket.connect 连接</span></div><div class="line"><span class="meta">@channel_session_user_from_http</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">ws_add</span><span class="params">(message)</span>:</span></div><div class="line">    <span class="comment"># 接受 connection</span></div><div class="line">    message.reply_channel.send(&#123;<span class="string">"accept"</span>: <span class="keyword">True</span>&#125;)</div><div class="line">    <span class="comment"># 把它们添加到合适的 group</span></div><div class="line">    Group(<span class="string">"chat-%s"</span> % message.user.username[<span class="number">0</span>]).add(message.reply_channel)</div><div class="line"></div><div class="line"><span class="comment"># 与 websocket.receive 连接</span></div><div class="line"><span class="meta">@channel_session_user</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">ws_message</span><span class="params">(message)</span>:</span></div><div class="line">    Group(<span class="string">"chat-%s"</span> % message.user.username[<span class="number">0</span>]).send(&#123;</div><div class="line">        <span class="string">"text"</span>: message[<span class="string">'text'</span>],</div><div class="line">    &#125;)</div><div class="line"></div><div class="line"><span class="comment"># 与 websocket.disconnect 连接</span></div><div class="line"><span class="meta">@channel_session_user</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">ws_disconnect</span><span class="params">(message)</span>:</span></div><div class="line">    Group(<span class="string">"chat-%s"</span> % message.user.username[<span class="number">0</span>]).discard(message.reply_channel)</div></pre></td></tr></table></figure>
+<p>如果你仅仅使用 <code>runserver</code>（或者 Daphne），你只需 connect，然后你的 cookie 就可以传递你的 auth 信息。如果你在不同的域上运行 WebSocket，那你就得像下边一样，在 URL 上提供 Django 的 sessionID：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">socket = <span class="keyword">new</span> WebSocket(<span class="string">"ws://127.0.0.1:9000/?session_key=abcdefg"</span>);</div></pre></td></tr></table></figure></p>
+<p>你可以在模板中使用 <code></code> 来获取当前的 session key。<strong>注意：</strong>对于已签名的 cookie session 没用 —— 因为只用 HTTP 响应才能设置 cookie，它需要一个后端来写入独立的存储你状态。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Django/" rel="tag"># Django</a>
+          
+            <a href="/tags/WebSocket/" rel="tag"># WebSocket</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/20/flask-celery/" rel="next" title="celery 解决 web 耗时操作">
+                <i class="fa fa-chevron-left"></i> celery 解决 web 耗时操作
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/05/Django-F对象/" rel="prev" title="Django F对象">
+                Django F对象 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yNzg4NS80NDYy"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Yuan" />
+          <p class="site-author-name" itemprop="name">Yuan</p>
+           
+              <p class="site-description motion-element" itemprop="description">interesting</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/YuanBLQ/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#运行带-Channels-的-Django-项目"><span class="nav-number">1.</span> <span class="nav-text">运行带 Channels 的 Django 项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#持久化数据"><span class="nav-number">2.</span> <span class="nav-text">持久化数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#权限验证"><span class="nav-number">3.</span> <span class="nav-text">权限验证</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yuan</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"> 本站访问量 </i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("DLXhFvD0nnv6rhu9LFUhmVPP-gzGzoHsz", "xyEKUkd6XbgqcNvCNUkCf7eB");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
