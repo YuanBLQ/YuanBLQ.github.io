@@ -1,0 +1,1028 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Python,词云,wordcloud," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Yuan" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="Wordcloud 的 API Reference 分三部分：
+WordCloud([font_path, width, height, …])&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Word cloud对象，用于生成以及绘制
+ImageColorGenerator(image)&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;n">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WordCloud">
+<meta property="og:url" content="https://yuanblq.github.io/2017/04/10/WordCloud/index.html">
+<meta property="og:site_name" content="Yuan">
+<meta property="og:description" content="Wordcloud 的 API Reference 分三部分：
+WordCloud([font_path, width, height, …])&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Word cloud对象，用于生成以及绘制
+ImageColorGenerator(image)&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;n">
+<meta property="og:updated_time" content="2017-09-20T15:36:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="WordCloud">
+<meta name="twitter:description" content="Wordcloud 的 API Reference 分三部分：
+WordCloud([font_path, width, height, …])&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Word cloud对象，用于生成以及绘制
+ImageColorGenerator(image)&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;n">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://yuanblq.github.io/2017/04/10/WordCloud/"/>
+
+
+
+
+
+  <title> WordCloud | Yuan </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?c6ca950bfc34c4509d0199a9d95b605c";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=62805963";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yuan</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://yuanblq.github.io/2017/04/10/WordCloud/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yuan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yuan">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                WordCloud
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-10T20:55:52+08:00">
+                2017-04-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/文档/" itemprop="url" rel="index">
+                    <span itemprop="name">文档</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/04/10/WordCloud/" class="leancloud_visitors" data-flag-title="WordCloud">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Wordcloud-的-API-Reference-分三部分："><a href="#Wordcloud-的-API-Reference-分三部分：" class="headerlink" title="Wordcloud 的 API Reference 分三部分："></a>Wordcloud 的 API Reference 分三部分：</h1><ul>
+<li>WordCloud([font_path, width, height, …])&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Word cloud对象，用于生成以及绘制</li>
+<li>ImageColorGenerator(image)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;基于一个彩色图片的颜色生成器</li>
+<li>random_color_func([word, font_size, …])&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;随机色相生成器</li>
+</ul>
+<a id="more"></a>
+<h2 id="wordcloud-WordCloud"><a href="#wordcloud-WordCloud" class="headerlink" title="wordcloud.WordCloud"></a>wordcloud.WordCloud</h2><p><table><tr><td bgcolor="#EEE8AA">class <font color="red"><b>wordcloud.WordCloud </b></font>(font_path=None, width=400, height=200, margin=2, ranks_only=None, prefer_horizontal=0.9, mask=None, scale=1, color_func=None, max_words=200, min_font_size=4, stopwords=None, random_state=None, background_color=’black’, max_font_size=None, font_step=1, mode=’RGB’, relative_scaling=0.5, regexp=None, collocations=True, colormap=None, normalize_plurals=True)<br></td></tr></table></p>
+<h3 id="参数"><a href="#参数" class="headerlink" title="参数:"></a>参数:</h3><h4 id="font-path-sting"><a href="#font-path-sting" class="headerlink" title="font_path : sting"></a>font_path : sting</h4><div class="note default"><p>字体的路径（OTF 或者 TTF 字体）。在Linux上默认为 DroidSansMono 路径，如果没有这个字体或者其它的 OS 操作系统，那就需要手动调整路径。</p>
+</div>
+<h4 id="width-int-default-400"><a href="#width-int-default-400" class="headerlink" title="width : int (default=400)"></a>width : int (default=400)</h4><div class="note default"><p>画布的宽度。</p>
+</div>
+<h4 id="height-int-default-200"><a href="#height-int-default-200" class="headerlink" title="height : int (default=200)"></a>height : int (default=200)</h4><div class="note default"><p>画布的高度。</p>
+</div>
+<h4 id="prefer-horizontal-float-default-0-9"><a href="#prefer-horizontal-float-default-0-9" class="headerlink" title="prefer_horizontal : float (default=0.9)"></a>prefer_horizontal : float (default=0.9)</h4><div class="note default"><p>水平词语占的比例，即最后词云图中以水平方式展现的词语占的比例。</p>
+</div>
+<h4 id="mask-nd-array-or-None-default-None"><a href="#mask-nd-array-or-None-default-None" class="headerlink" title="mask : nd-array or None (default=None)"></a>mask : nd-array or None (default=None)</h4><div class="note default"><p>如果不为None，那么就在这给定的二进制文件的mask上绘制词云，并且忽略 width 和 height 。<br>所有的白色区域（#FF 或者 #FFFFFF）都视为在mask外部，也就是不绘制词云。</p>
+</div>
+<h4 id="scale-float-default-1"><a href="#scale-float-default-1" class="headerlink" title="scale : float (default=1)"></a>scale : float (default=1)</h4><div class="note default"><p>当词云图片比较大时，不要使用大画布而是使用 scale 缩放。</p>
+</div>
+<h4 id="min-font-size-int-default-4"><a href="#min-font-size-int-default-4" class="headerlink" title="min_font_size : int (default=4)"></a>min_font_size : int (default=4)</h4><div class="note default"><p>所使用的最小尺寸的字体。当没有空间能容纳此尺寸的字体时，停止绘制词云。</p>
+</div>
+<h4 id="font-step-int-default-1"><a href="#font-step-int-default-1" class="headerlink" title="font_step : int (default=1)"></a>font_step : int (default=1)</h4><div class="note default"><p>字体大小渐变步长。</p>
+</div>
+<h4 id="max-words-number-default-200"><a href="#max-words-number-default-200" class="headerlink" title="max_words : number (default=200)"></a>max_words : number (default=200)</h4><div class="note default"><p>最大词数。</p>
+</div>
+<h4 id="stopwords-set-of-strings-or-None"><a href="#stopwords-set-of-strings-or-None" class="headerlink" title="stopwords : set of strings or None"></a>stopwords : set of strings or None</h4><div class="note default"><p>不计入的词语集合。</p>
+</div>
+<h4 id="background-color-color-value-default-”black”"><a href="#background-color-color-value-default-”black”" class="headerlink" title="background_color : color value (default=”black”)"></a>background_color : color value (default=”black”)</h4><div class="note default"><p>词云图的背景颜色。</p>
+</div>
+<h4 id="max-font-size-int-or-None-default-None"><a href="#max-font-size-int-or-None-default-None" class="headerlink" title="max_font_size : int or None (default=None)"></a>max_font_size : int or None (default=None)</h4><div class="note default"><p>最大词语的字体大小。如果为 None，则使用图片的 height。</p>
+</div>
+<h4 id="mode-string-default-”RGB”"><a href="#mode-string-default-”RGB”" class="headerlink" title="mode : string (default=”RGB”)"></a>mode : string (default=”RGB”)</h4><div class="note default"><p>当模式为 “RGBA” 时，可以生成透明背景，background_color 可以为 None。</p>
+</div>
+<h4 id="relative-scaling-float-default-0-5"><a href="#relative-scaling-float-default-0-5" class="headerlink" title="relative_scaling : float (default=0.5)"></a>relative_scaling : float (default=0.5)</h4><div class="note default"><p>为 0 时，字体大小只考虑词的频率排名。<br>为 1 时，某个词频率为其它词频率 2 倍时，该字体的大小也是它的 2 倍。<br>一般设为 0.5 比较合适。</p>
+</div>
+<h4 id="color-func-callable-default-None"><a href="#color-func-callable-default-None" class="headerlink" title="color_func : callable (default=None)"></a>color_func : callable (default=None)</h4><div class="note default"><p>带有 word, font_size, position, orientation, font_path, random_state 参数，给每个词返回 PIL 颜色的调用对象。<br>会覆盖 “colormap”。</p>
+</div>
+<h4 id="regexp-string-or-None-optional"><a href="#regexp-string-or-None-optional" class="headerlink" title="regexp : string or None (optional)"></a>regexp : string or None (optional)</h4><div class="note default"><p>分词规则。如果为 None ，则使用 r”\w[\w’]+”。</p>
+</div>
+<h4 id="collocations-bool-default-True"><a href="#collocations-bool-default-True" class="headerlink" title="collocations : bool (default=True)"></a>collocations : bool (default=True)</h4><div class="note default"><p>是否需要包括两个词组成的词语。</p>
+</div>
+<h4 id="colormap-string-or-matplotlib-colormap-default-”viridis”"><a href="#colormap-string-or-matplotlib-colormap-default-”viridis”" class="headerlink" title="colormap : string or matplotlib colormap (default=”viridis”)"></a>colormap : string or matplotlib colormap (default=”viridis”)</h4><div class="note default"><p>从中任意选取颜色来绘制每个词。如果 “color_func” 指定的话，则忽略此参数。</p>
+</div>
+<h4 id="normalize-plurals-bool-default-True"><a href="#normalize-plurals-bool-default-True" class="headerlink" title="normalize_plurals : bool (default=True)"></a>normalize_plurals : bool (default=True)</h4><div class="note default"><p>是否需要把词语的 ‘s’ 后缀移除，并将其加入没有 ‘s’ 后缀的词的统计中。</p>
+</div>
+<h4 id="Notes"><a href="#Notes" class="headerlink" title="Notes"></a>Notes</h4><div class="note default"><p>大尺寸的画布会使代码运行缓慢。如果需要一个大的词云图，那就用”小尺寸画布”和”scale参数”。</p>
+</div>
+<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><h4 id="words-list-of-tuples-string-float"><a href="#words-list-of-tuples-string-float" class="headerlink" title="words_ : list of tuples (string, float)"></a>words_ : list of tuples (string, float)</h4><div class="note default"><p>带有频率的词语</p>
+</div>
+<h4 id="layout-list-of-tuples-string-int-int-int-int-color"><a href="#layout-list-of-tuples-string-int-int-int-int-color" class="headerlink" title="layout_ : list of tuples (string, int, (int, int), int ,color)"></a>layout_ : list of tuples (string, int, (int, int), int ,color)</h4><div class="note default"><p>编码拟合好的词云。每个词语的字符串、字号、位置、方向和颜色的编码。</p>
+</div>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><h4 id="init-font-path-None-width-400-…"><a href="#init-font-path-None-width-400-…" class="headerlink" title="init(font_path=None, width=400, …)"></a><strong>init</strong>(font_path=None, width=400, …)</h4><div class="note default"><p>Parameters :<br>font_path=None, width=400, height=200, margin=2, ranks_only=None, prefer_horizontal=0.9, mask=None, scale=1, color_func=None, max_words=200, min_font_size=4, stopwords=None, random_state=None, background_color=’black’, max_font_size=None, font_step=1, mode=’RGB’, relative_scaling=0.5, regexp=None, collocations=True, colormap=None, normalize_plurals=True</p>
+</div>
+<h4 id="fit-words-frequencies"><a href="#fit-words-frequencies" class="headerlink" title="fit_words (frequencies)"></a>fit_words (frequencies)</h4><div class="note default"><p>通过 words 和 frequencies 创建 word_cloud。<br>generate_from_frequencies 的别名。</p>
+<p>Parameters : </p>
+<ul>
+<li>frequencies : tuples 数组 （一个包含 word 和 frequency 的 tuple）。</li>
+</ul>
+<p>Returns : self</p>
+</div>
+<h4 id="generate-text"><a href="#generate-text" class="headerlink" title="generate (text)"></a>generate (text)</h4><div class="note default"><p>通过 text 生成 wordcloud<br>generate_from_text 的别名。<br>调用了 process_text 和 generate_from_frequencies。</p>
+<p>Returns : self</p>
+</div>
+<h4 id="generate-from-frequencies-frequencies-…"><a href="#generate-from-frequencies-frequencies-…" class="headerlink" title="generate_from_frequencies (frequencies[, …])"></a>generate_from_frequencies (frequencies[, …])</h4><div class="note default"><p>通过 words 和 frequencies 创建 word_cloud。</p>
+<p>Parameters : </p>
+<ul>
+<li>frequencies : 一个 string to float 的词典 （包含 words 和相关的频率）。</li>
+<li>max_font_size : int （使用 font-size 而不是 self.max_font_size）。</li>
+</ul>
+<p>Returns : self</p>
+</div>
+<h4 id="generate-from-text-text"><a href="#generate-from-text-text" class="headerlink" title="generate_from_text (text)"></a>generate_from_text (text)</h4><div class="note default"><p>通过 text 生成 wordcloud。<br>调用了 process_text 和 generate_from_frequencies。</p>
+<p><b> 版本变化(1.2.2)： </b><br>generate_from_frequencies() 的参数不再返回 process_text()。</p>
+<p>Returns : self</p>
+</div>
+<h4 id="process-text-text"><a href="#process-text-text" class="headerlink" title="process_text (text)"></a>process_text (text)</h4><div class="note default"><p>把长文本分割成词语，移除 stopwords。</p>
+<p>Parameters : </p>
+<ul>
+<li>text : string （要处理的文本）。</li>
+</ul>
+<p>Returns : </p>
+<ul>
+<li>words : 相关频率标记的词</li>
+<li><b>版本变化(1.2.2)：</b>返回类型从 tuples 的 list 变为 dict。</li>
+</ul>
+</div>
+<h4 id="recolor-random-state-color-func-colormap"><a href="#recolor-random-state-color-func-colormap" class="headerlink" title="recolor ([random_state, color_func, colormap])"></a>recolor ([random_state, color_func, colormap])</h4><div class="note default"><p>给已存在的布局重新上色。</p>
+<p>Parameters : </p>
+<ul>
+<li>random_state : RandomState, int or None, default=None（如果不为 None 即使用了确定的随机状态 ，那么给的 int 值即为 random 的 seed）。</li>
+<li>color_func : function or None, default=None （从 word count, font size, position 和 orientation 生成新颜色的 function, 如果为 None 则使用 self.color_func ）。</li>
+<li>colormap : string or matplotlib colormap, default=None （使用这个 colormap 生成新的 colors. 如果 color_func 指定了则忽略此参数。如果为 None 则使用 self.color_func 或者 self.color_map ）。</li>
+</ul>
+<p>Returns : self</p>
+</div>
+<h4 id="to-array"><a href="#to-array" class="headerlink" title="to_array ()"></a>to_array ()</h4><div class="note default"><p>转换成 numpy 数组。</p>
+<p>Returns : </p>
+<ul>
+<li>image : nd-array size (width, height, 3) （numpy 矩阵的词云图）。</li>
+</ul>
+</div>
+<h4 id="to-file-filename"><a href="#to-file-filename" class="headerlink" title="to_file (filename)"></a>to_file (filename)</h4><div class="note default"><p>导出为图片文件。</p>
+<p>Parameters : filename : string （写入位置）。</p>
+<p>Returns : self</p>
+</div>
+<h4 id="to-html"><a href="#to-html" class="headerlink" title="to_html ()"></a>to_html ()</h4><h4 id="to-image"><a href="#to-image" class="headerlink" title="to_image ()"></a>to_image ()</h4><h2 id="wordcloud-ImageColorGenerator"><a href="#wordcloud-ImageColorGenerator" class="headerlink" title="wordcloud.ImageColorGenerator"></a>wordcloud.ImageColorGenerator</h2><p><table><tr><td bgcolor="#EEE8AA">class <font color="red"><b>wordcloud.ImageColorGenerator </b></font>(image)<br></td></tr></table><br>颜色生成器基于一张 RGB 颜色的图片。词的颜色由它所在图片中附近的颜色的均值决定。<br>生成之后，该对象可以作为 color_func 传入 wordcloud 构造器中，或者 recolor 方法中。</p>
+<p>Parameters : </p>
+<ul>
+<li>image : nd-array, shape (height, width, 3)<div class="note default"><p>image 是用来生成词的颜色。忽略 Alpha 通道。 image应与画布大小尺寸一致。</p>
+</div>
+</li>
+</ul>
+<h3 id="方法-1"><a href="#方法-1" class="headerlink" title="方法"></a>方法</h3><h4 id="call-word-font-size-font-path-…"><a href="#call-word-font-size-font-path-…" class="headerlink" title="call (word, font_size, font_path, …)"></a><strong>call</strong> (word, font_size, font_path, …)</h4><p>使用固定的图片给指定的词生成颜色。</p>
+<h4 id="init-image"><a href="#init-image" class="headerlink" title="init (image)"></a><strong>init</strong> (image)</h4><h2 id="wordcloud-random-color-func"><a href="#wordcloud-random-color-func" class="headerlink" title="wordcloud.random_color_func"></a>wordcloud.random_color_func</h2><p><table><tr><td bgcolor="#EEE8AA"><font color="red"><b>wordcloud.random_color_func </b></font>(word=None, font_size=None, position=None, orientation=None, font_path=None, random_state=None)<br></td></tr></table><br>随机色相生成器。<br>默认的上色方法。该方法采取 80% 的色相和 50% 的亮度。</p>
+<p>Parameters : </p>
+<ul>
+<li>word</li>
+<li>font_size</li>
+<li>position</li>
+<li>orientation : ignored</li>
+<li>random_state : random.Random 对象或者 None，默认为 None（如果指定了 random 对象，则使用此生成随机数）</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+            <a href="/tags/词云/" rel="tag"># 词云</a>
+          
+            <a href="/tags/wordcloud/" rel="tag"># wordcloud</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/03/自定义Django表单样式/" rel="next" title="自定义Django表单样式">
+                <i class="fa fa-chevron-left"></i> 自定义Django表单样式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/17/词云小例子/" rel="prev" title="词云小例子">
+                词云小例子 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yNzg4NS80NDYy"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Yuan" />
+          <p class="site-author-name" itemprop="name">Yuan</p>
+           
+              <p class="site-description motion-element" itemprop="description">interesting</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">38</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/YuanBLQ/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Wordcloud-的-API-Reference-分三部分："><span class="nav-number">1.</span> <span class="nav-text">Wordcloud 的 API Reference 分三部分：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#wordcloud-WordCloud"><span class="nav-number">1.1.</span> <span class="nav-text">wordcloud.WordCloud</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参数"><span class="nav-number">1.1.1.</span> <span class="nav-text">参数:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#font-path-sting"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">font_path : sting</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#width-int-default-400"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">width : int (default=400)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#height-int-default-200"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">height : int (default=200)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#prefer-horizontal-float-default-0-9"><span class="nav-number">1.1.1.4.</span> <span class="nav-text">prefer_horizontal : float (default=0.9)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mask-nd-array-or-None-default-None"><span class="nav-number">1.1.1.5.</span> <span class="nav-text">mask : nd-array or None (default=None)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#scale-float-default-1"><span class="nav-number">1.1.1.6.</span> <span class="nav-text">scale : float (default=1)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#min-font-size-int-default-4"><span class="nav-number">1.1.1.7.</span> <span class="nav-text">min_font_size : int (default=4)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#font-step-int-default-1"><span class="nav-number">1.1.1.8.</span> <span class="nav-text">font_step : int (default=1)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#max-words-number-default-200"><span class="nav-number">1.1.1.9.</span> <span class="nav-text">max_words : number (default=200)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#stopwords-set-of-strings-or-None"><span class="nav-number">1.1.1.10.</span> <span class="nav-text">stopwords : set of strings or None</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#background-color-color-value-default-”black”"><span class="nav-number">1.1.1.11.</span> <span class="nav-text">background_color : color value (default=”black”)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#max-font-size-int-or-None-default-None"><span class="nav-number">1.1.1.12.</span> <span class="nav-text">max_font_size : int or None (default=None)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mode-string-default-”RGB”"><span class="nav-number">1.1.1.13.</span> <span class="nav-text">mode : string (default=”RGB”)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#relative-scaling-float-default-0-5"><span class="nav-number">1.1.1.14.</span> <span class="nav-text">relative_scaling : float (default=0.5)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#color-func-callable-default-None"><span class="nav-number">1.1.1.15.</span> <span class="nav-text">color_func : callable (default=None)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#regexp-string-or-None-optional"><span class="nav-number">1.1.1.16.</span> <span class="nav-text">regexp : string or None (optional)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#collocations-bool-default-True"><span class="nav-number">1.1.1.17.</span> <span class="nav-text">collocations : bool (default=True)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#colormap-string-or-matplotlib-colormap-default-”viridis”"><span class="nav-number">1.1.1.18.</span> <span class="nav-text">colormap : string or matplotlib colormap (default=”viridis”)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#normalize-plurals-bool-default-True"><span class="nav-number">1.1.1.19.</span> <span class="nav-text">normalize_plurals : bool (default=True)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Notes"><span class="nav-number">1.1.1.20.</span> <span class="nav-text">Notes</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#属性"><span class="nav-number">1.1.2.</span> <span class="nav-text">属性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#words-list-of-tuples-string-float"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">words_ : list of tuples (string, float)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#layout-list-of-tuples-string-int-int-int-int-color"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">layout_ : list of tuples (string, int, (int, int), int ,color)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法"><span class="nav-number">1.1.3.</span> <span class="nav-text">方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#init-font-path-None-width-400-…"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">init(font_path=None, width=400, …)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#fit-words-frequencies"><span class="nav-number">1.1.3.2.</span> <span class="nav-text">fit_words (frequencies)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#generate-text"><span class="nav-number">1.1.3.3.</span> <span class="nav-text">generate (text)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#generate-from-frequencies-frequencies-…"><span class="nav-number">1.1.3.4.</span> <span class="nav-text">generate_from_frequencies (frequencies[, …])</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#generate-from-text-text"><span class="nav-number">1.1.3.5.</span> <span class="nav-text">generate_from_text (text)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#process-text-text"><span class="nav-number">1.1.3.6.</span> <span class="nav-text">process_text (text)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#recolor-random-state-color-func-colormap"><span class="nav-number">1.1.3.7.</span> <span class="nav-text">recolor ([random_state, color_func, colormap])</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#to-array"><span class="nav-number">1.1.3.8.</span> <span class="nav-text">to_array ()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#to-file-filename"><span class="nav-number">1.1.3.9.</span> <span class="nav-text">to_file (filename)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#to-html"><span class="nav-number">1.1.3.10.</span> <span class="nav-text">to_html ()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#to-image"><span class="nav-number">1.1.3.11.</span> <span class="nav-text">to_image ()</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#wordcloud-ImageColorGenerator"><span class="nav-number">1.2.</span> <span class="nav-text">wordcloud.ImageColorGenerator</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方法-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#call-word-font-size-font-path-…"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">call (word, font_size, font_path, …)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#init-image"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">init (image)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#wordcloud-random-color-func"><span class="nav-number">1.3.</span> <span class="nav-text">wordcloud.random_color_func</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yuan</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"> 本站访问量 </i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("DLXhFvD0nnv6rhu9LFUhmVPP-gzGzoHsz", "xyEKUkd6XbgqcNvCNUkCf7eB");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
