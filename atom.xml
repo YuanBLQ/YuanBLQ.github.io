@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2018-04-04T08:25:51.000Z</updated>
+  <updated>2018-05-09T08:47:19.000Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -16,9 +16,29 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>fileauth.txt</title>
+    <link href="https://yuanblq.github.io/.well-known/pki-validation//fileauth-txt/"/>
+    <id>https://yuanblq.github.io/.well-known/pki-validation//fileauth-txt/</id>
+    <published>2018-05-09T08:45:32.000Z</published>
+    <updated>2018-05-09T08:47:19.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>201805080745165f18a5pbe386k28yr4ewdxivlci7dxw05cfz2yiizfia9d0yud</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;201805080745165f18a5pbe386k28yr4ewdxivlci7dxw05cfz2yiizfia9d0yud&lt;/p&gt;
+
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
     <title>Django+uWSGI+Nginx部署</title>
-    <link href="https://yuanblq.github.io/2018/04/04/Django-uWSGI-Nginx%E9%83%A8%E7%BD%B2/"/>
-    <id>https://yuanblq.github.io/2018/04/04/Django-uWSGI-Nginx部署/</id>
+    <link href="https://yuanblq.github.io/undefined/Django-uWSGI-Nginx%E9%83%A8%E7%BD%B2/"/>
+    <id>https://yuanblq.github.io/undefined/Django-uWSGI-Nginx部署/</id>
     <published>2018-04-04T08:16:00.000Z</published>
     <updated>2018-04-04T08:25:51.000Z</updated>
     
@@ -118,8 +138,8 @@
   
   <entry>
     <title>集中式日志系统ELK协议栈简介与入门</title>
-    <link href="https://yuanblq.github.io/2018/03/13/%E9%9B%86%E4%B8%AD%E5%BC%8F%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9FELK%E5%8D%8F%E8%AE%AE%E6%A0%88%E7%AE%80%E4%BB%8B%E4%B8%8E%E5%85%A5%E9%97%A8/"/>
-    <id>https://yuanblq.github.io/2018/03/13/集中式日志系统ELK协议栈简介与入门/</id>
+    <link href="https://yuanblq.github.io/undefined/%E9%9B%86%E4%B8%AD%E5%BC%8F%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9FELK%E5%8D%8F%E8%AE%AE%E6%A0%88%E7%AE%80%E4%BB%8B%E4%B8%8E%E5%85%A5%E9%97%A8/"/>
+    <id>https://yuanblq.github.io/undefined/集中式日志系统ELK协议栈简介与入门/</id>
     <published>2018-03-13T08:14:25.000Z</published>
     <updated>2018-03-23T01:34:10.000Z</updated>
     
@@ -237,8 +257,8 @@
   
   <entry>
     <title>Celery 后台运行</title>
-    <link href="https://yuanblq.github.io/2018/01/17/Celery-%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C/"/>
-    <id>https://yuanblq.github.io/2018/01/17/Celery-后台运行/</id>
+    <link href="https://yuanblq.github.io/undefined/Celery-%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C/"/>
+    <id>https://yuanblq.github.io/undefined/Celery-后台运行/</id>
     <published>2018-01-17T07:20:15.000Z</published>
     <updated>2018-01-17T07:25:10.000Z</updated>
     
@@ -277,8 +297,8 @@
   
   <entry>
     <title>celery入门到使用</title>
-    <link href="https://yuanblq.github.io/2018/01/16/celery%E5%85%A5%E9%97%A8%E5%88%B0%E4%BD%BF%E7%94%A8/"/>
-    <id>https://yuanblq.github.io/2018/01/16/celery入门到使用/</id>
+    <link href="https://yuanblq.github.io/undefined/celery%E5%85%A5%E9%97%A8%E5%88%B0%E4%BD%BF%E7%94%A8/"/>
+    <id>https://yuanblq.github.io/undefined/celery入门到使用/</id>
     <published>2018-01-16T09:10:46.000Z</published>
     <updated>2018-01-16T09:12:07.000Z</updated>
     
@@ -322,8 +342,8 @@
   
   <entry>
     <title>Redis安全说明</title>
-    <link href="https://yuanblq.github.io/2018/01/10/Redis%E5%AE%89%E5%85%A8%E8%AF%B4%E6%98%8E/"/>
-    <id>https://yuanblq.github.io/2018/01/10/Redis安全说明/</id>
+    <link href="https://yuanblq.github.io/undefined/Redis%E5%AE%89%E5%85%A8%E8%AF%B4%E6%98%8E/"/>
+    <id>https://yuanblq.github.io/undefined/Redis安全说明/</id>
     <published>2018-01-10T06:20:58.000Z</published>
     <updated>2018-01-10T09:27:49.000Z</updated>
     
@@ -374,8 +394,8 @@
   
   <entry>
     <title>Django F对象</title>
-    <link href="https://yuanblq.github.io/2018/01/05/Django-F%E5%AF%B9%E8%B1%A1/"/>
-    <id>https://yuanblq.github.io/2018/01/05/Django-F对象/</id>
+    <link href="https://yuanblq.github.io/undefined/Django-F%E5%AF%B9%E8%B1%A1/"/>
+    <id>https://yuanblq.github.io/undefined/Django-F对象/</id>
     <published>2018-01-05T06:55:55.000Z</published>
     <updated>2018-01-05T07:04:33.000Z</updated>
     
@@ -419,8 +439,8 @@
   
   <entry>
     <title>Django也能玩实时 —— chapter 4⅔</title>
-    <link href="https://yuanblq.github.io/2017/08/25/channel-part5/"/>
-    <id>https://yuanblq.github.io/2017/08/25/channel-part5/</id>
+    <link href="https://yuanblq.github.io/undefined/channel-part5/"/>
+    <id>https://yuanblq.github.io/undefined/channel-part5/</id>
     <published>2017-08-25T02:22:57.000Z</published>
     <updated>2017-09-20T15:36:58.000Z</updated>
     
@@ -484,8 +504,8 @@
   
   <entry>
     <title>celery 解决 web 耗时操作</title>
-    <link href="https://yuanblq.github.io/2017/08/20/flask-celery/"/>
-    <id>https://yuanblq.github.io/2017/08/20/flask-celery/</id>
+    <link href="https://yuanblq.github.io/undefined/flask-celery/"/>
+    <id>https://yuanblq.github.io/undefined/flask-celery/</id>
     <published>2017-08-20T05:13:08.000Z</published>
     <updated>2017-09-20T15:36:58.000Z</updated>
     
@@ -545,13 +565,13 @@
   
   <entry>
     <title>Django也能玩实时 —— chapter 4⅓</title>
-    <link href="https://yuanblq.github.io/2017/08/12/channel-part4/"/>
-    <id>https://yuanblq.github.io/2017/08/12/channel-part4/</id>
+    <link href="https://yuanblq.github.io/undefined/channel-part4/"/>
+    <id>https://yuanblq.github.io/undefined/channel-part4/</id>
     <published>2017-08-12T09:33:28.000Z</published>
     <updated>2017-09-20T15:36:58.000Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="开始使用-Channels"><a href="#开始使用-Channels" class="headerlink" title="开始使用 Channels"></a>开始使用 Channels</h2><p>（确保你已经<a href="/2017/08/07/channel-part3/" title="&nbsp;安装了 Channels&nbsp;">&nbsp;安装了 Channels&nbsp;</a>）</p>
-<p>我们先来写几个消费者。如果你还不了解，可以去看看<a href="/2017/08/06/channel-part2/" title="&nbsp;Channels 的概念&nbsp;">&nbsp;Channels 的概念&nbsp;</a>，里面介绍了 channels 和 groups 的基本概念以及阐述了一些重要的实现模式和注意事项。</p>
+    <content type="html"><![CDATA[<h2 id="开始使用-Channels"><a href="#开始使用-Channels" class="headerlink" title="开始使用 Channels"></a>开始使用 Channels</h2><p>（确保你已经<a href="/undefined/channel-part3/" title="&nbsp;安装了 Channels&nbsp;">&nbsp;安装了 Channels&nbsp;</a>）</p>
+<p>我们先来写几个消费者。如果你还不了解，可以去看看<a href="/undefined/channel-part2/" title="&nbsp;Channels 的概念&nbsp;">&nbsp;Channels 的概念&nbsp;</a>，里面介绍了 channels 和 groups 的基本概念以及阐述了一些重要的实现模式和注意事项。</p>
 <h2 id="第一个消费者"><a href="#第一个消费者" class="headerlink" title="第一个消费者"></a>第一个消费者</h2><p>当你安装完 Channels 第一次运行 Django 的时候，它会以默认的布局配置 —— 所有的 HTTP 请求（ <code>http.request</code> channel 中的）都会路由到 Django 的 view 层 —— 和以前基于 Django、views 和静态文件服务的 WSGI 工作方式一样。（就像正常的 <code>runserver</code> 一样）</p>
 <p>作为一个基本介绍，我们写一个覆盖内置处理器的 consumer 来直接处理所有的 HTTP 请求。通常你在一个项目中不会这么做，但是能了解 channels 如何在 DJango 核心下工作 —— 直接在现存的 view 层下添加了一整个新的层。</p>
 <a id="more"></a>
@@ -566,7 +586,7 @@
 <p><strong>注意</strong><br>这里大多数例子，使用的是“in memory” channel 层。方便刚开始使用 channel，但是无法实现跨进程的 channel 传输，而且只能用 <code>runserver</code>。在生产环境中，你需要选择其他的 backend 后端（后面将会讨论）。</p>
 </blockquote>
 <p>如你所见，这有点像 Django 的 <code>DATABASES</code> 配置，有一个名为 <code>default</code> 的 channel 层。每个层都需要一个 channel 层类、一些配置（如果该层需要的话）以及一个路由调度器，用来指向包含路由配置的列表。推荐你起名为 <code>routing.py</code> 并且放在你项目 <code>urls.py</code> 的旁边，但你也可以随便放在哪个地方，只要路径不错。</p>
-<p>如果你用 <code>python manage.py runserver</code> 启动，然后在浏览器输入 <code>http://localhost:8000</code>，你会看见，一个 Django 页面，那就说明一切正常。如果你看不到响应，检查一下你是否正确<a href="/2017/08/07/channel-part3/" title="&nbsp;安装了 channels&nbsp;">&nbsp;安装了 channels&nbsp;</a>。</p>
+<p>如果你用 <code>python manage.py runserver</code> 启动，然后在浏览器输入 <code>http://localhost:8000</code>，你会看见，一个 Django 页面，那就说明一切正常。如果你看不到响应，检查一下你是否正确<a href="/undefined/channel-part3/" title="&nbsp;安装了 channels&nbsp;">&nbsp;安装了 channels&nbsp;</a>。</p>
 <p>现在看起来没啥值得激动的地方，原生 HTTP 响应 Django 早就能做了。我们来试试 WebSocket，再做一个简单的聊天服务器～</p>
 <p>我们先只做一个 echo 的简单服务器，将客户端发来的消息直接原样发回。虽然没啥用，不过用来入门 channel 还是不错的。</p>
 <p>删除之前的 consumer 和 routing 路由 —— 现在开始，如果你不在 consumer 中特别指定去处理 <code>http.request</code> 那么，Django view 视图来处理 HTTP 请求。然后 consumer 来处理 WebSocket：</p>
@@ -584,7 +604,7 @@
 <blockquote>
 <p><strong>注意</strong><br>如果你重写了 connect，你需要通过 <code>accept: True</code> 来显式地接受 WebSocket 连接，当然，你也可以通过 <code>close: True</code> 来拒绝连接。</p>
 </blockquote>
-<p>当然，如果你读过<a href="/2017/08/06/channel-part2/" title="&nbsp;channels 概念&nbsp;">&nbsp;channels 概念&nbsp;</a>，你就知道如果添加到 groups 的 Channels 的 message 过期了，那么 Channels 也要过期（每个 Channel 的 message 都有一个过期时间，通常在 30 秒至 1 分钟，当然可以自己配置）。但是无论如何 <code>disconnect</code> 处理器都会调用。</p>
+<p>当然，如果你读过<a href="/undefined/channel-part2/" title="&nbsp;channels 概念&nbsp;">&nbsp;channels 概念&nbsp;</a>，你就知道如果添加到 groups 的 Channels 的 message 过期了，那么 Channels 也要过期（每个 Channel 的 message 都有一个过期时间，通常在 30 秒至 1 分钟，当然可以自己配置）。但是无论如何 <code>disconnect</code> 处理器都会调用。</p>
 <blockquote>
 <p><strong>注意：</strong><br>Channels 设计的前提是会失败的，它假设有一小部分的 message 会永远无法传送，所以所有的核心功能设计的时候都要考虑到当发送一个 message 的时候会无法传送，这样就不会使整个系统崩溃。</p>
 <p>我们同样建议你也这么设计你的 app —— 不要期望 Channels 能 100% 可靠的帮你传送消息。查找每一个可能失败的地方，然后用自己用代码去处理 —— 可以是 retry 逻辑、处理部分内容或者不要同时做一些事。HTTP request 也是容易出错的，不然怎么会有人经常收到一个错误的页面！</p>
@@ -602,8 +622,8 @@
     
     <summary type="html">
     
-      &lt;h2 id=&quot;开始使用-Channels&quot;&gt;&lt;a href=&quot;#开始使用-Channels&quot; class=&quot;headerlink&quot; title=&quot;开始使用 Channels&quot;&gt;&lt;/a&gt;开始使用 Channels&lt;/h2&gt;&lt;p&gt;（确保你已经&lt;a href=&quot;/2017/08/07/channel-part3/&quot; title=&quot;&amp;nbsp;安装了 Channels&amp;nbsp;&quot;&gt;&amp;nbsp;安装了 Channels&amp;nbsp;&lt;/a&gt;）&lt;/p&gt;
-&lt;p&gt;我们先来写几个消费者。如果你还不了解，可以去看看&lt;a href=&quot;/2017/08/06/channel-part2/&quot; title=&quot;&amp;nbsp;Channels 的概念&amp;nbsp;&quot;&gt;&amp;nbsp;Channels 的概念&amp;nbsp;&lt;/a&gt;，里面介绍了 channels 和 groups 的基本概念以及阐述了一些重要的实现模式和注意事项。&lt;/p&gt;
+      &lt;h2 id=&quot;开始使用-Channels&quot;&gt;&lt;a href=&quot;#开始使用-Channels&quot; class=&quot;headerlink&quot; title=&quot;开始使用 Channels&quot;&gt;&lt;/a&gt;开始使用 Channels&lt;/h2&gt;&lt;p&gt;（确保你已经&lt;a href=&quot;/undefined/channel-part3/&quot; title=&quot;&amp;nbsp;安装了 Channels&amp;nbsp;&quot;&gt;&amp;nbsp;安装了 Channels&amp;nbsp;&lt;/a&gt;）&lt;/p&gt;
+&lt;p&gt;我们先来写几个消费者。如果你还不了解，可以去看看&lt;a href=&quot;/undefined/channel-part2/&quot; title=&quot;&amp;nbsp;Channels 的概念&amp;nbsp;&quot;&gt;&amp;nbsp;Channels 的概念&amp;nbsp;&lt;/a&gt;，里面介绍了 channels 和 groups 的基本概念以及阐述了一些重要的实现模式和注意事项。&lt;/p&gt;
 &lt;h2 id=&quot;第一个消费者&quot;&gt;&lt;a href=&quot;#第一个消费者&quot; class=&quot;headerlink&quot; title=&quot;第一个消费者&quot;&gt;&lt;/a&gt;第一个消费者&lt;/h2&gt;&lt;p&gt;当你安装完 Channels 第一次运行 Django 的时候，它会以默认的布局配置 —— 所有的 HTTP 请求（ &lt;code&gt;http.request&lt;/code&gt; channel 中的）都会路由到 Django 的 view 层 —— 和以前基于 Django、views 和静态文件服务的 WSGI 工作方式一样。（就像正常的 &lt;code&gt;runserver&lt;/code&gt; 一样）&lt;/p&gt;
 &lt;p&gt;作为一个基本介绍，我们写一个覆盖内置处理器的 consumer 来直接处理所有的 HTTP 请求。通常你在一个项目中不会这么做，但是能了解 channels 如何在 DJango 核心下工作 —— 直接在现存的 view 层下添加了一整个新的层。&lt;/p&gt;
     
@@ -620,8 +640,8 @@
   
   <entry>
     <title>Django也能玩实时 —— chapter 3</title>
-    <link href="https://yuanblq.github.io/2017/08/07/channel-part3/"/>
-    <id>https://yuanblq.github.io/2017/08/07/channel-part3/</id>
+    <link href="https://yuanblq.github.io/undefined/channel-part3/"/>
+    <id>https://yuanblq.github.io/undefined/channel-part3/</id>
     <published>2017-08-07T07:59:02.000Z</published>
     <updated>2017-09-20T15:36:58.000Z</updated>
     
@@ -658,8 +678,8 @@
   
   <entry>
     <title>Django也能玩实时 —— chapter 2</title>
-    <link href="https://yuanblq.github.io/2017/08/06/channel-part2/"/>
-    <id>https://yuanblq.github.io/2017/08/06/channel-part2/</id>
+    <link href="https://yuanblq.github.io/undefined/channel-part2/"/>
+    <id>https://yuanblq.github.io/undefined/channel-part2/</id>
     <published>2017-08-06T13:28:37.000Z</published>
     <updated>2017-09-20T15:36:59.000Z</updated>
     
@@ -734,8 +754,8 @@
   
   <entry>
     <title>Django也能玩实时 —— chapter 1</title>
-    <link href="https://yuanblq.github.io/2017/08/04/channel-part1/"/>
-    <id>https://yuanblq.github.io/2017/08/04/channel-part1/</id>
+    <link href="https://yuanblq.github.io/undefined/channel-part1/"/>
+    <id>https://yuanblq.github.io/undefined/channel-part1/</id>
     <published>2017-08-04T11:22:14.000Z</published>
     <updated>2017-09-20T15:36:58.000Z</updated>
     
@@ -802,8 +822,8 @@
   
   <entry>
     <title>影分身术之-asyncio_part4</title>
-    <link href="https://yuanblq.github.io/2017/07/31/asyncio4/"/>
-    <id>https://yuanblq.github.io/2017/07/31/asyncio4/</id>
+    <link href="https://yuanblq.github.io/undefined/asyncio4/"/>
+    <id>https://yuanblq.github.io/undefined/asyncio4/</id>
     <published>2017-07-31T07:08:14.000Z</published>
     <updated>2017-09-20T15:36:58.000Z</updated>
     
@@ -848,8 +868,8 @@ More work --&gt; 3
   
   <entry>
     <title>影分身术之-asyncio_part3</title>
-    <link href="https://yuanblq.github.io/2017/07/30/asyncio3/"/>
-    <id>https://yuanblq.github.io/2017/07/30/asyncio3/</id>
+    <link href="https://yuanblq.github.io/undefined/asyncio3/"/>
+    <id>https://yuanblq.github.io/undefined/asyncio3/</id>
     <published>2017-07-30T03:27:31.000Z</published>
     <updated>2017-09-20T15:36:58.000Z</updated>
     
@@ -909,8 +929,8 @@ TIME:  0.649970531463623
   
   <entry>
     <title>影分身术之-asyncio_part2</title>
-    <link href="https://yuanblq.github.io/2017/07/29/asyncio2/"/>
-    <id>https://yuanblq.github.io/2017/07/29/asyncio2/</id>
+    <link href="https://yuanblq.github.io/undefined/asyncio2/"/>
+    <id>https://yuanblq.github.io/undefined/asyncio2/</id>
     <published>2017-07-29T01:14:37.000Z</published>
     <updated>2017-09-20T15:36:59.000Z</updated>
     
@@ -982,8 +1002,8 @@ TIME:  4.002615690231323
   
   <entry>
     <title>影分身术之-asyncio_part1</title>
-    <link href="https://yuanblq.github.io/2017/07/28/asyncio1/"/>
-    <id>https://yuanblq.github.io/2017/07/28/asyncio1/</id>
+    <link href="https://yuanblq.github.io/undefined/asyncio1/"/>
+    <id>https://yuanblq.github.io/undefined/asyncio1/</id>
     <published>2017-07-28T04:59:48.000Z</published>
     <updated>2017-09-20T15:36:59.000Z</updated>
     
@@ -1036,8 +1056,8 @@ TIME:  2.0026657581329346
   
   <entry>
     <title>NoSQL-Redis</title>
-    <link href="https://yuanblq.github.io/2017/07/26/Redis/"/>
-    <id>https://yuanblq.github.io/2017/07/26/Redis/</id>
+    <link href="https://yuanblq.github.io/undefined/Redis/"/>
+    <id>https://yuanblq.github.io/undefined/Redis/</id>
     <published>2017-07-26T06:18:49.000Z</published>
     <updated>2017-09-20T15:36:58.000Z</updated>
     
@@ -1101,8 +1121,8 @@ TIME:  2.0026657581329346
   
   <entry>
     <title>NoSQL-MongoDB</title>
-    <link href="https://yuanblq.github.io/2017/07/26/MongoDB/"/>
-    <id>https://yuanblq.github.io/2017/07/26/MongoDB/</id>
+    <link href="https://yuanblq.github.io/undefined/MongoDB/"/>
+    <id>https://yuanblq.github.io/undefined/MongoDB/</id>
     <published>2017-07-26T04:43:02.000Z</published>
     <updated>2017-09-20T15:36:58.000Z</updated>
     
@@ -1225,8 +1245,8 @@ TIME:  2.0026657581329346
   
   <entry>
     <title>排序算法-归并排序</title>
-    <link href="https://yuanblq.github.io/2017/07/16/merger-sort/"/>
-    <id>https://yuanblq.github.io/2017/07/16/merger-sort/</id>
+    <link href="https://yuanblq.github.io/undefined/merger-sort/"/>
+    <id>https://yuanblq.github.io/undefined/merger-sort/</id>
     <published>2017-07-16T11:18:30.000Z</published>
     <updated>2017-09-20T15:36:58.000Z</updated>
     
@@ -1248,7 +1268,7 @@ TIME:  2.0026657581329346
 <p>下面以伪代码的形式实现上面的思想：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># A: 数组  p、q、r是数组的下表，满足 p &lt;= q &lt; r</span></div><div class="line">MERAGE(A, p, q, r)</div><div class="line">n1 = q - p + <span class="number">1</span></div><div class="line">n2 = r - q</div><div class="line"><span class="comment"># let L[1, n1+1] and R[1, n2+1] be new arrays</span></div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, n1):</div><div class="line">    L[i] = A[p+i<span class="number">-1</span>]</div><div class="line"><span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, n2):</div><div class="line">    R[j] = A[q+j]</div><div class="line">L[n1+<span class="number">1</span>] = ∞</div><div class="line">R[n2+<span class="number">1</span>] = ∞</div><div class="line">i = <span class="number">1</span></div><div class="line">j = <span class="number">1</span></div><div class="line"><span class="keyword">for</span> k <span class="keyword">in</span> range(p, r):</div><div class="line">    <span class="keyword">if</span> L[i] &lt;= R[j]:</div><div class="line">        A[k] = L[i]</div><div class="line">        i += <span class="number">1</span></div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        A[k] = R[j]</div><div class="line">        j += <span class="number">1</span></div></pre></td></tr></table></figure>
 <p>下面为两个已排好序的列表，进行合并操作的示意图：</p>
-<p><img src="/2017/07/16/merger-sort/2-3.png" alt="合并示意图"></p>
+<p><img src="/undefined/merger-sort/2-3.png" alt="合并示意图"></p>
 <p>然后我们把这个合并操作作为归并算法中的一个子程序来用。</p>
 <p>下面过程中 <code>merger-sort(A, p, r)</code> 排序子数组 A[p..r] 中的元素。若 p &gt;= r，则该子数组最多有一个元素，所以已经排好序。否则，分解步骤简单地计算一个下标 q，将 A[p..r] 分成两个子数组 A[p..q] 和 A[q+1..r]，前者包含 n/2 个元素，后者包含 n/2 个元素。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># merger-sort(A, p, r)</span></div><div class="line"><span class="keyword">if</span> p &lt; r:</div><div class="line">    q = (p+r) / <span class="number">2</span></div><div class="line">    <span class="comment"># 对这两数组进行归并排序</span></div><div class="line">    merger-sort(A, p, q)</div><div class="line">    merger-sort(A, q+<span class="number">1</span>, r)</div><div class="line">    <span class="comment"># 将排好序的两个数组合并</span></div><div class="line">    merger(A, p, q, r)</div></pre></td></tr></table></figure>
@@ -1263,56 +1283,6 @@ TIME:  2.0026657581329346
     
       &lt;h2 id=&quot;归并排序&quot;&gt;&lt;a href=&quot;#归并排序&quot; class=&quot;headerlink&quot; title=&quot;归并排序&quot;&gt;&lt;/a&gt;归并排序&lt;/h2&gt;&lt;p&gt;有很多算法在结构上是递归的：为了解决一个给定的问题，算法一次或多次递归地调用其自身以解决相关的若干子问题。&lt;/p&gt;
 &lt;p&gt;这是典型的分治法思想：将原问题分解为几个规模较小，但类似于原问题的子问题，递归地求解这些子问题，然后再合并这些子问题的解来建立原问题的解。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="小练习" scheme="https://yuanblq.github.io/categories/%E5%B0%8F%E7%BB%83%E4%B9%A0/"/>
-    
-    
-      <category term="Algorithms" scheme="https://yuanblq.github.io/tags/Algorithms/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>排序算法-插入排序</title>
-    <link href="https://yuanblq.github.io/2017/07/03/insertion-sort/"/>
-    <id>https://yuanblq.github.io/2017/07/03/insertion-sort/</id>
-    <published>2017-07-02T17:15:11.000Z</published>
-    <updated>2017-09-20T15:36:59.000Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h2><p>对于少量元素的排序，插入排序算是一个比较有效的算法。</p>
-<p>它的执行流程和打扑克摸牌时候的插牌差不多。</p>
-<p><img src="/2017/07/03/insertion-sort/2-1.png" alt="使用插入排序来排序手中扑克牌"></p>
-<p>打扑克插牌的时候，首先手上没有牌，从桌上扣着的牌里不断抓取。每抓一张牌，都会与手中已有的牌进行比对，然后插入合适的位置。</p>
-<a id="more"></a>
-<p>上面的流程，可以用 Python 的伪代码这么表示：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># A 为总共可以抓取的扑克牌数，四人斗地主的话，即 25 张牌</span></div><div class="line"><span class="comment"># 因为从第 2 次抓牌开始，才算进行真正的排序</span></div><div class="line"><span class="keyword">for</span> j <span class="keyword">in</span> [<span class="number">2</span>, len(A)]:</div><div class="line">    <span class="comment"># poke 为当前抓取的牌</span></div><div class="line">    poke = A[j]</div><div class="line">    <span class="comment"># 把当前抓到的牌插入之前已经排序好的牌中</span></div><div class="line">    <span class="comment"># 即，将 A[j] 插在 A[1..j-1] 的合适位置</span></div><div class="line">    <span class="comment"># 假设从小到大排序</span></div><div class="line">    <span class="comment"># 从当前牌的最后一张开始比对，如果比当前牌大，就调个个</span></div><div class="line">    i = j - <span class="number">1</span></div><div class="line">    <span class="keyword">while</span> i &gt; <span class="number">0</span> <span class="keyword">and</span> A[i] &gt; poke:</div><div class="line">        A[i+<span class="number">1</span>] = A[i]</div><div class="line">        i = i - <span class="number">1</span></div><div class="line">    <span class="comment"># 真正的插入操作 =&gt; 将抓取的牌，插在合适的位置</span></div><div class="line">    A[i+<span class="number">1</span>] = poke</div></pre></td></tr></table></figure></p>
-<p>在 for 循环中，每次迭代开始的时候，A[1, j-1] 总是已经排好序的牌，这个特性叫做循环不变式。</p>
-<p>下图表明了对于 A=[5, 2, 4, 6, 1, 3] 该算法如何工作的：</p>
-<p><img src="/2017/07/03/insertion-sort/2-2.png" alt="插入排序工作原理"></p>
-<p>循环不变式主要用来帮助我们理解算法的正确性。关于循环不变式，我们必须证明三条性质：</p>
-<ul>
-<li><strong>初始化：</strong>循环的第一次迭代之前，它为真。</li>
-<li><strong>保持：</strong>如果循环在某次开始前它为真，那么下次迭代开始之前，他也为真。</li>
-<li><strong>终止：</strong>在循环结束的时候，不变式所提供的特性仍未改变，该特性有助于证明算法是正确的。</li>
-</ul>
-<p>以下是用 Python 完整实现的代码，仅供参考：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">A = [<span class="number">5</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">1</span>, <span class="number">3</span>]</div><div class="line">A</div></pre></td></tr></table></figure>
-<pre><code>[5, 2, 4, 6, 1, 3]
-</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">insertion_sort1</span><span class="params">(A)</span>:</span></div><div class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, len(A)):</div><div class="line">        poke = A[j]</div><div class="line">        i = j - <span class="number">1</span></div><div class="line">        <span class="keyword">while</span> i &gt;= <span class="number">0</span> <span class="keyword">and</span> A[i] &gt; poke:</div><div class="line">            A[i], A[i+<span class="number">1</span>] = A[i+<span class="number">1</span>], A[i]</div><div class="line">            i -= <span class="number">1</span></div><div class="line">        A[i+<span class="number">1</span>] = poke</div><div class="line">    <span class="keyword">return</span> A</div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">print(insertion_sort1(A))</div></pre></td></tr></table></figure>
-<pre><code>[1, 2, 3, 4, 5, 6]
-</code></pre><p>如果将插入数据和搜索数据合并到一起操作，那么代码就变成这样：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">insertion_sort2</span><span class="params">(A)</span>:</span></div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(A)):</div><div class="line">        <span class="keyword">while</span> i &gt; <span class="number">0</span> <span class="keyword">and</span> A[i<span class="number">-1</span>] &gt; A[i]:</div><div class="line">            A[i<span class="number">-1</span>], A[i] = A[i], A[i<span class="number">-1</span>]</div><div class="line">            i -= <span class="number">1</span></div><div class="line">    <span class="keyword">return</span> A</div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">print(insertion_sort2(A))</div></pre></td></tr></table></figure>
-<pre><code>[1, 2, 3, 4, 5, 6]
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;插入排序&quot;&gt;&lt;a href=&quot;#插入排序&quot; class=&quot;headerlink&quot; title=&quot;插入排序&quot;&gt;&lt;/a&gt;插入排序&lt;/h2&gt;&lt;p&gt;对于少量元素的排序，插入排序算是一个比较有效的算法。&lt;/p&gt;
-&lt;p&gt;它的执行流程和打扑克摸牌时候的插牌差不多。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/2017/07/03/insertion-sort/2-1.png&quot; alt=&quot;使用插入排序来排序手中扑克牌&quot;&gt;&lt;/p&gt;
-&lt;p&gt;打扑克插牌的时候，首先手上没有牌，从桌上扣着的牌里不断抓取。每抓一张牌，都会与手中已有的牌进行比对，然后插入合适的位置。&lt;/p&gt;
     
     </summary>
     
