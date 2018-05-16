@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2018-05-09T08:47:19.000Z</updated>
+  <updated>2018-04-04T08:25:51.000Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -14,26 +14,6 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>fileauth.txt</title>
-    <link href="https://yuanblq.github.io/2018/05/09/fileauth-txt/"/>
-    <id>https://yuanblq.github.io/2018/05/09/fileauth-txt/</id>
-    <published>2018-05-09T08:45:32.000Z</published>
-    <updated>2018-05-09T08:47:19.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>201805080745165f18a5pbe386k28yr4ewdxivlci7dxw05cfz2yiizfia9d0yud</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;201805080745165f18a5pbe386k28yr4ewdxivlci7dxw05cfz2yiizfia9d0yud&lt;/p&gt;
-
-    
-    </summary>
-    
-    
-  </entry>
   
   <entry>
     <title>Django+uWSGI+Nginx部署</title>
@@ -1283,6 +1263,56 @@ TIME:  2.0026657581329346
     
       &lt;h2 id=&quot;归并排序&quot;&gt;&lt;a href=&quot;#归并排序&quot; class=&quot;headerlink&quot; title=&quot;归并排序&quot;&gt;&lt;/a&gt;归并排序&lt;/h2&gt;&lt;p&gt;有很多算法在结构上是递归的：为了解决一个给定的问题，算法一次或多次递归地调用其自身以解决相关的若干子问题。&lt;/p&gt;
 &lt;p&gt;这是典型的分治法思想：将原问题分解为几个规模较小，但类似于原问题的子问题，递归地求解这些子问题，然后再合并这些子问题的解来建立原问题的解。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="小练习" scheme="https://yuanblq.github.io/categories/%E5%B0%8F%E7%BB%83%E4%B9%A0/"/>
+    
+    
+      <category term="Algorithms" scheme="https://yuanblq.github.io/tags/Algorithms/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>排序算法-插入排序</title>
+    <link href="https://yuanblq.github.io/2017/07/03/insertion-sort/"/>
+    <id>https://yuanblq.github.io/2017/07/03/insertion-sort/</id>
+    <published>2017-07-02T17:15:11.000Z</published>
+    <updated>2017-09-20T15:36:59.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h2><p>对于少量元素的排序，插入排序算是一个比较有效的算法。</p>
+<p>它的执行流程和打扑克摸牌时候的插牌差不多。</p>
+<p><img src="/2017/07/03/insertion-sort/2-1.png" alt="使用插入排序来排序手中扑克牌"></p>
+<p>打扑克插牌的时候，首先手上没有牌，从桌上扣着的牌里不断抓取。每抓一张牌，都会与手中已有的牌进行比对，然后插入合适的位置。</p>
+<a id="more"></a>
+<p>上面的流程，可以用 Python 的伪代码这么表示：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># A 为总共可以抓取的扑克牌数，四人斗地主的话，即 25 张牌</span></div><div class="line"><span class="comment"># 因为从第 2 次抓牌开始，才算进行真正的排序</span></div><div class="line"><span class="keyword">for</span> j <span class="keyword">in</span> [<span class="number">2</span>, len(A)]:</div><div class="line">    <span class="comment"># poke 为当前抓取的牌</span></div><div class="line">    poke = A[j]</div><div class="line">    <span class="comment"># 把当前抓到的牌插入之前已经排序好的牌中</span></div><div class="line">    <span class="comment"># 即，将 A[j] 插在 A[1..j-1] 的合适位置</span></div><div class="line">    <span class="comment"># 假设从小到大排序</span></div><div class="line">    <span class="comment"># 从当前牌的最后一张开始比对，如果比当前牌大，就调个个</span></div><div class="line">    i = j - <span class="number">1</span></div><div class="line">    <span class="keyword">while</span> i &gt; <span class="number">0</span> <span class="keyword">and</span> A[i] &gt; poke:</div><div class="line">        A[i+<span class="number">1</span>] = A[i]</div><div class="line">        i = i - <span class="number">1</span></div><div class="line">    <span class="comment"># 真正的插入操作 =&gt; 将抓取的牌，插在合适的位置</span></div><div class="line">    A[i+<span class="number">1</span>] = poke</div></pre></td></tr></table></figure></p>
+<p>在 for 循环中，每次迭代开始的时候，A[1, j-1] 总是已经排好序的牌，这个特性叫做循环不变式。</p>
+<p>下图表明了对于 A=[5, 2, 4, 6, 1, 3] 该算法如何工作的：</p>
+<p><img src="/2017/07/03/insertion-sort/2-2.png" alt="插入排序工作原理"></p>
+<p>循环不变式主要用来帮助我们理解算法的正确性。关于循环不变式，我们必须证明三条性质：</p>
+<ul>
+<li><strong>初始化：</strong>循环的第一次迭代之前，它为真。</li>
+<li><strong>保持：</strong>如果循环在某次开始前它为真，那么下次迭代开始之前，他也为真。</li>
+<li><strong>终止：</strong>在循环结束的时候，不变式所提供的特性仍未改变，该特性有助于证明算法是正确的。</li>
+</ul>
+<p>以下是用 Python 完整实现的代码，仅供参考：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">A = [<span class="number">5</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">1</span>, <span class="number">3</span>]</div><div class="line">A</div></pre></td></tr></table></figure>
+<pre><code>[5, 2, 4, 6, 1, 3]
+</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">insertion_sort1</span><span class="params">(A)</span>:</span></div><div class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, len(A)):</div><div class="line">        poke = A[j]</div><div class="line">        i = j - <span class="number">1</span></div><div class="line">        <span class="keyword">while</span> i &gt;= <span class="number">0</span> <span class="keyword">and</span> A[i] &gt; poke:</div><div class="line">            A[i], A[i+<span class="number">1</span>] = A[i+<span class="number">1</span>], A[i]</div><div class="line">            i -= <span class="number">1</span></div><div class="line">        A[i+<span class="number">1</span>] = poke</div><div class="line">    <span class="keyword">return</span> A</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">print(insertion_sort1(A))</div></pre></td></tr></table></figure>
+<pre><code>[1, 2, 3, 4, 5, 6]
+</code></pre><p>如果将插入数据和搜索数据合并到一起操作，那么代码就变成这样：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">insertion_sort2</span><span class="params">(A)</span>:</span></div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(A)):</div><div class="line">        <span class="keyword">while</span> i &gt; <span class="number">0</span> <span class="keyword">and</span> A[i<span class="number">-1</span>] &gt; A[i]:</div><div class="line">            A[i<span class="number">-1</span>], A[i] = A[i], A[i<span class="number">-1</span>]</div><div class="line">            i -= <span class="number">1</span></div><div class="line">    <span class="keyword">return</span> A</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">print(insertion_sort2(A))</div></pre></td></tr></table></figure>
+<pre><code>[1, 2, 3, 4, 5, 6]
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;插入排序&quot;&gt;&lt;a href=&quot;#插入排序&quot; class=&quot;headerlink&quot; title=&quot;插入排序&quot;&gt;&lt;/a&gt;插入排序&lt;/h2&gt;&lt;p&gt;对于少量元素的排序，插入排序算是一个比较有效的算法。&lt;/p&gt;
+&lt;p&gt;它的执行流程和打扑克摸牌时候的插牌差不多。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/2017/07/03/insertion-sort/2-1.png&quot; alt=&quot;使用插入排序来排序手中扑克牌&quot;&gt;&lt;/p&gt;
+&lt;p&gt;打扑克插牌的时候，首先手上没有牌，从桌上扣着的牌里不断抓取。每抓一张牌，都会与手中已有的牌进行比对，然后插入合适的位置。&lt;/p&gt;
     
     </summary>
     
