@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2018-04-04T08:25:51.000Z</updated>
+  <updated>2018-05-31T08:13:08.000Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -14,6 +14,118 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>理解Python元类</title>
+    <link href="https://yuanblq.github.io/2018/05/31/%E7%90%86%E8%A7%A3Python%E5%85%83%E7%B1%BB/"/>
+    <id>https://yuanblq.github.io/2018/05/31/理解Python元类/</id>
+    <published>2018-05-31T08:11:12.000Z</published>
+    <updated>2018-05-31T08:13:08.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>想要理解 Python 中的元类只要记住：一切皆对象。记住这 5 个字，理解元类就会轻松很多。</p>
+<a id="more"></a>
+<h3 id="先创建一个自定义对象瞧瞧"><a href="#先创建一个自定义对象瞧瞧" class="headerlink" title="先创建一个自定义对象瞧瞧"></a>先创建一个自定义对象瞧瞧</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="keyword">pass</span></div><div class="line"></div><div class="line">my_obj = MyClass()</div><div class="line"></div><div class="line">my_obj</div></pre></td></tr></table></figure>
+<pre><code>&lt;__main__.MyClass at 0x10907aa20&gt;
+</code></pre><p>我们，很容易就获得了一个自定义的对象。那在这期间都发生了些什么呢？</p>
+<p><code>my_obj = MyClass()</code> 这段代码运行的时候，我们都知道这是在实例化一个类来获取这个类的对象，实例化期间会去走 <code>MyClass</code> 类中的 <code>__init__()</code> 方法。</p>
+<p>当然，我们都知道在走 <code>__init__()</code> 方法之前还会先去走 <code>MyClass</code> 类的 <code>__new__()</code> 方法，通过 <code>__new__()</code> 方法来创建类的实例。Python 最常见的单例就是通过 <code>__new__()</code> 方法实现的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span><span class="params">(object)</span>:</span></div><div class="line">    __instance = <span class="keyword">None</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span><span class="params">(cls, *args)</span>:</span></div><div class="line">        print(<span class="string">"in MyClass __new__ method"</span>)</div><div class="line">        <span class="keyword">if</span> cls.__instance <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">            print(<span class="string">"create a new instance"</span>)</div><div class="line">            cls.__instance = super(MyClass, cls).__new__(cls, *args)</div><div class="line">        <span class="keyword">return</span> cls.__instance</div><div class="line"></div><div class="line">c1 = MyClass()</div><div class="line">c2 = MyClass()</div><div class="line">c1, c2</div></pre></td></tr></table></figure>
+<pre><code>in MyClass __new__ method
+create a new instance
+in MyClass __new__ method
+
+
+
+
+
+(&lt;__main__.MyClass at 0x1090a1f60&gt;, &lt;__main__.MyClass at 0x1090a1f60&gt;)
+</code></pre><p>实际上通过这个单例模式可以了解到，其实真正创建对象的方法是 <code>__new__()</code>，而 <code>__init__()</code> 方法只是给已经创建出来的对象赋予属性等操作。</p>
+<h3 id="万物皆对象"><a href="#万物皆对象" class="headerlink" title="万物皆对象"></a>万物皆对象</h3><p>在 Python 中，函数可以是个对象，类也可以是个对象。既然类是个对象，那就应该拥有对象所拥有的特性：</p>
+<ul>
+<li>可以传递给其他变量</li>
+<li>可以拷贝它</li>
+<li>可以动态地给它增加属性</li>
+<li>可以作为参数传递</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mc = MyClass</div><div class="line">mc.new_attr = <span class="string">'Hello'</span></div><div class="line">mc, mc.new_attr</div></pre></td></tr></table></figure>
+<pre><code>(__main__.MyClass, &apos;Hello&apos;)
+</code></pre><h3 id="动态创建类"><a href="#动态创建类" class="headerlink" title="动态创建类"></a>动态创建类</h3><p>既然类也是对象，那我们就可以动态的创建一个类。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_dynamic_class</span><span class="params">(name)</span>:</span></div><div class="line">    <span class="keyword">if</span> name == <span class="string">'Class_1'</span>:</div><div class="line">        <span class="class"><span class="keyword">class</span> <span class="title">Class_1</span>:</span></div><div class="line">            <span class="keyword">pass</span></div><div class="line">        <span class="keyword">return</span> Class_1</div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        <span class="class"><span class="keyword">class</span> <span class="title">OtherClass</span>:</span></div><div class="line">            <span class="keyword">pass</span></div><div class="line">        <span class="keyword">return</span> OtherClass</div><div class="line"></div><div class="line">d1 = create_dynamic_class(<span class="string">'Class_1'</span>)</div><div class="line">d2 = create_dynamic_class(<span class="string">'Class_2'</span>)</div><div class="line"></div><div class="line">d1, d2</div></pre></td></tr></table></figure>
+<pre><code>(__main__.create_dynamic_class.&lt;locals&gt;.Class_1,
+ __main__.create_dynamic_class.&lt;locals&gt;.OtherClass)
+</code></pre><p>但是上面的类创建地还不够“动态”，熟悉 Python 应该知道，这时候就要上 <code>type</code> 了。</p>
+<p>使用 <code>type</code> 可以这样创建类：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">TClass = type(<span class="string">'TClass'</span>, (), &#123;&#125;)</div><div class="line">tc = TClass()</div><div class="line">tc, type(tc)</div></pre></td></tr></table></figure>
+<pre><code>(&lt;__main__.TClass at 0x10907a470&gt;, __main__.TClass)
+</code></pre><p><code>type()</code> 传递三个参数：类名、父类们、属性。</p>
+<p><code>TClass = type(&#39;TClass&#39;, (), {})</code> 这个形式有没有觉得很熟悉，像不像通过类来创建对象这个形式 <code>obj = SomeClass()</code>。实际上 <code>type</code> 算是一个类，只不过小写的形式有点迷惑性，不过想想 <code>str</code>、<code>int</code>、<code>dict</code>、<code>list</code>、<code>set</code> 不都是小写的吗。</p>
+<p>这样一来，其实所有对象都是 <code>type</code> 的子类？</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">isinstance(int, type), isinstance(str, type), isinstance(dict, type), isinstance(MyClass, type)</div></pre></td></tr></table></figure>
+<pre><code>(True, True, True, True)
+</code></pre><p>果然就是这个样子！</p>
+<h3 id="定义类的创建过程"><a href="#定义类的创建过程" class="headerlink" title="定义类的创建过程"></a>定义类的创建过程</h3><p>通过上面单例的示例代码可知，通过 <code>__new__()</code> 方法可以控制对象的创建过程。</p>
+<p>而元类就是利用这一特性！控制类的创建过程。</p>
+<p>所有的类，默认情况下都是由 <code>type</code> 控制创建的，我们想自定义类的创建过程当然是修改父类 <code>type</code> 的属性。正常情况就是继承 <code>type</code> 创建自已的 “<code>type</code> 类”然后让我们的类继承我们的 “<code>type</code> 类”：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyMetaClass</span><span class="params">(type)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span><span class="params">(cls, name, bases, attrs)</span>:</span></div><div class="line">        print(<span class="string">'got MyMetaClass __new__()'</span>)</div><div class="line">        <span class="keyword">if</span> name == <span class="string">'DeniedClass'</span>:</div><div class="line">            <span class="keyword">raise</span> RuntimeError</div><div class="line">        <span class="keyword">return</span> super(MyMetaClass, cls).__new__(cls, name, bases, attrs)</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">OKClass</span><span class="params">(metaclass=MyMetaClass)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span><span class="params">(cls, *args)</span>:</span></div><div class="line">        print(<span class="string">'got OKClass __new__()'</span>)</div><div class="line">        <span class="keyword">return</span> super(OKClass, cls).__new__(cls, *args)</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        print(<span class="string">'got OKClass __init__()'</span>)</div><div class="line"></div><div class="line">ok_class = OKClass()</div><div class="line">ok_class</div></pre></td></tr></table></figure>
+<pre><code>got MyMetaClass __new__()
+got OKClass __new__()
+got OKClass __init__()
+
+
+
+
+
+&lt;__main__.OKClass at 0x1090cc5f8&gt;
+</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">DeniedClass</span><span class="params">(metaclass=MyMetaClass)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span><span class="params">(cls, *args)</span>:</span></div><div class="line">        print(<span class="string">'got DeniedClass __new__()'</span>)</div><div class="line">        <span class="keyword">return</span> super(DeniedClass, cls).__new__(cls, *args)</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        print(<span class="string">'got DeniedClass __init__()'</span>)</div><div class="line"></div><div class="line">denied_class = DeniedClass()</div><div class="line">denied_class</div></pre></td></tr></table></figure>
+<pre><code>got MyMetaClass __new__()
+
+
+
+---------------------------------------------------------------------------
+
+RuntimeError                              Traceback (most recent call last)
+
+&lt;ipython-input-9-913341894ab1&gt; in &lt;module&gt;()
+----&gt; 1 class DeniedClass(metaclass=MyMetaClass):
+      2     def __new__(cls, *args):
+      3         print(&apos;got DeniedClass __new__()&apos;)
+      4         return super(DeniedClass, cls).__new__(cls, *args)
+      5 
+
+
+&lt;ipython-input-7-266bb1820d0c&gt; in __new__(cls, name, bases, attrs)
+      3         print(&apos;got MyMetaClass __new__()&apos;)
+      4         if name == &apos;DeniedClass&apos;:
+----&gt; 5             raise RuntimeError
+      6         return super(MyMetaClass, cls).__new__(cls, name, bases, attrs)
+
+
+RuntimeError: 
+</code></pre><p>从上面两个类实例的创建例子可见，<strong>实例化一个类对象的时候会先通过该类继承的元类创建出该类的类对象，然后通过该类的类对象创建出该类的对象。</strong></p>
+<p>这句话很绕，其实很简单，就是从上往下不断地创建对象（元类 –&gt; 类 –&gt; 实例对象）。</p>
+<h3 id="元类应用"><a href="#元类应用" class="headerlink" title="元类应用"></a>元类应用</h3><p>大家最熟悉的一个元类应用就是 <code>Django</code> 的 <code>ORM</code>:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span><span class="params">(models.Model)</span>:</span></div><div class="line">    name = models.CharField(max_length=<span class="number">30</span>)</div><div class="line">    age = models.IntegerField()</div><div class="line"></div><div class="line">p  = Person(name=<span class="string">'bob'</span>, age=<span class="number">35</span>)</div><div class="line">print(p.age)</div></pre></td></tr></table></figure>
+<p>最终输出 <code>p.age</code> 为 <code>35</code> 而不是 <code>models.IntegerField()</code>，这是因为 <code>models.Model</code> 实现的自定义元类对数据库做了一系列 hook，最后暴露给我们这些简单的 API。</p>
+<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
+<li><a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014319106919344c4ef8b1e04c48778bb45796e0335839000#0" target="_blank" rel="external">使用元类</a></li>
+<li><a href="http://www.dongwm.com/archives/%E8%AF%A6%E8%A7%A3Python/" target="_blank" rel="external">详解Python元类</a></li>
+<li><a href="https://stackoverflow.com/questions/100003/what-are-metaclasses-in-python" target="_blank" rel="external">What are metaclasses in Python?</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;想要理解 Python 中的元类只要记住：一切皆对象。记住这 5 个字，理解元类就会轻松很多。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="知识点" scheme="https://yuanblq.github.io/categories/%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
+    
+    
+      <category term="Python" scheme="https://yuanblq.github.io/tags/Python/"/>
+    
+  </entry>
   
   <entry>
     <title>Django+uWSGI+Nginx部署</title>
@@ -1263,56 +1375,6 @@ TIME:  2.0026657581329346
     
       &lt;h2 id=&quot;归并排序&quot;&gt;&lt;a href=&quot;#归并排序&quot; class=&quot;headerlink&quot; title=&quot;归并排序&quot;&gt;&lt;/a&gt;归并排序&lt;/h2&gt;&lt;p&gt;有很多算法在结构上是递归的：为了解决一个给定的问题，算法一次或多次递归地调用其自身以解决相关的若干子问题。&lt;/p&gt;
 &lt;p&gt;这是典型的分治法思想：将原问题分解为几个规模较小，但类似于原问题的子问题，递归地求解这些子问题，然后再合并这些子问题的解来建立原问题的解。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="小练习" scheme="https://yuanblq.github.io/categories/%E5%B0%8F%E7%BB%83%E4%B9%A0/"/>
-    
-    
-      <category term="Algorithms" scheme="https://yuanblq.github.io/tags/Algorithms/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>排序算法-插入排序</title>
-    <link href="https://yuanblq.github.io/2017/07/03/insertion-sort/"/>
-    <id>https://yuanblq.github.io/2017/07/03/insertion-sort/</id>
-    <published>2017-07-02T17:15:11.000Z</published>
-    <updated>2017-09-20T15:36:59.000Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h2><p>对于少量元素的排序，插入排序算是一个比较有效的算法。</p>
-<p>它的执行流程和打扑克摸牌时候的插牌差不多。</p>
-<p><img src="/2017/07/03/insertion-sort/2-1.png" alt="使用插入排序来排序手中扑克牌"></p>
-<p>打扑克插牌的时候，首先手上没有牌，从桌上扣着的牌里不断抓取。每抓一张牌，都会与手中已有的牌进行比对，然后插入合适的位置。</p>
-<a id="more"></a>
-<p>上面的流程，可以用 Python 的伪代码这么表示：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># A 为总共可以抓取的扑克牌数，四人斗地主的话，即 25 张牌</span></div><div class="line"><span class="comment"># 因为从第 2 次抓牌开始，才算进行真正的排序</span></div><div class="line"><span class="keyword">for</span> j <span class="keyword">in</span> [<span class="number">2</span>, len(A)]:</div><div class="line">    <span class="comment"># poke 为当前抓取的牌</span></div><div class="line">    poke = A[j]</div><div class="line">    <span class="comment"># 把当前抓到的牌插入之前已经排序好的牌中</span></div><div class="line">    <span class="comment"># 即，将 A[j] 插在 A[1..j-1] 的合适位置</span></div><div class="line">    <span class="comment"># 假设从小到大排序</span></div><div class="line">    <span class="comment"># 从当前牌的最后一张开始比对，如果比当前牌大，就调个个</span></div><div class="line">    i = j - <span class="number">1</span></div><div class="line">    <span class="keyword">while</span> i &gt; <span class="number">0</span> <span class="keyword">and</span> A[i] &gt; poke:</div><div class="line">        A[i+<span class="number">1</span>] = A[i]</div><div class="line">        i = i - <span class="number">1</span></div><div class="line">    <span class="comment"># 真正的插入操作 =&gt; 将抓取的牌，插在合适的位置</span></div><div class="line">    A[i+<span class="number">1</span>] = poke</div></pre></td></tr></table></figure></p>
-<p>在 for 循环中，每次迭代开始的时候，A[1, j-1] 总是已经排好序的牌，这个特性叫做循环不变式。</p>
-<p>下图表明了对于 A=[5, 2, 4, 6, 1, 3] 该算法如何工作的：</p>
-<p><img src="/2017/07/03/insertion-sort/2-2.png" alt="插入排序工作原理"></p>
-<p>循环不变式主要用来帮助我们理解算法的正确性。关于循环不变式，我们必须证明三条性质：</p>
-<ul>
-<li><strong>初始化：</strong>循环的第一次迭代之前，它为真。</li>
-<li><strong>保持：</strong>如果循环在某次开始前它为真，那么下次迭代开始之前，他也为真。</li>
-<li><strong>终止：</strong>在循环结束的时候，不变式所提供的特性仍未改变，该特性有助于证明算法是正确的。</li>
-</ul>
-<p>以下是用 Python 完整实现的代码，仅供参考：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">A = [<span class="number">5</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">1</span>, <span class="number">3</span>]</div><div class="line">A</div></pre></td></tr></table></figure>
-<pre><code>[5, 2, 4, 6, 1, 3]
-</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">insertion_sort1</span><span class="params">(A)</span>:</span></div><div class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, len(A)):</div><div class="line">        poke = A[j]</div><div class="line">        i = j - <span class="number">1</span></div><div class="line">        <span class="keyword">while</span> i &gt;= <span class="number">0</span> <span class="keyword">and</span> A[i] &gt; poke:</div><div class="line">            A[i], A[i+<span class="number">1</span>] = A[i+<span class="number">1</span>], A[i]</div><div class="line">            i -= <span class="number">1</span></div><div class="line">        A[i+<span class="number">1</span>] = poke</div><div class="line">    <span class="keyword">return</span> A</div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">print(insertion_sort1(A))</div></pre></td></tr></table></figure>
-<pre><code>[1, 2, 3, 4, 5, 6]
-</code></pre><p>如果将插入数据和搜索数据合并到一起操作，那么代码就变成这样：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">insertion_sort2</span><span class="params">(A)</span>:</span></div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(A)):</div><div class="line">        <span class="keyword">while</span> i &gt; <span class="number">0</span> <span class="keyword">and</span> A[i<span class="number">-1</span>] &gt; A[i]:</div><div class="line">            A[i<span class="number">-1</span>], A[i] = A[i], A[i<span class="number">-1</span>]</div><div class="line">            i -= <span class="number">1</span></div><div class="line">    <span class="keyword">return</span> A</div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">print(insertion_sort2(A))</div></pre></td></tr></table></figure>
-<pre><code>[1, 2, 3, 4, 5, 6]
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;插入排序&quot;&gt;&lt;a href=&quot;#插入排序&quot; class=&quot;headerlink&quot; title=&quot;插入排序&quot;&gt;&lt;/a&gt;插入排序&lt;/h2&gt;&lt;p&gt;对于少量元素的排序，插入排序算是一个比较有效的算法。&lt;/p&gt;
-&lt;p&gt;它的执行流程和打扑克摸牌时候的插牌差不多。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/2017/07/03/insertion-sort/2-1.png&quot; alt=&quot;使用插入排序来排序手中扑克牌&quot;&gt;&lt;/p&gt;
-&lt;p&gt;打扑克插牌的时候，首先手上没有牌，从桌上扣着的牌里不断抓取。每抓一张牌，都会与手中已有的牌进行比对，然后插入合适的位置。&lt;/p&gt;
     
     </summary>
     
