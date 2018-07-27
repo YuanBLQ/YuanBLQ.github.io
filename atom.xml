@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2018-05-31T08:13:08.000Z</updated>
+  <updated>2018-07-27T09:45:55.000Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -14,6 +14,583 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>TensorFlow-01-预测房价</title>
+    <link href="https://yuanblq.github.io/2018/07/27/TensorFlow-01-%E9%A2%84%E6%B5%8B%E6%88%BF%E4%BB%B7/"/>
+    <id>https://yuanblq.github.io/2018/07/27/TensorFlow-01-预测房价/</id>
+    <published>2018-07-27T09:44:16.000Z</published>
+    <updated>2018-07-27T09:45:55.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>学习目标：</p>
+<ul>
+<li>学习基本的 TensorFlow 概念</li>
+<li>在 TensorFlow 中使用 LinearRegressor 类并基于单个输入特征预测各城市街区的房屋价值中位数</li>
+<li>使用均方根误差 (RMSE) 评估模型预测的准确率</li>
+<li>通过调整模型的超参数提高模型准确率</li>
+</ul>
+<a id="more"></a>
+<h4 id="加载数据集"><a href="#加载数据集" class="headerlink" title="加载数据集"></a>加载数据集</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</div><div class="line">house_data = pd.read_csv(<span class="string">"https://dl.google.com/mlcc/mledu-datasets/california_housing_train.csv"</span>, sep=<span class="string">","</span>)</div><div class="line"></div><div class="line">print(house_data)</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">       longitude         ...          median_house_value</div><div class="line">0         -114.3         ...                     66900.0</div><div class="line">1         -114.5         ...                     80100.0</div><div class="line">2         -114.6         ...                     85700.0</div><div class="line">3         -114.6         ...                     73400.0</div><div class="line">4         -114.6         ...                     65500.0</div><div class="line">...          ...         ...                         ...</div><div class="line">16995     -124.3         ...                    111400.0</div><div class="line">16996     -124.3         ...                     79000.0</div><div class="line">16997     -124.3         ...                    103600.0</div><div class="line">16998     -124.3         ...                     85800.0</div><div class="line">16999     -124.3         ...                     94600.0</div><div class="line"></div><div class="line">[17000 rows x 9 columns]</div></pre></td></tr></table></figure>
+<h4 id="数据处理"><a href="#数据处理" class="headerlink" title="数据处理"></a>数据处理</h4><ul>
+<li>随机化处理。以保证不会出现病态的排序结果（防止损害梯度下降算法的效果）</li>
+<li>将 <code>median_house_value</code> 调整为以千为单位</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</div><div class="line"></div><div class="line">house_data = house_data.reindex(</div><div class="line">    np.random.permutation(california_housing_dataframe.index)</div><div class="line">)</div><div class="line">house_data[<span class="string">"median_house_value"</span>] /= <span class="number">1000.0</span></div><div class="line"></div><div class="line">print(house_data)</div></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">longitude</th>
+<th style="text-align:center">latitude</th>
+<th style="text-align:center">housing_median_age</th>
+<th style="text-align:center">total_rooms</th>
+<th style="text-align:center">total_bedrooms</th>
+<th style="text-align:center">population</th>
+<th style="text-align:center">households</th>
+<th style="text-align:center">median_income</th>
+<th style="text-align:center">median_house_value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">417</td>
+<td style="text-align:center">-117.0</td>
+<td style="text-align:center">32.8</td>
+<td style="text-align:center">12.0</td>
+<td style="text-align:center">5535.0</td>
+<td style="text-align:center">1434.0</td>
+<td style="text-align:center">3112.0</td>
+<td style="text-align:center">1262.0</td>
+<td style="text-align:center">2.6</td>
+<td style="text-align:center">108.3</td>
+</tr>
+<tr>
+<td style="text-align:center">14423</td>
+<td style="text-align:center">-122.1</td>
+<td style="text-align:center">37.4</td>
+<td style="text-align:center">18.0</td>
+<td style="text-align:center">1617.0</td>
+<td style="text-align:center">231.0</td>
+<td style="text-align:center">555.0</td>
+<td style="text-align:center">222.0</td>
+<td style="text-align:center">8.9</td>
+<td style="text-align:center">500.0</td>
+</tr>
+<tr>
+<td style="text-align:center">2320</td>
+<td style="text-align:center">-117.5</td>
+<td style="text-align:center">34.0</td>
+<td style="text-align:center">3.0</td>
+<td style="text-align:center">12870.0</td>
+<td style="text-align:center">2315.0</td>
+<td style="text-align:center">5820.0</td>
+<td style="text-align:center">1759.0</td>
+<td style="text-align:center">4.2</td>
+<td style="text-align:center">147.3</td>
+</tr>
+<tr>
+<td style="text-align:center">1420</td>
+<td style="text-align:center">-117.2</td>
+<td style="text-align:center">32.8</td>
+<td style="text-align:center">23.0</td>
+<td style="text-align:center">1215.0</td>
+<td style="text-align:center">225.0</td>
+<td style="text-align:center">592.0</td>
+<td style="text-align:center">224.0</td>
+<td style="text-align:center">3.4</td>
+<td style="text-align:center">200.6</td>
+</tr>
+<tr>
+<td style="text-align:center">14724</td>
+<td style="text-align:center">-122.2</td>
+<td style="text-align:center">37.8</td>
+<td style="text-align:center">52.0</td>
+<td style="text-align:center">2198.0</td>
+<td style="text-align:center">397.0</td>
+<td style="text-align:center">984.0</td>
+<td style="text-align:center">369.0</td>
+<td style="text-align:center">3.2</td>
+<td style="text-align:center">156.5</td>
+</tr>
+<tr>
+<td style="text-align:center">…</td>
+<td style="text-align:center">…</td>
+<td style="text-align:center">…</td>
+<td style="text-align:center">…</td>
+<td style="text-align:center">…</td>
+<td style="text-align:center">…</td>
+<td style="text-align:center">…</td>
+<td style="text-align:center">…</td>
+<td style="text-align:center">…</td>
+<td style="text-align:center">…</td>
+</tr>
+<tr>
+<td style="text-align:center">3201</td>
+<td style="text-align:center">-117.8</td>
+<td style="text-align:center">33.9</td>
+<td style="text-align:center">25.0</td>
+<td style="text-align:center">1548.0</td>
+<td style="text-align:center">256.0</td>
+<td style="text-align:center">811.0</td>
+<td style="text-align:center">263.0</td>
+<td style="text-align:center">5.2</td>
+<td style="text-align:center">242.2</td>
+</tr>
+<tr>
+<td style="text-align:center">9159</td>
+<td style="text-align:center">-119.0</td>
+<td style="text-align:center">35.4</td>
+<td style="text-align:center">42.0</td>
+<td style="text-align:center">1705.0</td>
+<td style="text-align:center">418.0</td>
+<td style="text-align:center">905.0</td>
+<td style="text-align:center">393.0</td>
+<td style="text-align:center">1.6</td>
+<td style="text-align:center">54.6</td>
+</tr>
+<tr>
+<td style="text-align:center">12103</td>
+<td style="text-align:center">-121.4</td>
+<td style="text-align:center">37.8</td>
+<td style="text-align:center">30.0</td>
+<td style="text-align:center">1912.0</td>
+<td style="text-align:center">451.0</td>
+<td style="text-align:center">1065.0</td>
+<td style="text-align:center">388.0</td>
+<td style="text-align:center">2.1</td>
+<td style="text-align:center">125.0</td>
+</tr>
+<tr>
+<td style="text-align:center">14972</td>
+<td style="text-align:center">-122.2</td>
+<td style="text-align:center">37.8</td>
+<td style="text-align:center">41.0</td>
+<td style="text-align:center">2576.0</td>
+<td style="text-align:center">406.0</td>
+<td style="text-align:center">794.0</td>
+<td style="text-align:center">376.0</td>
+<td style="text-align:center">6.0</td>
+<td style="text-align:center">366.1</td>
+</tr>
+<tr>
+<td style="text-align:center">15500</td>
+<td style="text-align:center">-122.3</td>
+<td style="text-align:center">37.9</td>
+<td style="text-align:center">29.0</td>
+<td style="text-align:center">2304.0</td>
+<td style="text-align:center">399.0</td>
+<td style="text-align:center">1377.0</td>
+<td style="text-align:center">454.0</td>
+<td style="text-align:center">5.0</td>
+<td style="text-align:center">140.6</td>
+</tr>
+</tbody>
+</table>
+<p>17000 rows × 9 columns</p>
+<h4 id="检查数据"><a href="#检查数据" class="headerlink" title="检查数据"></a>检查数据</h4><p>dataframe 数据的 <code>describe()</code> 方法能方便地显示出数据的快速摘要：样本数、均值、标准偏差、最大值、最小值和各种分位数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">house_data.describe()</div></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">longitude</th>
+<th style="text-align:center">latitude</th>
+<th style="text-align:center">housing_median_age</th>
+<th style="text-align:center">total_rooms</th>
+<th style="text-align:center">total_bedrooms</th>
+<th style="text-align:center">population</th>
+<th style="text-align:center">households</th>
+<th style="text-align:center">median_income</th>
+<th style="text-align:center">median_house_value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">count</td>
+<td style="text-align:center">17000.0</td>
+<td style="text-align:center">17000.0</td>
+<td style="text-align:center">17000.0</td>
+<td style="text-align:center">17000.0</td>
+<td style="text-align:center">17000.0</td>
+<td style="text-align:center">17000.0</td>
+<td style="text-align:center">17000.0</td>
+<td style="text-align:center">17000.0</td>
+<td style="text-align:center">17000.0</td>
+</tr>
+<tr>
+<td style="text-align:center">mean</td>
+<td style="text-align:center">-119.6</td>
+<td style="text-align:center">35.6</td>
+<td style="text-align:center">28.6</td>
+<td style="text-align:center">2643.7</td>
+<td style="text-align:center">539.4</td>
+<td style="text-align:center">1429.6</td>
+<td style="text-align:center">501.2</td>
+<td style="text-align:center">3.9</td>
+<td style="text-align:center">207.3</td>
+</tr>
+<tr>
+<td style="text-align:center">std</td>
+<td style="text-align:center">2.0</td>
+<td style="text-align:center">2.1</td>
+<td style="text-align:center">12.6</td>
+<td style="text-align:center">2179.9</td>
+<td style="text-align:center">421.5</td>
+<td style="text-align:center">1147.9</td>
+<td style="text-align:center">384.5</td>
+<td style="text-align:center">1.9</td>
+<td style="text-align:center">116.0</td>
+</tr>
+<tr>
+<td style="text-align:center">min</td>
+<td style="text-align:center">-124.3</td>
+<td style="text-align:center">32.5</td>
+<td style="text-align:center">1.0</td>
+<td style="text-align:center">2.0</td>
+<td style="text-align:center">1.0</td>
+<td style="text-align:center">3.0</td>
+<td style="text-align:center">1.0</td>
+<td style="text-align:center">0.5</td>
+<td style="text-align:center">15.0</td>
+</tr>
+<tr>
+<td style="text-align:center">25%</td>
+<td style="text-align:center">-121.8</td>
+<td style="text-align:center">33.9</td>
+<td style="text-align:center">18.0</td>
+<td style="text-align:center">1462.0</td>
+<td style="text-align:center">297.0</td>
+<td style="text-align:center">790.0</td>
+<td style="text-align:center">282.0</td>
+<td style="text-align:center">2.6</td>
+<td style="text-align:center">119.4</td>
+</tr>
+<tr>
+<td style="text-align:center">50%</td>
+<td style="text-align:center">-118.5</td>
+<td style="text-align:center">34.2</td>
+<td style="text-align:center">29.0</td>
+<td style="text-align:center">2127.0</td>
+<td style="text-align:center">434.0</td>
+<td style="text-align:center">1167.0</td>
+<td style="text-align:center">409.0</td>
+<td style="text-align:center">3.5</td>
+<td style="text-align:center">180.4</td>
+</tr>
+<tr>
+<td style="text-align:center">75%</td>
+<td style="text-align:center">-118.0</td>
+<td style="text-align:center">37.7</td>
+<td style="text-align:center">37.0</td>
+<td style="text-align:center">3151.2</td>
+<td style="text-align:center">648.2</td>
+<td style="text-align:center">1721.0</td>
+<td style="text-align:center">605.2</td>
+<td style="text-align:center">4.8</td>
+<td style="text-align:center">265.0</td>
+</tr>
+<tr>
+<td style="text-align:center">max</td>
+<td style="text-align:center">-114.3</td>
+<td style="text-align:center">42.0</td>
+<td style="text-align:center">52.0</td>
+<td style="text-align:center">37937.0</td>
+<td style="text-align:center">6445.0</td>
+<td style="text-align:center">35682.0</td>
+<td style="text-align:center">6082.0</td>
+<td style="text-align:center">15.0</td>
+<td style="text-align:center">500.0</td>
+</tr>
+</tbody>
+</table>
+<h4 id="构建第一个模型"><a href="#构建第一个模型" class="headerlink" title="构建第一个模型"></a>构建第一个模型</h4><p>在这个基础练习中，我们以 <code>median_house_value</code> 为标签（也称为目标），使用 <code>total_rooms</code> 作为输入特征。</p>
+<p><strong>注意：</strong> 因为我们使用的城市街区的数据，所以 <code>total_rooms</code> 表示的是该街区的所有房间数，而不是单间房屋的房间数（想想这数据也不是 :)）。</p>
+<p>为了训练模型，我们将使用 TensorFlow <a href="https://www.tensorflow.org/get_started/estimator" target="_blank" rel="external">Estimator</a> API 提供的 <a href="https://www.tensorflow.org/get_started/estimator" target="_blank" rel="external">LinearRegressor</a> 接口。此 API 负责处理大量低级别的模型搭建工作，并会提供执行模型训练、评估和推理的便捷方法。</p>
+<h5 id="第一步：定义特征并配置特征列"><a href="#第一步：定义特征并配置特征列" class="headerlink" title="第一步：定义特征并配置特征列"></a>第一步：定义特征并配置特征列</h5><p>特征字段主要有两种数据类型：</p>
+<ul>
+<li>分类数据：一种文字数据，本基础练习不含这种数据，但可能会在看到类似包括家居风格以及房地产广告词这类数据。</li>
+<li>数值数据：一种数字数据（整数或浮点数）以及你希望视为数字的数据，但有时可能也会把例如邮编这种数据也是为分类数据来做处理（在稍后的进行详细说明）。</li>
+</ul>
+<p>现在我们的数据还是 pandas 的 <code>DataFrame</code> 数据格式，我们得让 TensorFlow 读懂这些数据。</p>
+<p>首先，我们需要指定每个特征包含的数据类型（以上两种类型），然后我们使用一种称为“特征列”的结构来表示特征的数据类型。</p>
+<p><strong>注意：</strong> 特征列仅仅存储对特征数据的描述，和特征数据本身没关系。</p>
+<p>现在，我们使用上面所说的 <code>total_rooms</code> 作为数值输入特征。以下代码会从 <code>house_data</code> 中提取 <code>total_rooms</code> 数据，并使用 <code>numeric_column</code> 定义特征列，这样会将其数据指定为数值：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</div><div class="line"></div><div class="line"><span class="comment"># 拿到输入特征：total_rooms</span></div><div class="line">my_feature = house_data[[<span class="string">'total_rooms'</span>]]</div><div class="line"></div><div class="line"><span class="comment"># 将 total_rooms 配置为数值特征列</span></div><div class="line">feature_colums = [tf.feature_column.numeric_column(<span class="string">'total_rooms'</span>)]</div><div class="line"></div><div class="line">print(my_feature)</div><div class="line">print(feature_columns)</div></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">total_rooms</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">8899</td>
+<td style="text-align:center">8803.0</td>
+</tr>
+<tr>
+<td style="text-align:center">682</td>
+<td style="text-align:center">3967.0</td>
+</tr>
+<tr>
+<td style="text-align:center">13332</td>
+<td style="text-align:center">3735.0</td>
+</tr>
+<tr>
+<td style="text-align:center">9720</td>
+<td style="text-align:center">2242.0</td>
+</tr>
+<tr>
+<td style="text-align:center">14046</td>
+<td style="text-align:center">4125.0</td>
+</tr>
+<tr>
+<td style="text-align:center">…</td>
+<td style="text-align:center">…</td>
+</tr>
+<tr>
+<td style="text-align:center">6328</td>
+<td style="text-align:center">1476.0</td>
+</tr>
+<tr>
+<td style="text-align:center">2329</td>
+<td style="text-align:center">1379.0</td>
+</tr>
+<tr>
+<td style="text-align:center">14272</td>
+<td style="text-align:center">1382.0</td>
+</tr>
+<tr>
+<td style="text-align:center">4124</td>
+<td style="text-align:center">3443.0</td>
+</tr>
+<tr>
+<td style="text-align:center">5124</td>
+<td style="text-align:center">718.0</td>
+</tr>
+</tbody>
+</table>
+<p>[17000 rows x 1 columns]</p>
+<p>[_NumericColumn(key=’total_rooms’, shape=(1,), default_value=None, dtype=tf.float32, normalizer_fn=None)]</p>
+<h5 id="第二部：定义标签-目标"><a href="#第二部：定义标签-目标" class="headerlink" title="第二部：定义标签 / 目标"></a>第二部：定义标签 / 目标</h5><p>接下来，我们把 <code>median_house_value</code> 定义为我们的目标。同样，先从 <code>house_data</code> 中提取它：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">targets = housse_data[<span class="string">"median_house_value"</span>]</div></pre></td></tr></table></figure>
+<h5 id="第三部：配置-LinearRegressor"><a href="#第三部：配置-LinearRegressor" class="headerlink" title="第三部：配置 LinearRegressor"></a>第三部：配置 LinearRegressor</h5><p>接下来我们使用 LinearRegressor 配置线性回归模型，并使用 GradientDescentOptimizer（它会实现小批量随机梯度下降法（SGD）） 训练该模型。</p>
+<p><code>learning_rate</code> 参数可控制梯度步长的大小。</p>
+<p><strong>注意：</strong> 为了安全起见，我们会通过 <code>clip_gradients_by_norm</code> 将<a href="https://developers.google.com/machine-learning/glossary/#gradient_clipping" target="_blank" rel="external">梯度裁剪</a>应用到我们的优化器。梯度裁剪能确保梯度大小在训练期间不会变得过大，梯度过大会导致梯度下降法失败。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 采用梯度下降法作为模型训练的优化器，并应用梯度裁剪</span></div><div class="line"><span class="comment"># 将梯度下降的学习速率设置为 0.0000001</span></div><div class="line">my_optimizer = tf.train.GradientDescentOptimizer(learning_rate=<span class="number">0.0000001</span>)</div><div class="line">my_optimizer = tf.contrib.estimator.clip_gradients_by_norm(my_optimizer, <span class="number">5.0</span>)</div><div class="line"></div><div class="line"><span class="comment"># 将特征列和优化器应用到我们的线性回归模型上</span></div><div class="line">linear_regressor = tf.estimator.LinearRegressor(</div><div class="line">    feature_column=feature_colums, optimizer=my_optimizer</div><div class="line">)</div></pre></td></tr></table></figure>
+<h5 id="第四步：定义输入函数"><a href="#第四步：定义输入函数" class="headerlink" title="第四步：定义输入函数"></a>第四步：定义输入函数</h5><p>要把数据导入 LinearRegressor，我们需要定义一个输入函数，得让 TensorFlow 知道怎么对数据进行预处理，以及在模型训练期间如何进行批处理、随机处理、重复数据。</p>
+<p>首先，我们需要把 pandas 数据转换成 Numpy 数组字典。然后，我们就能使用 TensorFlow 的 <a href="https://www.tensorflow.org/programmers_guide/datasets" target="_blank" rel="external">Dataset API</a> 根据我们的数据构建 Dataset 对象，并将数据拆分成大小为 batch_size 的多批数据，以按照指定周期数（num_epochs）进行重复。</p>
+<p><strong>注意：</strong> 如果 num_epochs=None，那么输入的数据会无限期重复。</p>
+<p>然后，如果 <code>shuffle</code> 设置为 True，那么我们就会对数据进行随机处理，以便在训练期间以随机方式传递到模型。<code>buffer_size</code> 参数会指定 shuffle 将从随机抽样的数据集的大小。</p>
+<p>最后，输入函数会为该数据集构建一个迭代器，并向 LinearRegressor 返回下一批数据。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_input_fn</span><span class="params">(features, targets, batch_size=<span class="number">1</span>, shuffle=True, num_epochs=None)</span>:</span></div><div class="line">    <span class="comment"># 将 pandas 特征数据转换成 Numpy 数组字段</span></div><div class="line">    <span class="comment"># features: DataFrame -&gt; Dict(&#123;column_name: column_data(Series)&#125;) -&gt; np.array</span></div><div class="line">    <span class="comment"># 这里数据类型的转化：输入之前拿到的那列 DataFrame，最后获取那列数据的一个 np.array 类数组对象</span></div><div class="line">    features = &#123; key: np.array(value) <span class="keyword">for</span> key, value <span class="keyword">in</span> dict(features).items() &#125;</div><div class="line">    </div><div class="line">    <span class="comment"># 构建 Dataset 对象，并将数据拆分成大小为 batch_size 的多批数据，以 num_epochs 周期重复</span></div><div class="line">    <span class="comment"># 每个步长都会跑 batch_size 批的数据</span></div><div class="line">    ds = Dataset.from_tensor_slices((features, targets))  <span class="comment"># 上限 2 GB</span></div><div class="line">    ds = ds.batch(batch_size).repeat(num_epochs)</div><div class="line">    </div><div class="line">    <span class="comment"># 随机化数据（一共 17k 条数据，每次随机取 10k 条）</span></div><div class="line">    <span class="keyword">if</span> shuffle:</div><div class="line">        ds = ds.shuffle(buffer_size=<span class="number">10000</span>)</div><div class="line">    </div><div class="line">    <span class="comment"># 返回下一个 batch 的数据</span></div><div class="line">    features, labels = ds.make_one_shot_iterator().get_next()</div><div class="line">    <span class="keyword">return</span> features, labels</div></pre></td></tr></table></figure>
+<p>输入函数的初步解释已经写在函数定义中了，更详细的文档参阅 <a href="https://www.tensorflow.org/programmers_guide/datasets" target="_blank" rel="external">TensorFlow 编程人员指南</a>。</p>
+<h5 id="第五步：训练模型"><a href="#第五步：训练模型" class="headerlink" title="第五步：训练模型"></a>第五步：训练模型</h5><p>现在，我们可以使用 <code>train()</code> 来训练我们的模型。我们将 <code>my_input_fn</code> 封装在 lambda 中，这样我们就可以把 <code>my_features</code> 和 <code>targets</code> 最为参数传入（更过详阅 <a href="https://www.tensorflow.org/get_started/input_fn#passing_input_fn_data_to_your_model" target="_blank" rel="external">TensorFlow 输入函数教程</a>）。</p>
+<p>首先，我们先训练 100 个步长。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">_ = linear_regressor.train(</div><div class="line">    input_fn=<span class="keyword">lambda</span>: my_input_fn(my_feature, targets),</div><div class="line">    steps=<span class="number">100</span></div><div class="line">)</div></pre></td></tr></table></figure></p>
+<h5 id="第六步：评估模型"><a href="#第六步：评估模型" class="headerlink" title="第六步：评估模型"></a>第六步：评估模型</h5><p>经过上面的训练之后，我们现在来做一次预测，看看模型与这些数据的拟合情况。</p>
+<p><strong>注意：</strong> 训练误差衡量的是你的模型与训练数据的拟合情况，不能衡量模型<strong>泛化到新数据</strong>上的效果。如果评估模型的泛化能力在后面探索。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 为预测创建一个输入函数</span></div><div class="line"><span class="comment"># 因为我们就做一次预测，就没必要重复打乱数据了</span></div><div class="line">prediction_input_fn = <span class="keyword">lambda</span>: my_input_fn(my_feature, target, num_epochs=<span class="number">1</span>, shuffle=<span class="keyword">False</span>)</div><div class="line"></div><div class="line"><span class="comment"># 调用模型的 predict() 函数进行预测</span></div><div class="line">predictions = linear_regressor.predict(input_fn=prediction_input_fn)</div><div class="line"></div><div class="line"><span class="comment"># 将预测数据格式化成 Numpy 的数组类型，方便检查</span></div><div class="line">predictions = np.arrary([item[<span class="string">'predictions'</span>][<span class="number">0</span>] <span class="keyword">for</span> item <span class="keyword">in</span> predictions])</div><div class="line"></div><div class="line"><span class="comment"># 打印出均方误差和均方根误差</span></div><div class="line">mean_squared_error = metrics.mean_squared_error(predictions, targets)</div><div class="line">root_mean_squared_error = math.sqrt(mean_squared_error)</div><div class="line"></div><div class="line">print(<span class="string">"Mean Squared Error (on training data): %0.3f"</span> % mean_squared_error)</div><div class="line">print(<span class="string">"Root Mean Squared Error (on training data): %0.3f"</span> % root_mean_squared_error)</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Mean Squared Error (on training data): 56367.025</div><div class="line">Root Mean Squared Error (on training data): 237.417</div></pre></td></tr></table></figure>
+<p>均方差和均方根误差都已经算出来了，但是我们该怎么去评估这个误差是否能被接受呢？</p>
+<p>均方根误差（RMSE）是一个很好的特征，它可以在与原目标相同的规模下解读。</p>
+<p>我们来比较下 RMSE 与目标最大值和最小值的差值：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">min_house_value = house_data[<span class="string">'median_house_value'</span>].min()</div><div class="line">max_house_value = house_data[<span class="string">'median_house_value'</span>].max()</div><div class="line"></div><div class="line">print(<span class="string">'Min. median house value: %0.3f'</span> % min_house_value)</div><div class="line">print(<span class="string">'Max. median house value: %0.3f'</span> % max_house_value)</div><div class="line">print(<span class="string">'Difference between Min. and Max.: %0.3f'</span> % (max_house_value - min_house_value))</div><div class="line">print(<span class="string">'Root Mean Squared Error: %0.3f'</span> % root_mean_squared_error)</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Min. Median House value: 14.999</div><div class="line">Max. Median House value: 500.001</div><div class="line">Difference between Min. and Max.: 485.002</div><div class="line">Root Mean Squared Error: 237.417</div></pre></td></tr></table></figure>
+<p>通过上面的计算，我们的误差跨越了目标值的一半。这意味着我们的误差很大吗？</p>
+<p>那我们有什么办法来缩小这个误差吗？</p>
+<p>首先，我们可以了解下根据总体摘要统计信息，预测和目标的符合情况。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">calibration_data = pd.DataFrame()</div><div class="line">calibration_data[<span class="string">'predictions'</span>] = pd.Series(predictions)</div><div class="line">calibration_data[<span class="string">'targets'</span>] = pd.Series(targets)</div><div class="line">calibration_data.describe()</div></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">predictions</th>
+<th style="text-align:center">targets</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">count</td>
+<td style="text-align:center">17000.0</td>
+<td style="text-align:center">17000.0</td>
+</tr>
+<tr>
+<td style="text-align:center">mean</td>
+<td style="text-align:center">0.1</td>
+<td style="text-align:center">207.3</td>
+</tr>
+<tr>
+<td style="text-align:center">std</td>
+<td style="text-align:center">0.1</td>
+<td style="text-align:center">116.0</td>
+</tr>
+<tr>
+<td style="text-align:center">min</td>
+<td style="text-align:center">0.0</td>
+<td style="text-align:center">15.0</td>
+</tr>
+<tr>
+<td style="text-align:center">25%</td>
+<td style="text-align:center">0.1</td>
+<td style="text-align:center">119.4</td>
+</tr>
+<tr>
+<td style="text-align:center">50%</td>
+<td style="text-align:center">0.1</td>
+<td style="text-align:center">180.4</td>
+</tr>
+<tr>
+<td style="text-align:center">75%</td>
+<td style="text-align:center">0.2</td>
+<td style="text-align:center">265.0</td>
+</tr>
+<tr>
+<td style="text-align:center">max</td>
+<td style="text-align:center">1.9</td>
+<td style="text-align:center">500.0</td>
+</tr>
+</tbody>
+</table>
+<p>以上的这些参数指标，对我们评价模型的预测值有什么意义吗？</p>
+<p>也许可以比较下平均值和模型的 RMSE？各种分位数和 RMSE？</p>
+<p>我相信不管和哪个指标比较，我们现在的预测值都是一坨屎！</p>
+<p>为了更直观的显示我们的预测有多狗屎，我们先从这个数据集拿一部分均匀分布的随机数据样本（全部绘制出来太乱了，看不清），绘制散点图。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sample = house_data.sample(n=<span class="number">300</span>)</div></pre></td></tr></table></figure>
+<p>然后，我们根据模型的偏差项和特征权重绘制学到的线，并绘制散点图。改线以红色显示：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 获取 total_rooms 数据的最大最小值</span></div><div class="line">x_0 = sample[<span class="string">'total_rooms'</span>].min()</div><div class="line">x_1 = sample[<span class="string">'total_rooms'</span>].max()</div><div class="line"></div><div class="line"><span class="comment"># 获取在模型最终训练后的权重与偏差</span></div><div class="line">weight = linear_regressor.get_variable_value(<span class="string">'linear/linear_model/total_rooms/weights'</span>)[<span class="number">0</span>]</div><div class="line">bias = linear_regressor.get_variable_value(<span class="string">'linear/linear_model/bias_weights'</span>)</div><div class="line"></div><div class="line"><span class="comment"># 通过获取的预测权重与偏差计算出 median_house_value 预测的最大最小值</span></div><div class="line">y_0 = weight * x_0 + bias</div><div class="line">y_1 = weight * x_1 + bias</div><div class="line"></div><div class="line"><span class="comment"># 画出我们的预测线性回归线 (x_0, y_0) (x_1, y_1) | c='r' 是 color='red' 的意思 :)</span></div><div class="line">plt.plot([x_0, x_1], [y_0, y_1], c=<span class="string">'r'</span>)</div><div class="line"></div><div class="line"><span class="comment"># 加上坐标描述</span></div><div class="line">plt.xlabel(<span class="string">'total_rooms'</span>)</div><div class="line">plt.ylabel(<span class="string">'median_house_value'</span>)</div><div class="line"></div><div class="line"><span class="comment"># 把我们的样本点一个个“点上去”</span></div><div class="line">plt.sactter(sample[<span class="string">'total_rooms'</span>], sample[<span class="string">'median_house_value'</span>])</div><div class="line"></div><div class="line"><span class="comment"># 把图画出来</span></div><div class="line">plt.show()</div></pre></td></tr></table></figure>
+<p><img src="https://pages-ncdn-1253600859.cossh.myqcloud.com/TensorFlow/14_25_47__07_27_2018.jpg" alt="散点图"></p>
+<p>哈哈哈，是不是很直观地就发现我们的预测就是一坨屎。</p>
+<h4 id="调整模型超参数"><a href="#调整模型超参数" class="headerlink" title="调整模型超参数"></a>调整模型超参数</h4><p>为了方便起见，我们把上面几个步骤合并在一个函数里面，然后把要调整的参数暴露出来，这样就能很容易的测试各种不同参数所模拟的效果。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">train_model</span><span class="params">(learning_rate, steps, batch_size, input_feature=<span class="string">'total_rooms'</span>)</span>:</span></div><div class="line">    periods = <span class="number">10</span></div><div class="line">    steps_per_period = steps / periods</div><div class="line">    </div><div class="line">    my_feature = input_feature</div><div class="line">    my_feature_data = house_data[[my_feature]]</div><div class="line">    </div><div class="line">    my_target = <span class="string">'median_house_value'</span></div><div class="line">    targets = house_data[my_target]</div><div class="line">    </div><div class="line">    <span class="comment"># 创建特征列</span></div><div class="line">    feature_columns = [tf.feature_column.numeric_column(my_feature)]</div><div class="line">    </div><div class="line">    <span class="comment"># 创建输入函数</span></div><div class="line">    training_input_fn = <span class="keyword">lambda</span>: my_input_fn(my_feature_data, targets, batch_size=batch_size)</div><div class="line">    prediction_input_fn = <span class="keyword">lambda</span>: my_input_fn(my_feature_data, targets, num_epochs=<span class="number">1</span>, shuffle=<span class="keyword">False</span>)</div><div class="line">    </div><div class="line">    <span class="comment"># 创建线性回归模型</span></div><div class="line">    my_optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)</div><div class="line">    my_optimizer = tf.contrib.estimator.clip_gradients_by_norm(my_optimizer, <span class="number">5.0</span>)</div><div class="line">    linear_regressor = tf.estimator.LinearRegressor(</div><div class="line">        feature_columns=feature_columns,</div><div class="line">        optimizer=my_optimizer</div><div class="line">    )</div><div class="line">    </div><div class="line">    <span class="comment"># plot 基本配置</span></div><div class="line">    plt.figure(figsize=(<span class="number">15</span>, <span class="number">6</span>))  <span class="comment"># 每个网格 15 X 6 大小</span></div><div class="line">    plt.subplot(<span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>)  <span class="comment"># 当前操作一行两列的第一个图表</span></div><div class="line">    plt.title(<span class="string">'Learned Line by Period'</span>)  <span class="comment"># 设置标题</span></div><div class="line">    plt.xlabel(my_feature)  <span class="comment"># 设置横坐标名</span></div><div class="line">    plt.ylabel(my_label)  <span class="comment"># 设置纵坐标名</span></div><div class="line">    </div><div class="line">    <span class="comment"># 获取绘制样本</span></div><div class="line">    sample = house_data.sample(n=<span class="number">300</span>)</div><div class="line">    plt.scatter(sample[my_feature], sample[my_lable])</div><div class="line">    colors = [cm.coolwarm(x) <span class="keyword">for</span> x <span class="keyword">in</span> np.linspace(<span class="number">-1</span>, <span class="number">1</span>, periods)]</div><div class="line">    </div><div class="line">    <span class="comment"># 训练模型，每个周期评估下误差损失</span></div><div class="line">    print(<span class="string">'Training model...'</span>)</div><div class="line">    print(<span class="string">'RMSE (on training data): '</span>)</div><div class="line">    root_mean_squared_errors = []</div><div class="line">    <span class="keyword">for</span> period <span class="keyword">in</span> range(<span class="number">0</span>, periods):</div><div class="line">        linear_regressor.train(</div><div class="line">            input_fn=training_input_fn,</div><div class="line">            steps=steps_per_period</div><div class="line">        )</div><div class="line">        </div><div class="line">        <span class="comment"># 每个周期训练完之后计算一下损失</span></div><div class="line">        predictions = linear_regressor.predict(input_fn=prediction_input_fn)</div><div class="line">        perdictions = np.array([item[<span class="string">'predictions'</span>][<span class="number">0</span>] <span class="keyword">for</span> item <span class="keyword">in</span> predictions])</div><div class="line">        </div><div class="line">        <span class="comment"># 计算损失</span></div><div class="line">        root_mean_squared_error = math.sqrt(</div><div class="line">            metrics.mean_squared_error(predictions, targets)</div><div class="line">        )</div><div class="line">        </div><div class="line">        <span class="comment"># 输出当前损失</span></div><div class="line">        print(<span class="string">'period %02d : %0.2f'</span> % (period, root_mean_squared_error))</div><div class="line">        <span class="comment"># 将当前损失加到记录损失的列表中</span></div><div class="line">        root_mean_squared_errors.append(root_mean_squared_error)</div><div class="line">        </div><div class="line">        <span class="comment"># 为了画出来的效果，适当调整下横纵坐标的大小</span></div><div class="line">        y_extents = np.array([<span class="number">0</span>, sample[my_label].max()])</div><div class="line">        </div><div class="line">        weight = linear_regressor.get_variable_value(<span class="string">'linear/linear_model/%s/weights'</span> % input_feature)[<span class="number">0</span>]</div><div class="line">        bias = linear_regressor.get_variable_value(<span class="string">'linear/linear_model/bias_weights'</span>)</div><div class="line">        </div><div class="line">        x_extents = (y_extents - bias) / weight</div><div class="line">        x_extents = np.maximum(</div><div class="line">            np.minimum(x_extents, sample[my_feature].max()),</div><div class="line">            sample[my_feature].min()</div><div class="line">        )</div><div class="line">        y_extents = weight * x_extents + bias</div><div class="line">        plt.plot(x_extents, y_extents, color=colors[period])</div><div class="line">    </div><div class="line">    print(<span class="string">'Model training finished.'</span>)</div><div class="line">    </div><div class="line">    <span class="comment"># 现在把每个周期的损失画出来</span></div><div class="line">    plt.subplot(<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>)</div><div class="line">    plt.xlabel(<span class="string">'Periods'</span>)</div><div class="line">    plt.ylabel(<span class="string">'RMSE'</span>)</div><div class="line">    plt.title(<span class="string">'Root Mean Squared Error vs. Periods'</span>)</div><div class="line">    plt.tight_layout()  <span class="comment"># 自动调整子图的布局和坐标刻度的大小</span></div><div class="line">    plt.plot(root_mean_squared_errors)</div><div class="line">    </div><div class="line">    <span class="comment"># 将最终的预测值和目标值放在一张表里展示</span></div><div class="line">    calibration_data = pd.DataFrame()</div><div class="line">    calibration_data[<span class="string">"predictions"</span>] = pd.Series(predictions)</div><div class="line">    calibration_data[<span class="string">"targets"</span>] = pd.Series(targets)</div><div class="line">    display.display(calibration_data.describe())</div><div class="line">    </div><div class="line">    print(<span class="string">"Final RMSE (on training data): %0.2f"</span> % root_mean_squared_error)</div></pre></td></tr></table></figure>
+<p>最后我们直接调用这个函数就可以方便地测试各种参数搭配的 RMSE 的值：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">train_model(</div><div class="line">    learning_rate=<span class="number">0.00002</span>,</div><div class="line">    steps=<span class="number">500</span>,</div><div class="line">    batch_size=<span class="number">5</span></div><div class="line">)</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">Training model...</div><div class="line">RMSE (on training data):</div><div class="line">  period 00 : 225.63</div><div class="line">  period 01 : 214.42</div><div class="line">  period 02 : 204.44</div><div class="line">  period 03 : 194.97</div><div class="line">  period 04 : 187.23</div><div class="line">  period 05 : 180.53</div><div class="line">  period 06 : 175.00</div><div class="line">  period 07 : 171.07</div><div class="line">  period 08 : 169.21</div><div class="line">  period 09 : 167.37</div><div class="line">Model training finished.</div></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">predictions</th>
+<th style="text-align:center">targets</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">count</td>
+<td style="text-align:center">17000.0</td>
+<td style="text-align:center">17000.0</td>
+</tr>
+<tr>
+<td style="text-align:center">mean</td>
+<td style="text-align:center">116.3</td>
+<td style="text-align:center">207.3</td>
+</tr>
+<tr>
+<td style="text-align:center">std</td>
+<td style="text-align:center">95.9</td>
+<td style="text-align:center">116.0</td>
+</tr>
+<tr>
+<td style="text-align:center">min</td>
+<td style="text-align:center">0.1</td>
+<td style="text-align:center">15.0</td>
+</tr>
+<tr>
+<td style="text-align:center">25%</td>
+<td style="text-align:center">64.3</td>
+<td style="text-align:center">119.4</td>
+</tr>
+<tr>
+<td style="text-align:center">50%</td>
+<td style="text-align:center">93.6</td>
+<td style="text-align:center">180.4</td>
+</tr>
+<tr>
+<td style="text-align:center">75%</td>
+<td style="text-align:center">138.7</td>
+<td style="text-align:center">265.0</td>
+</tr>
+<tr>
+<td style="text-align:center">max</td>
+<td style="text-align:center">1669.2</td>
+<td style="text-align:center">500.0</td>
+</tr>
+</tbody>
+</table>
+<p><img src="https://pages-ncdn-1253600859.cossh.myqcloud.com/TensorFlow/17_18_02__07_27_2018.jpg" alt="模拟结果"></p>
+<p>当然，我们还可以试试其他参数作为我们的特征值：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">train_model(</div><div class="line">    learning_rate=<span class="number">0.00002</span>,</div><div class="line">    steps=<span class="number">1000</span>,</div><div class="line">    batch_size=<span class="number">5</span>,</div><div class="line">    input_feature=<span class="string">"population"</span></div><div class="line">)</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">Training model...</div><div class="line">RMSE (on training data):</div><div class="line">  period 00 : 225.63</div><div class="line">  period 01 : 214.62</div><div class="line">  period 02 : 204.67</div><div class="line">  period 03 : 196.42</div><div class="line">  period 04 : 189.12</div><div class="line">  period 05 : 183.91</div><div class="line">  period 06 : 180.03</div><div class="line">  period 07 : 177.64</div><div class="line">  period 08 : 176.45</div><div class="line">  period 09 : 175.95</div><div class="line">Model training finished.</div></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">predictions</th>
+<th style="text-align:center">targets</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">count</td>
+<td style="text-align:center">17000.0</td>
+<td style="text-align:center">17000.0</td>
+</tr>
+<tr>
+<td style="text-align:center">mean</td>
+<td style="text-align:center">121.8</td>
+<td style="text-align:center">207.3</td>
+</tr>
+<tr>
+<td style="text-align:center">std</td>
+<td style="text-align:center">97.8</td>
+<td style="text-align:center">116.0</td>
+</tr>
+<tr>
+<td style="text-align:center">min</td>
+<td style="text-align:center">0.3</td>
+<td style="text-align:center">15.0</td>
+</tr>
+<tr>
+<td style="text-align:center">25%</td>
+<td style="text-align:center">67.3</td>
+<td style="text-align:center">119.4</td>
+</tr>
+<tr>
+<td style="text-align:center">50%</td>
+<td style="text-align:center">99.4</td>
+<td style="text-align:center">180.4</td>
+</tr>
+<tr>
+<td style="text-align:center">75%</td>
+<td style="text-align:center">146.6</td>
+<td style="text-align:center">265.0</td>
+</tr>
+<tr>
+<td style="text-align:center">max</td>
+<td style="text-align:center">3040.1</td>
+<td style="text-align:center">500.0</td>
+</tr>
+</tbody>
+</table>
+<p><img src="https://pages-ncdn-1253600859.cossh.myqcloud.com/TensorFlow/17_41_30__07_27_2018.jpg" alt="模拟结果"></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;学习目标：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;学习基本的 TensorFlow 概念&lt;/li&gt;
+&lt;li&gt;在 TensorFlow 中使用 LinearRegressor 类并基于单个输入特征预测各城市街区的房屋价值中位数&lt;/li&gt;
+&lt;li&gt;使用均方根误差 (RMSE) 评估模型预测的准确率&lt;/li&gt;
+&lt;li&gt;通过调整模型的超参数提高模型准确率&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+      <category term="文档" scheme="https://yuanblq.github.io/categories/%E6%96%87%E6%A1%A3/"/>
+    
+    
+      <category term="Python" scheme="https://yuanblq.github.io/tags/Python/"/>
+    
+  </entry>
   
   <entry>
     <title>理解Python元类</title>
@@ -588,9 +1165,9 @@ RuntimeError:
       <category term="文档" scheme="https://yuanblq.github.io/categories/%E6%96%87%E6%A1%A3/"/>
     
     
-      <category term="Django" scheme="https://yuanblq.github.io/tags/Django/"/>
-    
       <category term="WebSocket" scheme="https://yuanblq.github.io/tags/WebSocket/"/>
+    
+      <category term="Django" scheme="https://yuanblq.github.io/tags/Django/"/>
     
   </entry>
   
@@ -724,9 +1301,9 @@ RuntimeError:
       <category term="文档" scheme="https://yuanblq.github.io/categories/%E6%96%87%E6%A1%A3/"/>
     
     
-      <category term="Django" scheme="https://yuanblq.github.io/tags/Django/"/>
-    
       <category term="WebSocket" scheme="https://yuanblq.github.io/tags/WebSocket/"/>
+    
+      <category term="Django" scheme="https://yuanblq.github.io/tags/Django/"/>
     
   </entry>
   
@@ -762,9 +1339,9 @@ RuntimeError:
       <category term="文档" scheme="https://yuanblq.github.io/categories/%E6%96%87%E6%A1%A3/"/>
     
     
-      <category term="Django" scheme="https://yuanblq.github.io/tags/Django/"/>
-    
       <category term="WebSocket" scheme="https://yuanblq.github.io/tags/WebSocket/"/>
+    
+      <category term="Django" scheme="https://yuanblq.github.io/tags/Django/"/>
     
   </entry>
   
@@ -838,9 +1415,9 @@ RuntimeError:
       <category term="文档" scheme="https://yuanblq.github.io/categories/%E6%96%87%E6%A1%A3/"/>
     
     
-      <category term="Django" scheme="https://yuanblq.github.io/tags/Django/"/>
-    
       <category term="WebSocket" scheme="https://yuanblq.github.io/tags/WebSocket/"/>
+    
+      <category term="Django" scheme="https://yuanblq.github.io/tags/Django/"/>
     
   </entry>
   
@@ -906,9 +1483,9 @@ RuntimeError:
       <category term="文档" scheme="https://yuanblq.github.io/categories/%E6%96%87%E6%A1%A3/"/>
     
     
-      <category term="Django" scheme="https://yuanblq.github.io/tags/Django/"/>
-    
       <category term="WebSocket" scheme="https://yuanblq.github.io/tags/WebSocket/"/>
+    
+      <category term="Django" scheme="https://yuanblq.github.io/tags/Django/"/>
     
   </entry>
   
@@ -1332,56 +1909,6 @@ TIME:  2.0026657581329346
       <category term="MongoDB" scheme="https://yuanblq.github.io/tags/MongoDB/"/>
     
       <category term="Database" scheme="https://yuanblq.github.io/tags/Database/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>排序算法-归并排序</title>
-    <link href="https://yuanblq.github.io/2017/07/16/merger-sort/"/>
-    <id>https://yuanblq.github.io/2017/07/16/merger-sort/</id>
-    <published>2017-07-16T11:18:30.000Z</published>
-    <updated>2017-09-20T15:36:58.000Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h2><p>有很多算法在结构上是递归的：为了解决一个给定的问题，算法一次或多次递归地调用其自身以解决相关的若干子问题。</p>
-<p>这是典型的分治法思想：将原问题分解为几个规模较小，但类似于原问题的子问题，递归地求解这些子问题，然后再合并这些子问题的解来建立原问题的解。</p>
-<a id="more"></a>
-<p>归并排序算法完全遵循分治模式。直观上操作如下：</p>
-<ul>
-<li><strong>分解：</strong>分解待排序的 n 个元素的序列成各具 n/2 个元素的 2 个子序列</li>
-<li><strong>解决：</strong>使用归并排序递归地排序 2 个子序列</li>
-<li><strong>合并：</strong>合并两个已排序的子序列以产生已排序的答案</li>
-</ul>
-<p>层层往下分解的时候，当待排序的序列长度为 1 时，递归“开始回升”，这种情况下不要做任何工作，因为长度为 1 的每个序列都已排好序。</p>
-<p>归并算法的关键操作是“合并”步骤中，两个已排序序列的合并。</p>
-<p>回到插入排序中我们所举的扑克牌的例子，假设桌面上有两堆牌面朝上的牌，每堆都已排序，最小的牌在顶上。</p>
-<p>我们希望把这两堆牌合并成单一的排好序的输出堆。我们可以这么做：</p>
-<p>在牌面朝上的两堆牌的顶上选取较小的一张，将该牌从其堆中移开，并将牌面向下地放置到最终的输出堆。重复这个步骤，直到一个输出堆为空，这时，我们只需将剩余的一堆牌朝下地放置到输出堆。</p>
-<p>因为我们之比较顶上的两张牌，所以合并步骤只需 O(n) 的时间。</p>
-<p>下面以伪代码的形式实现上面的思想：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># A: 数组  p、q、r是数组的下表，满足 p &lt;= q &lt; r</span></div><div class="line">MERAGE(A, p, q, r)</div><div class="line">n1 = q - p + <span class="number">1</span></div><div class="line">n2 = r - q</div><div class="line"><span class="comment"># let L[1, n1+1] and R[1, n2+1] be new arrays</span></div><div class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, n1):</div><div class="line">    L[i] = A[p+i<span class="number">-1</span>]</div><div class="line"><span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, n2):</div><div class="line">    R[j] = A[q+j]</div><div class="line">L[n1+<span class="number">1</span>] = ∞</div><div class="line">R[n2+<span class="number">1</span>] = ∞</div><div class="line">i = <span class="number">1</span></div><div class="line">j = <span class="number">1</span></div><div class="line"><span class="keyword">for</span> k <span class="keyword">in</span> range(p, r):</div><div class="line">    <span class="keyword">if</span> L[i] &lt;= R[j]:</div><div class="line">        A[k] = L[i]</div><div class="line">        i += <span class="number">1</span></div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        A[k] = R[j]</div><div class="line">        j += <span class="number">1</span></div></pre></td></tr></table></figure>
-<p>下面为两个已排好序的列表，进行合并操作的示意图：</p>
-<p><img src="/2017/07/16/merger-sort/2-3.png" alt="合并示意图"></p>
-<p>然后我们把这个合并操作作为归并算法中的一个子程序来用。</p>
-<p>下面过程中 <code>merger-sort(A, p, r)</code> 排序子数组 A[p..r] 中的元素。若 p &gt;= r，则该子数组最多有一个元素，所以已经排好序。否则，分解步骤简单地计算一个下标 q，将 A[p..r] 分成两个子数组 A[p..q] 和 A[q+1..r]，前者包含 n/2 个元素，后者包含 n/2 个元素。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># merger-sort(A, p, r)</span></div><div class="line"><span class="keyword">if</span> p &lt; r:</div><div class="line">    q = (p+r) / <span class="number">2</span></div><div class="line">    <span class="comment"># 对这两数组进行归并排序</span></div><div class="line">    merger-sort(A, p, q)</div><div class="line">    merger-sort(A, q+<span class="number">1</span>, r)</div><div class="line">    <span class="comment"># 将排好序的两个数组合并</span></div><div class="line">    merger(A, p, q, r)</div></pre></td></tr></table></figure>
-<p>以下是 Python 实现的完整归并算法，仅供参考：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">merger</span><span class="params">(ls, rs)</span>:</span></div><div class="line">    <span class="string">'''</span></div><div class="line">    用于合并两个列表</div><div class="line">    '''</div><div class="line">    B = []</div><div class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">        <span class="keyword">if</span> <span class="keyword">not</span> ls:</div><div class="line">            B.extend(rs)</div><div class="line">            <span class="keyword">return</span> B</div><div class="line">        <span class="keyword">if</span> <span class="keyword">not</span> rs:</div><div class="line">            B.extend(ls)</div><div class="line">            <span class="keyword">return</span> B</div><div class="line">        <span class="keyword">if</span> ls[<span class="number">0</span>] &lt; rs[<span class="number">0</span>]:</div><div class="line">            B.append(ls.pop(<span class="number">0</span>))</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            B.append(rs.pop(<span class="number">0</span>))</div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">merger_sort</span><span class="params">(A)</span>:</span></div><div class="line">    <span class="string">'''</span></div><div class="line">    归并排序</div><div class="line">    '''</div><div class="line">    length = len(A)</div><div class="line">    <span class="keyword">if</span> length &lt; <span class="number">2</span>:</div><div class="line">        <span class="keyword">return</span> A</div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        mid = length // <span class="number">2</span></div><div class="line">    La = merger_sort(A[:mid])</div><div class="line">    Ra = merger_sort(A[mid:])</div><div class="line">    <span class="keyword">return</span> merger(La, Ra)</div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">a = [<span class="number">1</span>,<span class="number">4</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">9</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">0</span>,<span class="number">7</span>]</div><div class="line">print(merger_sort(a))</div></pre></td></tr></table></figure>
-<pre><code>[0, 1, 2, 3, 4, 6, 7, 7, 9]
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;归并排序&quot;&gt;&lt;a href=&quot;#归并排序&quot; class=&quot;headerlink&quot; title=&quot;归并排序&quot;&gt;&lt;/a&gt;归并排序&lt;/h2&gt;&lt;p&gt;有很多算法在结构上是递归的：为了解决一个给定的问题，算法一次或多次递归地调用其自身以解决相关的若干子问题。&lt;/p&gt;
-&lt;p&gt;这是典型的分治法思想：将原问题分解为几个规模较小，但类似于原问题的子问题，递归地求解这些子问题，然后再合并这些子问题的解来建立原问题的解。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="小练习" scheme="https://yuanblq.github.io/categories/%E5%B0%8F%E7%BB%83%E4%B9%A0/"/>
-    
-    
-      <category term="Algorithms" scheme="https://yuanblq.github.io/tags/Algorithms/"/>
     
   </entry>
   
