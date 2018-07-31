@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2018-07-27T09:45:55.000Z</updated>
+  <updated>2018-07-31T03:51:30.000Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -14,6 +14,74 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Channel实战-聊天服务器-P01</title>
+    <link href="https://yuanblq.github.io/2018/07/30/Channel%E5%AE%9E%E6%88%98-Part01/"/>
+    <id>https://yuanblq.github.io/2018/07/30/Channel实战-Part01/</id>
+    <published>2018-07-30T03:48:25.000Z</published>
+    <updated>2018-07-31T03:51:30.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>本系列，我们将会构建一个基于 WebSocket 的聊天服务器。</p>
+<p>一共只有两个页面：</p>
+<ul>
+<li>输入要加入聊天室的名称</li>
+<li>具体聊天室的聊天页面</li>
+</ul>
+<a id="more"></a>
+<h4 id="基本配置"><a href="#基本配置" class="headerlink" title="基本配置"></a>基本配置</h4><p>本系列环境要求：</p>
+<blockquote>
+<p>Python &gt;= 3.5<br>Django &gt;= 1.11<br>channels &gt;= 2.0</p>
+</blockquote>
+<h5 id="创建一个-Django-项目"><a href="#创建一个-Django-项目" class="headerlink" title="创建一个 Django 项目"></a>创建一个 Django 项目</h5><p>在一个合适的目录创建我们即将使用的新项目：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ django-admin startproject WSChat</div></pre></td></tr></table></figure></p>
+<p>这时，我们的目录结构应该是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">WSChat/</div><div class="line">    manage.py</div><div class="line">    WSChat/</div><div class="line">        __init__.py</div><div class="line">        settings.py</div><div class="line">        urls.py</div><div class="line">        wsgi.py</div></pre></td></tr></table></figure></p>
+<h5 id="创建-Chat-APP"><a href="#创建-Chat-APP" class="headerlink" title="创建 Chat APP"></a>创建 Chat APP</h5><p>我们会把聊天相关的服务都放在这个 APP 内：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ python manage.py startapp chat</div></pre></td></tr></table></figure></p>
+<p>此时会多出一个这样的 <code>chat</code> 文件夹：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">chat/</div><div class="line">    __init__.py</div><div class="line">    admin.py</div><div class="line">    apps.py</div><div class="line">    migrations/</div><div class="line">        __init__.py</div><div class="line">    models.py</div><div class="line">    tests.py</div><div class="line">    views.py</div></pre></td></tr></table></figure></p>
+<p>然后我们需要让 Django 知道我们刚创建的 <code>chat</code> APP。</p>
+<p>在 <code>WSChat/settings.py</code> 文件的 <code>INSTALLED_APPS</code> 配置中添加 <code>chat</code>：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># WSChat/settings.py</span></div><div class="line">INSTALLED_APPS = [</div><div class="line">    <span class="string">'chat'</span>,</div><div class="line">    <span class="string">'django.contrib.admin'</span>,</div><div class="line">    <span class="string">'django.contrib.auth'</span>,</div><div class="line">    <span class="string">'django.contrib.contenttypes'</span>,</div><div class="line">    <span class="string">'django.contrib.sessions'</span>,</div><div class="line">    <span class="string">'django.contrib.messages'</span>,</div><div class="line">    <span class="string">'django.contrib.staticfiles'</span>,</div><div class="line">]</div></pre></td></tr></table></figure></p>
+<h5 id="添加主页面"><a href="#添加主页面" class="headerlink" title="添加主页面"></a>添加主页面</h5><p>现在我们需要创建一个主页面，能让我们输入要加入的聊天室名字。</p>
+<p>在 <code>chat</code> 文件夹内创建 <code>templates</code> 文件夹，在 <code>templates</code> 文件夹内创建 <code>chat</code> 文件夹，最后，在刚建的 <code>chat</code> 文件夹创建 <code>index.html</code> 文件。</p>
+<p>最终， <code>chat</code> 文件夹可能长这样：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">chat/</div><div class="line">    __init__.py</div><div class="line">    templates/</div><div class="line">        chat/</div><div class="line">            index.html</div><div class="line">    admin.py</div><div class="line">    apps.py</div><div class="line">    migrations/</div><div class="line">        __init__.py</div><div class="line">    models.py</div><div class="line">    tests.py</div><div class="line">    views.py</div></pre></td></tr></table></figure></p>
+<p>然后我们把下面代码放进刚创建的 <code>index.html</code> 文件内：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- chat/templates/chat/index.html --&gt;</span></div><div class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Chat Rooms<span class="tag">&lt;/<span class="name">title</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">    What chat room would you like to enter?<span class="tag">&lt;<span class="name">br</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"room-name-input"</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">size</span>=<span class="string">"100"</span>/&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"room-name-submit"</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"Enter"</span>/&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></div><div class="line">        document.querySelector('#room-name-input').focus();</div><div class="line">        document.querySelector('#room-name-input').onkeyup = function(e) &#123;</div><div class="line">            if (e.keyCode === 13) &#123;  // enter, return</div><div class="line">                document.querySelector('#room-name-submit').click();</div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line"></div><div class="line">        document.querySelector('#room-name-submit').onclick = function(e) &#123;</div><div class="line">            var roomName = document.querySelector('#room-name-input').value;</div><div class="line">            window.location.pathname = '/chat/' + roomName + '/';</div><div class="line">        &#125;;</div><div class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>接着，我们在 <code>chat/view.py</code> 文件内创建我们的视图函数：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># chat/views.py</span></div><div class="line"><span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> render</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">(request)</span>:</span></div><div class="line">    <span class="keyword">return</span> render(request, <span class="string">'chat/index.html'</span>, &#123;&#125;)</div></pre></td></tr></table></figure></p>
+<p>最后，配置我们的路由地址。</p>
+<p>先在 <code>chat</code> APP 内创建 <code>urls.py</code> 文件：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># chat/urls.py</span></div><div class="line"><span class="keyword">from</span> django.conf.urls <span class="keyword">import</span> url</div><div class="line"></div><div class="line"><span class="keyword">from</span> chat <span class="keyword">import</span> views</div><div class="line"></div><div class="line">urlpatterns = [</div><div class="line">    url(<span class="string">r'^$'</span>, views.index, name=<span class="string">'index'</span>),</div><div class="line">]</div></pre></td></tr></table></figure></p>
+<p>然后，在项目的 <code>urls.py</code> 文件中创建以下路由代码：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># WSChat/urls.py</span></div><div class="line"><span class="keyword">from</span> django.conf.urls <span class="keyword">import</span> include, url</div><div class="line"><span class="keyword">from</span> django.contrib <span class="keyword">import</span> admin</div><div class="line"></div><div class="line">urlpatterns = [</div><div class="line">    url(<span class="string">r'^chat/'</span>, include(<span class="string">'chat.urls'</span>)),</div><div class="line">    url(<span class="string">r'^admin/'</span>, admin.site.urls),</div><div class="line">]</div></pre></td></tr></table></figure></p>
+<p>好了，我们现在启动测试服务器验证一下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ python manage.py runserver</div></pre></td></tr></table></figure></p>
+<p>你可能会在终端看到如下的输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">Performing system checks...</div><div class="line"></div><div class="line">System check identified no issues (0 silenced).</div><div class="line"></div><div class="line">You have 14 unapplied migration(s). Your project may not work properly until you apply the migrations for app(s): admin, auth, contenttypes, sessions.</div><div class="line">Run &apos;python manage.py migrate&apos; to apply them.</div><div class="line"></div><div class="line">July 30, 2018 - 03:37:32</div><div class="line">Django version 2.0.7, using settings &apos;JTChannel.settings&apos;</div><div class="line">Starting development server at http://0.0.0.0:8000/</div><div class="line">Quit the server with CONTROL-C.</div></pre></td></tr></table></figure></p>
+<p>在浏览器输入 <code>http://127.0.0.1:8000/chat/</code> 就可以看见带“What chat room would you like to enter?”这句话的输入框。</p>
+<p>我们输入“lobby”并回车，我们发现我们的页面地址跳转到了 <code>http://127.0.0.1:8000/chat/lobby/</code>，但我们现在还没写这个页面，所有会出现“Page not found”的错误页面。</p>
+<h5 id="集成-channel-库"><a href="#集成-channel-库" class="headerlink" title="集成 channel 库"></a>集成 channel 库</h5><p>首先，像配置 Django 的 URLconf 一样，配置 channels 的 routing 配置。</p>
+<p>这样，当 Channels 服务器收到 HTTP 请求之后，就能知道需要执行哪段代码。</p>
+<p>现在，我们现在 <code>WSChat/routing.py</code> 文件中创建一下代码：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> channels.routing <span class="keyword">import</span> ProtocolTypeRouter</div><div class="line"></div><div class="line"></div><div class="line">application = ProtocolTypeRouter(&#123;</div><div class="line">    <span class="comment">#  (http-&gt;django views is added by default)</span></div><div class="line">&#125;)</div></pre></td></tr></table></figure></p>
+<p>然后，我们要在 <code>settings.py</code> 配置的 <code>INSTALLED_APPS</code> 中加上我们的 <code>channels</code>：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># WSChat/settings.py</span></div><div class="line">INSTALLED_APPS = [</div><div class="line">    <span class="string">'channels'</span>,</div><div class="line">    <span class="string">'chat'</span>,</div><div class="line">    <span class="string">'django.contrib.admin'</span>,</div><div class="line">    <span class="string">'django.contrib.auth'</span>,</div><div class="line">    <span class="string">'django.contrib.contenttypes'</span>,</div><div class="line">    <span class="string">'django.contrib.sessions'</span>,</div><div class="line">    <span class="string">'django.contrib.messages'</span>,</div><div class="line">    <span class="string">'django.contrib.staticfiles'</span>,</div><div class="line">]</div></pre></td></tr></table></figure></p>
+<p>最后需要像 WSGI 一样，告诉 Django 我们 channels 的根路由配置文件在哪：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># WSChat/settings.py</span></div><div class="line"><span class="comment"># Channels</span></div><div class="line">ASGI_APPLICATION = <span class="string">'WSChat.routing.application'</span></div></pre></td></tr></table></figure></p>
+<p>最后我们再来启动测试服务器：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ python manage.py runserver</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">Performing system checks...</div><div class="line"></div><div class="line">System check identified no issues (0 silenced).</div><div class="line"></div><div class="line">You have 14 unapplied migration(s). Your project may not work properly until you apply the migrations for app(s): admin, auth, contenttypes, sessions.</div><div class="line">Run &apos;python manage.py migrate&apos; to apply them.</div><div class="line"></div><div class="line">July 30, 2018 - 03:37:32</div><div class="line">Django version 2.0.7, using settings &apos;JTChannel.settings&apos;</div><div class="line">Starting ASGI/Channels version 2.1.2 development server at http://0.0.0.0:8000/</div><div class="line">Quit the server with CONTROL-C.</div><div class="line">2018-07-30 03:37:32,233 - INFO - server - HTTP/2 support not enabled (install the http2 and tls Twisted extras)</div><div class="line">2018-07-30 03:37:32,233 - INFO - server - Configuring endpoint tcp:port=8000:interface=0.0.0.0</div><div class="line">2018-07-30 03:37:32,236 - INFO - server - Listening on TCP address 0.0.0.0:8000</div></pre></td></tr></table></figure>
+<p>这时，如果你看见这段话 <code>Starting ASGI/Channels version 2.1.2 development server at http://0.0.0.0:8000/</code> 说明 channel 已经接管了 Django 的测试服务器。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本系列，我们将会构建一个基于 WebSocket 的聊天服务器。&lt;/p&gt;
+&lt;p&gt;一共只有两个页面：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;输入要加入聊天室的名称&lt;/li&gt;
+&lt;li&gt;具体聊天室的聊天页面&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+      <category term="实战" scheme="https://yuanblq.github.io/categories/%E5%AE%9E%E6%88%98/"/>
+    
+    
+      <category term="Python" scheme="https://yuanblq.github.io/tags/Python/"/>
+    
+      <category term="Channel" scheme="https://yuanblq.github.io/tags/Channel/"/>
+    
+      <category term="Django" scheme="https://yuanblq.github.io/tags/Django/"/>
+    
+  </entry>
   
   <entry>
     <title>TensorFlow-01-预测房价</title>
@@ -1783,130 +1851,6 @@ TIME:  2.0026657581329346
     
       <category term="文档" scheme="https://yuanblq.github.io/categories/%E6%96%87%E6%A1%A3/"/>
     
-    
-      <category term="Database" scheme="https://yuanblq.github.io/tags/Database/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>NoSQL-MongoDB</title>
-    <link href="https://yuanblq.github.io/2017/07/26/MongoDB/"/>
-    <id>https://yuanblq.github.io/2017/07/26/MongoDB/</id>
-    <published>2017-07-26T04:43:02.000Z</published>
-    <updated>2017-09-20T15:36:58.000Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="数据库操作"><a href="#数据库操作" class="headerlink" title="数据库操作"></a>数据库操作</h2><h3 id="show-dbs-db-use-xx"><a href="#show-dbs-db-use-xx" class="headerlink" title="show dbs / db / use xx"></a>show dbs / db / use xx</h3><ul>
-<li><code>show dbs</code> 显示当前所有数据库</li>
-<li><code>db</code> 显示当前所选数据库</li>
-<li><code>use xx</code> 选择 xx 数据库，如果当前没有该数据库，则自动创建</li>
-</ul>
-<h3 id="db-dropDatabase"><a href="#db-dropDatabase" class="headerlink" title="db.dropDatabase()"></a>db.dropDatabase()</h3><p>删除当前数据库</p>
-<a id="more"></a>
-<h2 id="集合和文档的操作"><a href="#集合和文档的操作" class="headerlink" title="集合和文档的操作"></a>集合和文档的操作</h2><h3 id="insert-save-update"><a href="#insert-save-update" class="headerlink" title="insert / save / update"></a>insert / save / update</h3><p><code>db.集合名字.insert(文档)</code><br>往该集合中插入一个文档，如果该集合不存在，会自动创建该集合。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">db.coll.insert(&#123;</div><div class="line">    name: &quot;Zhang&quot;,</div><div class="line">    age: 12,</div><div class="line">    addr: [&quot;beijng&quot;, &quot;tianjing&quot;],</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
-<p><code>save()</code> 方法：</p>
-<ul>
-<li>如果不指定 <code>_id</code> 字段，则和 <code>insert()</code> 方法一样</li>
-<li>如果指定 <code>_id</code> 字段，则更新该文档的数据</li>
-</ul>
-<p><code>update()</code> 语法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">db.coll.update(</div><div class="line">    &lt;query&gt;,</div><div class="line">    &lt;update&gt;,</div><div class="line">    &#123;</div><div class="line">        upsert: &lt;boolean&gt;,</div><div class="line">        multi: &lt;boolean&gt;,</div><div class="line">        writeConcern: &lt;document&gt;</div><div class="line">    &#125;</div><div class="line">)</div></pre></td></tr></table></figure></p>
-<p>参数说明：</p>
-<ul>
-<li><code>query</code>：update 的查询条件，类似 sql update 中的 where</li>
-<li><code>update</code>：update 的对象，类似 sql update 中的 set</li>
-<li><code>upsert</code>：可选（默认 false），如果 update 的记录不存在是否将其新增进去</li>
-<li><code>multi</code>：可选（默认 false），有相同的记录是否全部找出来</li>
-<li><code>writeConcern</code>：可选，抛出异常的级别</li>
-</ul>
-<p>比如我们通过 update() 方法更新上面的姓名：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">db.coll.update(</div><div class="line">    &#123;&quot;name&quot;: &quot;Zhang&quot;&#125;,</div><div class="line">    &#123;$set: &#123;&quot;name&quot;: &quot;Li&quot;&#125;&#125;,</div><div class="line">)</div></pre></td></tr></table></figure></p>
-<p>更多实例：</p>
-<p>只更新第一条记录：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.coll.update( &#123; &quot;count&quot; : &#123; $gt : 1 &#125; &#125; , &#123; $set : &#123; &quot;test2&quot; : &quot;OK&quot;&#125; &#125; );</div></pre></td></tr></table></figure></p>
-<p>全部更新：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.coll.update( &#123; &quot;count&quot; : &#123; $gt : 3 &#125; &#125; , &#123; $set : &#123; &quot;test2&quot; : &quot;OK&quot;&#125; &#125;,false,true );</div></pre></td></tr></table></figure></p>
-<p>只添加第一条：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.coll.update( &#123; &quot;count&quot; : &#123; $gt : 4 &#125; &#125; , &#123; $set : &#123; &quot;test5&quot; : &quot;OK&quot;&#125; &#125;,true,false );</div></pre></td></tr></table></figure></p>
-<p>全部添加加进去：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.coll.update( &#123; &quot;count&quot; : &#123; $gt : 5 &#125; &#125; , &#123; $set : &#123; &quot;test5&quot; : &quot;OK&quot;&#125; &#125;,true,true );</div></pre></td></tr></table></figure></p>
-<p>全部更新：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.coll.update( &#123; &quot;count&quot; : &#123; $gt : 15 &#125; &#125; , &#123; $inc : &#123; &quot;count&quot; : 1&#125; &#125;,false,true );</div></pre></td></tr></table></figure></p>
-<p>只更新第一条记录：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.coll.update( &#123; &quot;count&quot; : &#123; $gt : 10 &#125; &#125; , &#123; $inc : &#123; &quot;count&quot; : 1&#125; &#125;,false,false );</div></pre></td></tr></table></figure></p>
-<h3 id="find-pretty"><a href="#find-pretty" class="headerlink" title="find / pretty"></a>find / pretty</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.coll.find()</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123; &quot;_id&quot; : ObjectId(&quot;5992f9bfe81188c3e5ce8c72&quot;), &quot;name&quot; : &quot;Zhang&quot;, &quot;age&quot; : 12, &quot;addr&quot; : [ &quot;beijng&quot;, &quot;tianjing&quot; ] &#125;</div></pre></td></tr></table></figure>
-<p>在 <code>find()</code> 方法后面加上 <code>pretty()</code> 则以格式化的形式，显示所查询的文档：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&gt; db.coll.find().pretty()</div><div class="line">&#123;</div><div class="line">	&quot;_id&quot; : ObjectId(&quot;5992f9bfe81188c3e5ce8c72&quot;),</div><div class="line">	&quot;name&quot; : &quot;Zhang&quot;,</div><div class="line">	&quot;age&quot; : 12,</div><div class="line">	&quot;addr&quot; : [</div><div class="line">		&quot;beijng&quot;, </div><div class="line">        &quot;tianjing&quot;</div><div class="line">	]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h3 id="remove"><a href="#remove" class="headerlink" title="remove"></a>remove</h3><p><code>remove()</code> 方法的基本语法格式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">db.coll.remove(</div><div class="line">    &lt;query&gt;,</div><div class="line">    &#123;</div><div class="line">        justOne: &lt;boolean&gt;,</div><div class="line">        writeConcern: &lt;document&gt;</div><div class="line">    &#125;</div><div class="line">)</div></pre></td></tr></table></figure></p>
-<p>参数说明：</p>
-<ul>
-<li><code>query</code>：可选，删除文档的条件</li>
-<li><code>justOne</code>：可选，如果设为 true，则只删除一个文档</li>
-<li><code>writeConcern</code>：可选，抛出异常的级别</li>
-</ul>
-<p>我们再插入一个文档：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">db.coll.insert(&#123;</div><div class="line">    name: &quot;Wang&quot;,</div><div class="line">    age: 25,</div><div class="line">    addr: [&quot;henan&quot;, &quot;hunan&quot;],</div><div class="line">&#125;)</div></pre></td></tr></table></figure></p>
-<p>使用 <code>find()</code> 查询数据：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt; db.coll.find()</div><div class="line">&#123; &quot;_id&quot; : ObjectId(&quot;5992f9bfe81188c3e5ce8c72&quot;), &quot;name&quot; : &quot;zhang&quot;, &quot;age&quot; : 12, &quot;addr&quot; : [ &quot;beijng&quot;, &quot;tianjing&quot; ] &#125;</div><div class="line">&#123; &quot;_id&quot; : ObjectId(&quot;59930244e81188c3e5ce8c73&quot;), &quot;name&quot; : &quot;Wang&quot;, &quot;age&quot; : 25, &quot;addr&quot; : [ &quot;henan&quot;, &quot;hunan&quot; ] &#125;</div></pre></td></tr></table></figure></p>
-<p>接下来我们移除 name 为 Zhang 的文档：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">db.coll.remove(</div><div class="line">    &#123;&quot;name&quot;: &quot;zhang&quot;&#125;</div><div class="line">)</div></pre></td></tr></table></figure></p>
-<p>现在数据文档只剩下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; db.coll.find()</div><div class="line">&#123; &quot;_id&quot; : ObjectId(&quot;59930244e81188c3e5ce8c73&quot;), &quot;name&quot; : &quot;Wang&quot;, &quot;age&quot; : 25, &quot;addr&quot; : [ &quot;henan&quot;, &quot;hunan&quot; ] &#125;</div></pre></td></tr></table></figure></p>
-<h2 id="MongoDB-与-RDBMS-where-语句比较"><a href="#MongoDB-与-RDBMS-where-语句比较" class="headerlink" title="MongoDB 与 RDBMS where 语句比较"></a>MongoDB 与 RDBMS where 语句比较</h2><table>
-<thead>
-<tr>
-<th style="text-align:center">操作</th>
-<th style="text-align:center">格式</th>
-<th style="text-align:center">范例</th>
-<th style="text-align:center">RDBMS中的类似语句</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">等于</td>
-<td style="text-align:center"><code>{&lt;key&gt;: &lt;value&gt;}</code></td>
-<td style="text-align:center"><code>db.coll.find({&quot;name&quot;: &quot;zhang&quot;})</code></td>
-<td style="text-align:center"><code>where by = &quot;zhang&quot;</code></td>
-</tr>
-<tr>
-<td style="text-align:center">小于</td>
-<td style="text-align:center"><code>{&lt;key&gt;: {$lt: &lt;value&gt;}}</code></td>
-<td style="text-align:center"><code>db.coll.find({&quot;age&quot;: {$lt: 18}})</code></td>
-<td style="text-align:center"><code>where age &lt; 18</code></td>
-</tr>
-<tr>
-<td style="text-align:center">小于或等于</td>
-<td style="text-align:center"><code>{&lt;key&gt;: {$lte: &lt;value&gt;}}</code></td>
-<td style="text-align:center"><code>db.coll.find({&quot;age&quot;: {$lte: 18}})</code></td>
-<td style="text-align:center"><code>where age &lt;= 18</code></td>
-</tr>
-<tr>
-<td style="text-align:center">大于</td>
-<td style="text-align:center"><code>{&lt;key&gt;: {$gt: &lt;value&gt;}}</code></td>
-<td style="text-align:center"><code>db.coll.find({&quot;age&quot;: {$gt: 18}})</code></td>
-<td style="text-align:center"><code>where age &gt; 18</code></td>
-</tr>
-<tr>
-<td style="text-align:center">大于或等于</td>
-<td style="text-align:center"><code>{&lt;key&gt;: {$gte: &lt;value&gt;}}</code></td>
-<td style="text-align:center"><code>db.coll.find({&quot;age&quot;: {$gte: 18}})</code></td>
-<td style="text-align:center"><code>where age &gt;= 18</code></td>
-</tr>
-<tr>
-<td style="text-align:center">不等于</td>
-<td style="text-align:center"><code>{&lt;key&gt;: {$ne: &lt;value&gt;}}</code></td>
-<td style="text-align:center"><code>db.coll.find({&quot;age&quot;: {$ne: 18}})</code></td>
-<td style="text-align:center"><code>where age != 18</code></td>
-</tr>
-</tbody>
-</table>
-<h2 id="MongoDB-and-条件"><a href="#MongoDB-and-条件" class="headerlink" title="MongoDB and 条件"></a>MongoDB and 条件</h2><p>MongoDB 的 <code>find()</code> 方法可以传入多个键，每个键以逗号分隔：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&gt;db.col.find(&#123;key1:value1, key2:value2&#125;).pretty()</div></pre></td></tr></table></figure></p>
-<h2 id="MongoDB-or-条件"><a href="#MongoDB-or-条件" class="headerlink" title="MongoDB or 条件"></a>MongoDB or 条件</h2><p>MongoDB or 条件使用了关键字 <code>$or</code>，语法格式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&gt;db.coll.find(&#123;$or: [&#123;key1: value1&#125;, &#123;key2: value2&#125;]&#125;).pretty()</div></pre></td></tr></table></figure></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;数据库操作&quot;&gt;&lt;a href=&quot;#数据库操作&quot; class=&quot;headerlink&quot; title=&quot;数据库操作&quot;&gt;&lt;/a&gt;数据库操作&lt;/h2&gt;&lt;h3 id=&quot;show-dbs-db-use-xx&quot;&gt;&lt;a href=&quot;#show-dbs-db-use-xx&quot; class=&quot;headerlink&quot; title=&quot;show dbs / db / use xx&quot;&gt;&lt;/a&gt;show dbs / db / use xx&lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;show dbs&lt;/code&gt; 显示当前所有数据库&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;db&lt;/code&gt; 显示当前所选数据库&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;use xx&lt;/code&gt; 选择 xx 数据库，如果当前没有该数据库，则自动创建&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id=&quot;db-dropDatabase&quot;&gt;&lt;a href=&quot;#db-dropDatabase&quot; class=&quot;headerlink&quot; title=&quot;db.dropDatabase()&quot;&gt;&lt;/a&gt;db.dropDatabase()&lt;/h3&gt;&lt;p&gt;删除当前数据库&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="文档" scheme="https://yuanblq.github.io/categories/%E6%96%87%E6%A1%A3/"/>
-    
-    
-      <category term="MongoDB" scheme="https://yuanblq.github.io/tags/MongoDB/"/>
     
       <category term="Database" scheme="https://yuanblq.github.io/tags/Database/"/>
     
