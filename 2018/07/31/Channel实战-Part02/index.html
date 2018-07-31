@@ -1,0 +1,993 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Python,Channel,Django," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Yuan" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="在上一篇文章中我们已经把基本的环境配置都弄好了。
+现在我们就正式进入正题，搭建我们的聊天服务器。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Channel实战-聊天服务器-P02">
+<meta property="og:url" content="https://yuanblq.github.io/2018/07/31/Channel实战-Part02/index.html">
+<meta property="og:site_name" content="Yuan">
+<meta property="og:description" content="在上一篇文章中我们已经把基本的环境配置都弄好了。
+现在我们就正式进入正题，搭建我们的聊天服务器。">
+<meta property="og:image" content="https://channels.readthedocs.io/en/latest/tutorial/part_2.html">
+<meta property="og:updated_time" content="2018-07-31T03:56:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Channel实战-聊天服务器-P02">
+<meta name="twitter:description" content="在上一篇文章中我们已经把基本的环境配置都弄好了。
+现在我们就正式进入正题，搭建我们的聊天服务器。">
+<meta name="twitter:image" content="https://channels.readthedocs.io/en/latest/tutorial/part_2.html">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://yuanblq.github.io/2018/07/31/Channel实战-Part02/"/>
+
+
+
+
+
+  <title> Channel实战-聊天服务器-P02 | Yuan </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?c6ca950bfc34c4509d0199a9d95b605c";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=62805963";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yuan</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://yuanblq.github.io/2018/07/31/Channel实战-Part02/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yuan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yuan">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Channel实战-聊天服务器-P02
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-31T15:33:41+08:00">
+                2018-07-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/实战/" itemprop="url" rel="index">
+                    <span itemprop="name">实战</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/07/31/Channel实战-Part02/" class="leancloud_visitors" data-flag-title="Channel实战-聊天服务器-P02">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在上一篇文章中我们已经把基本的环境配置都弄好了。</p>
+<p>现在我们就正式进入正题，搭建我们的聊天服务器。</p>
+<a id="more"></a>
+<h4 id="实现一个聊天服务器"><a href="#实现一个聊天服务器" class="headerlink" title="实现一个聊天服务器"></a>实现一个聊天服务器</h4><h5 id="添加一个聊天室视图"><a href="#添加一个聊天室视图" class="headerlink" title="添加一个聊天室视图"></a>添加一个聊天室视图</h5><p>现在我们再创建第二个视图，我们可以在里面发送我们想要发送的消息。</p>
+<p>我们现在创建这个文件 <code>chat/templates/chat/room.html</code>：<br><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- chat/templates/chat/room.html --&gt;</span></div><div class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Chat Room<span class="tag">&lt;/<span class="name">title</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">textarea</span> <span class="attr">id</span>=<span class="string">"chat-log"</span> <span class="attr">cols</span>=<span class="string">"100"</span> <span class="attr">rows</span>=<span class="string">"20"</span>&gt;</span><span class="tag">&lt;/<span class="name">textarea</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"chat-message-input"</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">size</span>=<span class="string">"100"</span>/&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"chat-message-submit"</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">value</span>=<span class="string">"Send"</span>/&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></div><div class="line">    var roomName = &#123;&#123; room_name_json &#125;&#125;;</div><div class="line"></div><div class="line">    var chatSocket = new WebSocket(</div><div class="line">        'ws://' + window.location.host +</div><div class="line">        '/ws/chat/' + roomName + '/');</div><div class="line"></div><div class="line">    chatSocket.onmessage = function(e) &#123;</div><div class="line">        var data = JSON.parse(e.data);</div><div class="line">        var message = data['message'];</div><div class="line">        document.querySelector('#chat-log').value += (message + '\n');</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    chatSocket.onclose = function(e) &#123;</div><div class="line">        console.error('Chat socket closed unexpectedly');</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    document.querySelector('#chat-message-input').focus();</div><div class="line">    document.querySelector('#chat-message-input').onkeyup = function(e) &#123;</div><div class="line">        if (e.keyCode === 13) &#123;  // enter, return</div><div class="line">            document.querySelector('#chat-message-submit').click();</div><div class="line">        &#125;</div><div class="line">    &#125;;</div><div class="line"></div><div class="line">    document.querySelector('#chat-message-submit').onclick = function(e) &#123;</div><div class="line">        var messageInputDom = document.querySelector('#chat-message-input');</div><div class="line">        var message = messageInputDom.value;</div><div class="line">        chatSocket.send(JSON.stringify(&#123;</div><div class="line">            'message': message</div><div class="line">        &#125;));</div><div class="line"></div><div class="line">        messageInputDom.value = '';</div><div class="line">    &#125;;</div><div class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>然后在 <code>view.py</code> 中创建视图函数，为了安全起见，我们需要对房间名做个安全操作：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># chat/views.py</span></div><div class="line"><span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> render</div><div class="line"><span class="keyword">from</span> django.utils.safestring <span class="keyword">import</span> mark_safe</div><div class="line"><span class="keyword">import</span> json</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">(request)</span>:</span></div><div class="line">    <span class="keyword">return</span> render(request, <span class="string">'chat/index.html'</span>, &#123;&#125;)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">room</span><span class="params">(request, room_name)</span>:</span></div><div class="line">    <span class="keyword">return</span> render(request, <span class="string">'chat/room.html'</span>, &#123;</div><div class="line">        <span class="string">'room_name_json'</span>: mark_safe(json.dumps(room_name))</div><div class="line">    &#125;)</div></pre></td></tr></table></figure></p>
+<p>最后，我们来创建这个路由：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># chat/urls.py</span></div><div class="line"><span class="keyword">from</span> django.conf.urls <span class="keyword">import</span> url</div><div class="line"></div><div class="line"><span class="keyword">from</span> . <span class="keyword">import</span> views</div><div class="line"></div><div class="line">urlpatterns = [</div><div class="line">    url(<span class="string">r'^$'</span>, views.index, name=<span class="string">'index'</span>),</div><div class="line">    url(<span class="string">r'^(?P&lt;room_name&gt;[^/]+)/$'</span>, views.room, name=<span class="string">'room'</span>),</div><div class="line">]</div></pre></td></tr></table></figure></p>
+<p>OK，启动测试服务器：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ python manage.py runserver</div></pre></td></tr></table></figure></p>
+<p>在浏览器输入 <code>http://127.0.0.1:8000/chat/</code>，然后输入“lobby”按回车，就会跳转到 <code>http://127.0.0.1:8000/chat/lobby/</code> 这个聊天页面。</p>
+<p>我们输入“Hello”，然后按回车。</p>
+<p>咦？什么也没有发生，甚至还出现了这行 log：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[2018/07/30 09:25:49] WebSocket DISCONNECT /ws/chat/lobby/ [127.0.0.1:51241]</div></pre></td></tr></table></figure></p>
+<p>到底什么情况，哪出错了？</p>
+<p>当我们按下回车发送消息的时候会打开连向 <code>ws://127.0.0.1:8000/ws/chat/lobby/</code> 的一个 WebSocket，但是我们还没创建消费者来接收这个 WebSocket 连接。</p>
+<h5 id="创建第一个消费者"><a href="#创建第一个消费者" class="headerlink" title="创建第一个消费者"></a>创建第一个消费者</h5><p>和 Django 接收 HTTP 请求之后根据 URLconf 找到对应的 view 视图一样，当 channel 接收到一个 WebSocket 连接之后，也需要根据 routing 配置找到对应的消费者去处理各种到来的事件。</p>
+<p>现在我们来创建一个连向 <code>/ws/chat/ROOM_NAME/</code> WebSocket 的一个消费者，并把接收到的聊天信息原样返回回去。</p>
+<p>创建一个新文件 <code>chat/consumers.py</code>：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># chat/consumers.py</span></div><div class="line"><span class="keyword">from</span> channels.generic.websocket <span class="keyword">import</span> WebsocketConsumer</div><div class="line"><span class="keyword">import</span> json</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ChatConsumer</span><span class="params">(WebsocketConsumer)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">connect</span><span class="params">(self)</span>:</span></div><div class="line">        self.accept()</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">disconnect</span><span class="params">(self, close_code)</span>:</span></div><div class="line">        <span class="keyword">pass</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">receive</span><span class="params">(self, text_data)</span>:</span></div><div class="line">        text_data_json = json.loads(text_data)</div><div class="line">        message = text_data_json[<span class="string">'message'</span>]</div><div class="line"></div><div class="line">        self.send(text_data=json.dumps(&#123;</div><div class="line">            <span class="string">'message'</span>: message</div><div class="line">        &#125;))</div></pre></td></tr></table></figure></p>
+<p>然后和 Django 的 URLconf 一样，我们也在各个 APP 中创建对应的 <code>routing.py</code> 文件：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># chat/routing.py</span></div><div class="line"><span class="keyword">from</span> django.conf.urls <span class="keyword">import</span> url</div><div class="line"></div><div class="line"><span class="keyword">from</span> chat <span class="keyword">import</span> consumers</div><div class="line"></div><div class="line">websocket_urlpatterns = [</div><div class="line">    url(<span class="string">r'^ws/chat/(?P&lt;room_name&gt;[^/]+)/$'</span>, consumers.ChatConsumer),</div><div class="line">]</div></pre></td></tr></table></figure></p>
+<p>下一步，就是要在项目的 <code>routing.py</code> 文件中加入我们 <code>chat.routing</code> 配置：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># WSChat/routing.py</span></div><div class="line"><span class="keyword">from</span> channels.auth <span class="keyword">import</span> AuthMiddlewareStack</div><div class="line"><span class="keyword">from</span> channels.routing <span class="keyword">import</span> ProtocolTypeRouter, URLRouter</div><div class="line"><span class="keyword">import</span> chat.routing</div><div class="line"></div><div class="line">application = ProtocolTypeRouter(&#123;</div><div class="line">    <span class="comment"># (http-&gt;django views is added by default)</span></div><div class="line">    <span class="string">'websocket'</span>: AuthMiddlewareStack(</div><div class="line">        URLRouter(</div><div class="line">            chat.routing.websocket_urlpatterns</div><div class="line">        )</div><div class="line">    ),</div><div class="line">&#125;)</div></pre></td></tr></table></figure></p>
+<p>这个路由配置表示：如果接收到一个发至 channels 服务器的一个连接，<code>ProtocolTypeRouter</code> 会先检查这个连接的类型。如果是一个 WebSocket 连接（ws:// 或者 wss://），该连接就会给到 <code>AuthMiddlewareStack</code> 去处理。</p>
+<p><code>AuthMiddlewareStack</code> 能从连接的 <code>scope</code> 中拿到当前验证的用户对象，就像 Django 的 <code>AuthenticationMiddleware</code> 从 <code>request</code> 中拿到验证的用户对象一样。</p>
+<p>然后该连接继续传给 <code>URLRouter</code>。</p>
+<p><code>URLRouter</code> 就会最终路由到对应的消费者。</p>
+<p>现在我们再次启动测试服务器验证一下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ python manage.py runserver</div></pre></td></tr></table></figure></p>
+<p>现在我们再试着之前的操作，在聊天页面输入聊天信息，之后回车，是不是很神奇，我们的聊天内容果真发出去了。</p>
+<p>不要高兴的太早！</p>
+<p>试着再打开一个同名的 <code>lobby</code> 聊天室，模拟下多人在同一个聊天室能否互相聊天。</p>
+<p>哈哈哈，不行吧。</p>
+<p>这时，我们就需要引入 <code>channel layer</code> 这一抽象概念，来帮我们在同一个消费者的多个实例中传递数据。</p>
+<h5 id="搞定-channel-layer"><a href="#搞定-channel-layer" class="headerlink" title="搞定 channel layer"></a>搞定 channel layer</h5><p>channel layer 是一种通信系统。它能让你能在多个消费者实例间互相通信。</p>
+<p><code>channel layer</code> 包含两个抽象概念：</p>
+<ul>
+<li><code>channel</code> 类似于邮箱，我们要通信的消息会发往这里。每个 <code>channel</code> 都有一个独一无二的名字，只要我们拥有这个名字，就能往这里发消息。</li>
+<li><code>group</code> 是一组相关 <code>channel</code> 的集合。同样 <code>group</code> 也有名字，拥有这个名字，我们就能往里面添加删除 <code>channel</code>，并且能往该 <code>group</code> 中所有的 <code>channel</code> 发送消息。</li>
+</ul>
+<p>每个消费者实例都会自动生成唯一的 channel 名字，我们就可以用它在 channel layer 中进行通信。</p>
+<p>因此，我们把每个 <code>ChatConsumer</code> 的 channel 添加到以 room 名字命名的 group 中，这样在同一个房间的 <code>ChatConsumer</code> 可以互相通信了。</p>
+<p>在用 channel layer 之前，我们还需要用到 Redis 作为后端存储。</p>
+<p>方便起见，我们可以直接用 Docker 起一个 Redis 服务：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ docker run -p 6379:6379 <span class="_">-d</span> redis</div></pre></td></tr></table></figure></p>
+<p>然后，我们还需要安装 <code>channels_redis</code> 来让我们的 channel 和 redis 进行通信：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pip install channels_redis</div></pre></td></tr></table></figure></p>
+<p>最后，需要在项目的 <code>settings.py</code> 中添加如下配置：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># WSChat/settings.py</span></div><div class="line"><span class="comment"># Channels</span></div><div class="line">ASGI_APPLICATION = <span class="string">'WSChat.routing.application'</span></div><div class="line">CHANNEL_LAYERS = &#123;</div><div class="line">    <span class="string">'default'</span>: &#123;</div><div class="line">        <span class="string">'BACKEND'</span>: <span class="string">'channels_redis.core.RedisChannelLayer'</span>,</div><div class="line">        <span class="string">'CONFIG'</span>: &#123;</div><div class="line">            <span class="string">"hosts"</span>: [(<span class="string">'127.0.0.1'</span>, <span class="number">6379</span>)],</div><div class="line">        &#125;,</div><div class="line">    &#125;,</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这一切安装完之后，我们进入 Django 的 shell 环境验证下有没有安装成功：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ python manage.py shell</div><div class="line">In [1]: import channels.layers</div><div class="line"></div><div class="line">In [2]: channel_layer = channels.layers.get_channel_layer()</div><div class="line"></div><div class="line">In [3]: from asgiref.sync import async_to_sync</div><div class="line"></div><div class="line">In [4]: async_to_sync(channel_layer.send)(<span class="string">'test_channel'</span>, &#123;<span class="string">'type'</span>: <span class="string">'hello'</span>&#125;)</div><div class="line"></div><div class="line">In [5]: async_to_sync(channel_layer.receive)(<span class="string">'test_channel'</span>)</div><div class="line">Out[5]: &#123;<span class="string">'type'</span>: <span class="string">'hello'</span>&#125;</div></pre></td></tr></table></figure></p>
+<p>现在，我们就来改造一下之前的 <code>ChatConsumer</code>：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># chat/consumers.py</span></div><div class="line"><span class="keyword">from</span> asgiref.sync <span class="keyword">import</span> async_to_sync</div><div class="line"><span class="keyword">from</span> channels.generic.websocket <span class="keyword">import</span> WebsocketConsumer</div><div class="line"><span class="keyword">import</span> json</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ChatConsumer</span><span class="params">(WebsocketConsumer)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">connect</span><span class="params">(self)</span>:</span></div><div class="line">        self.room_name = self.scope[<span class="string">'url_route'</span>][<span class="string">'kwargs'</span>][<span class="string">'room_name'</span>]</div><div class="line">        self.room_group_name = <span class="string">'chat_%s'</span> % self.room_name</div><div class="line"></div><div class="line">        <span class="comment"># 将当前 channel 对象加入 group</span></div><div class="line">        async_to_sync(self.channel_layer.group_add)(</div><div class="line">            self.room_group_name,</div><div class="line">            self.channel_name</div><div class="line">        )</div><div class="line"></div><div class="line">        self.accept()</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">disconnect</span><span class="params">(self, close_code)</span>:</span></div><div class="line">        <span class="comment"># Leave room group</span></div><div class="line">        async_to_sync(self.channel_layer.group_discard)(</div><div class="line">            self.room_group_name,</div><div class="line">            self.channel_name</div><div class="line">        )</div><div class="line"></div><div class="line">    <span class="comment"># 从 WebSocket 接收消息</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">receive</span><span class="params">(self, text_data)</span>:</span></div><div class="line">        text_data_json = json.loads(text_data)</div><div class="line">        message = text_data_json[<span class="string">'message'</span>]</div><div class="line"></div><div class="line">        <span class="comment"># 将消息发往 group，以便同一聊天室的大家都能收到消息</span></div><div class="line">        async_to_sync(self.channel_layer.group_send)(</div><div class="line">            self.room_group_name,</div><div class="line">            &#123;</div><div class="line">                <span class="string">'type'</span>: <span class="string">'chat_message'</span>,</div><div class="line">                <span class="string">'message'</span>: message</div><div class="line">            &#125;</div><div class="line">        )</div><div class="line"></div><div class="line">    <span class="comment"># 从 group 接收消息</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">chat_message</span><span class="params">(self, event)</span>:</span></div><div class="line">        message = event[<span class="string">'message'</span>]</div><div class="line"></div><div class="line">        <span class="comment"># 将消息发往 WebSocket</span></div><div class="line">        self.send(text_data=json.dumps(&#123;</div><div class="line">            <span class="string">'message'</span>: message</div><div class="line">        &#125;))</div></pre></td></tr></table></figure></p>
+<p>整个聊天流程是这样的：</p>
+<ul>
+<li>一个用户发送一条消息，JS 函数把这条消息通过 WebSocket 传递给 ChatConsumer。</li>
+<li>ChatConsumer 收到消息后，将消息转到对应的聊天室 group。</li>
+<li>在同一 group 的 ChatConsumer 从 group 收到消息后会通过 WebSocket 把消息转给 JS，最终呈现在前端。</li>
+</ul>
+<p>关于上面的代码还有几点需要解释一下：</p>
+<ul>
+<li><p>self.scope[‘url_route’][‘kwargs’][‘room_name’]</p>
+<ul>
+<li>从 <code>chat/routing.py</code> 路由中获取 <code>room_name</code> 参数</li>
+<li>每个消费者都有一个 <code>scope</code> 参数，包含了连接相关的信息，还有来自 URLRouter 的位置参数和关键字参数，以及当前用户对象</li>
+</ul>
+</li>
+<li><p>self.room_group<em>name=’chat</em>%s’ % self.room_name</p>
+<ul>
+<li>通过用户指定的房间名构造一个 channel 的 group 名字</li>
+<li>注意：group 名字只能包含字母、数字、连字符和句点</li>
+</ul>
+</li>
+<li><p>async_to_sync(self.channel_layer.group_add)(…)</p>
+<ul>
+<li>加入一个 group</li>
+<li>因为我们的 ChatConsumer 是一个同步的消费者，所有有必要调用 <code>async_to_sync(...)</code> 装饰器。（所有的 channel layer 方法都是异步的）</li>
+</ul>
+</li>
+<li><p>self.accept()</p>
+<ul>
+<li>接收 WebSocket 连接</li>
+<li>如果不在 <code>connect()</code> 方法中调用 <code>accept()</code>，那么该连接将会被拒绝并关闭。比如，当用户未验证身份时，你可以拒绝连接</li>
+<li>推荐在 <code>connect()</code> 方法的最后再去调用 <code>accept()</code></li>
+</ul>
+</li>
+<li><p>async_to_sync(self.channel_layer.group_discard)(…)</p>
+<ul>
+<li>退出 group</li>
+</ul>
+</li>
+<li><p>async_to_sync(self.channel_layer.group_send)</p>
+<ul>
+<li>往 group 发送一个事件</li>
+<li>每个事件都有一个 <code>type</code> 的特殊关键key，表示该事件将会去调用这个消费者中哪个名字的方法来处理这个事件</li>
+</ul>
+</li>
+</ul>
+<p>OK，我们来验证下是否好用：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ python manage.py runserver</div></pre></td></tr></table></figure></p>
+<p>打开两个浏览器页面进入 <code>http://127.0.0.1:8000/chat/lobby/</code> 页面，试着在两个页面分别输入消息，看看是否都能收到消息。</p>
+<h4 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h4><ul>
+<li><img src="https://channels.readthedocs.io/en/latest/tutorial/part_2.html" alt="Channels"></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+            <a href="/tags/Channel/" rel="tag"># Channel</a>
+          
+            <a href="/tags/Django/" rel="tag"># Django</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/30/Channel实战-Part01/" rel="next" title="Channel实战-聊天服务器-P01">
+                <i class="fa fa-chevron-left"></i> Channel实战-聊天服务器-P01
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yNzg4NS80NDYy"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Yuan" />
+          <p class="site-author-name" itemprop="name">Yuan</p>
+           
+              <p class="site-description motion-element" itemprop="description">interesting</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">41</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/YuanBLQ/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#实现一个聊天服务器"><span class="nav-number">1.</span> <span class="nav-text">实现一个聊天服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#添加一个聊天室视图"><span class="nav-number">1.1.</span> <span class="nav-text">添加一个聊天室视图</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#创建第一个消费者"><span class="nav-number">1.2.</span> <span class="nav-text">创建第一个消费者</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#搞定-channel-layer"><span class="nav-number">1.3.</span> <span class="nav-text">搞定 channel layer</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考文档"><span class="nav-number">2.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yuan</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"> 本站访问量 </i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("DLXhFvD0nnv6rhu9LFUhmVPP-gzGzoHsz", "xyEKUkd6XbgqcNvCNUkCf7eB");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
