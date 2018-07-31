@@ -97,13 +97,11 @@
 <meta property="og:site_name" content="Yuan">
 <meta property="og:description" content="在上一篇文章中我们已经把基本的环境配置都弄好了。
 现在我们就正式进入正题，搭建我们的聊天服务器。">
-<meta property="og:image" content="https://channels.readthedocs.io/en/latest/tutorial/part_2.html">
-<meta property="og:updated_time" content="2018-07-31T03:56:46.000Z">
+<meta property="og:updated_time" content="2018-07-31T04:01:26.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Channel实战-聊天服务器-P02">
 <meta name="twitter:description" content="在上一篇文章中我们已经把基本的环境配置都弄好了。
 现在我们就正式进入正题，搭建我们的聊天服务器。">
-<meta name="twitter:image" content="https://channels.readthedocs.io/en/latest/tutorial/part_2.html">
 
 
 
@@ -400,7 +398,7 @@
 <p>OK，启动测试服务器：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ python manage.py runserver</div></pre></td></tr></table></figure></p>
 <p>在浏览器输入 <code>http://127.0.0.1:8000/chat/</code>，然后输入“lobby”按回车，就会跳转到 <code>http://127.0.0.1:8000/chat/lobby/</code> 这个聊天页面。</p>
 <p>我们输入“Hello”，然后按回车。</p>
-<p>咦？什么也没有发生，甚至还出现了这行 log：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[2018/07/30 09:25:49] WebSocket DISCONNECT /ws/chat/lobby/ [127.0.0.1:51241]</div></pre></td></tr></table></figure></p>
+<p>咦？什么也没有发生，甚至还出现了这行 log：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[2018/07/31 09:25:49] WebSocket DISCONNECT /ws/chat/lobby/ [127.0.0.1:51241]</div></pre></td></tr></table></figure></p>
 <p>到底什么情况，哪出错了？</p>
 <p>当我们按下回车发送消息的时候会打开连向 <code>ws://127.0.0.1:8000/ws/chat/lobby/</code> 的一个 WebSocket，但是我们还没创建消费者来接收这个 WebSocket 连接。</p>
 <h5 id="创建第一个消费者"><a href="#创建第一个消费者" class="headerlink" title="创建第一个消费者"></a>创建第一个消费者</h5><p>和 Django 接收 HTTP 请求之后根据 URLconf 找到对应的 view 视图一样，当 channel 接收到一个 WebSocket 连接之后，也需要根据 routing 配置找到对应的消费者去处理各种到来的事件。</p>
@@ -480,7 +478,7 @@
 <p>OK，我们来验证下是否好用：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ python manage.py runserver</div></pre></td></tr></table></figure></p>
 <p>打开两个浏览器页面进入 <code>http://127.0.0.1:8000/chat/lobby/</code> 页面，试着在两个页面分别输入消息，看看是否都能收到消息。</p>
 <h4 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h4><ul>
-<li><img src="https://channels.readthedocs.io/en/latest/tutorial/part_2.html" alt="Channels"></li>
+<li><a href="https://channels.readthedocs.io/en/latest/tutorial/part_2.html" target="_blank" rel="external">Channels</a></li>
 </ul>
 
       
