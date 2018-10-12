@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2018-07-31T04:01:26.000Z</updated>
+  <updated>2018-10-12T08:46:45.000Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -14,6 +14,53 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Ansible系列（一）</title>
+    <link href="https://yuanblq.github.io/2018/10/11/Ansible%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%80%EF%BC%89/"/>
+    <id>https://yuanblq.github.io/2018/10/11/Ansible系列（一）/</id>
+    <published>2018-10-11T14:22:22.000Z</published>
+    <updated>2018-10-12T08:46:45.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Ansible 是什么？</p>
+<p>Ansible 是一款自动化工具。可以用它来配置系统，部署程序，甚至更高级的持续部署。</p>
+<a id="more"></a>
+<p>Ansible 难不难？</p>
+<p>Ansible 设计的主要目的就是简单易用。但虽然简单，却拥有极强的安全性和可靠性。Ansible 采用的是 OpenSSH 无代理方式管理机器，由于 OpenSSH 是备受广大用户检验过的开源组件之一，因此安全性极高。同时，Ansible 还是分布式的 — 依赖系统凭据来控制远程主机，无需在远程主机安装客户端。</p>
+<p>直接步入正题吧！</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>很简单，直接通过 pip 即可安装：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pip install ansible</div></pre></td></tr></table></figure></p>
+<h3 id="门外偷窥"><a href="#门外偷窥" class="headerlink" title="门外偷窥"></a>门外偷窥</h3><p>我们要想控制远程主机，当然得让 Ansible 知道要控制哪台主机。这个信息就存储在一个叫做“清单”的文件中。</p>
+<p>该“清单”文件默认存放在 <code>/etc/ansible/hosts</code> 文件中，我们现在把受管的主机信息添加到 <code>Inventory</code> 清单文件中:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># /etc/ansible/hosts</div><div class="line">x.x.x.x</div></pre></td></tr></table></figure></p>
+<p>如果你想自定义“清单”文件的存储路径，则在执行命令的时候通过 <code>-i &lt;path&gt;</code> 来指定自己的“清单”文件。</p>
+<p>我现在是存在默认位置的，所以我就不使用 <code>-i</code> 参数了，现在执行如下命令:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ansible x.x.x.x -m ping</div></pre></td></tr></table></figure></p>
+<p>这个命令很简单，一看就知道是对这台主机进行 ping 操作。</p>
+<p>执行后，返回的结果如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">x.x.x.x | UNREACHABLE! =&gt; &#123;</div><div class="line">    &quot;changed&quot;: false,</div><div class="line">    &quot;msg&quot;: &quot;Failed to connect to the host via ssh: Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password).\r\n&quot;,</div><div class="line">    &quot;unreachable&quot;: true</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>失败了？为什么会出现这个错误？</p>
+<p>哈哈，我们在“清单”文件中就填了一个 ip，就算 Ansible 再怎么厉害，怎么可能不用密码就能有权限管理这台主机呢。</p>
+<p>我们添上用户名密码配置:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">x.x.x.x ansible_port=22 ansible_user=root ansible_ssh_pass=123456</div></pre></td></tr></table></figure></p>
+<p>这个配置是基于密码认证的，但是为了提高安全性，通常会基于密钥认证，密码认证甚至都会被禁用。</p>
+<p>我们将本机公钥添加到受管主机的认证列表之后就可以直接这么配置“清单”:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">x.x.x.x ansible_user=root</div></pre></td></tr></table></figure></p>
+<p>因为添加了公钥，所以可以省略密码，而sshd端口本来就采用的默认 22，所以也可以省略。</p>
+<p>最后，为了以后我们能方便地管理受管主机，我们可以像域名一样给我们的受管主机也起个别名:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">haha ansible_host=x.x.x.x ansible_user=root</div></pre></td></tr></table></figure></p>
+<p>再次执行:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ ansible haha -m ping</div><div class="line"></div><div class="line">haha | SUCCESS =&gt; &#123;</div><div class="line">    &quot;changed&quot;: false,</div><div class="line">    &quot;ping&quot;: &quot;pong&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>成功！</p>
+<p>好了，Ansible 的大体执行流程就是这么简单。下一篇我们接着看看“清单”文件还有有哪些神奇功效。</p>
+<p><strong>P.S.</strong> 关注我的公众号，第一时间接收更新提醒 :)<br><img src="https://mmbiz.qpic.cn/mmbiz_jpg/4n0LJicDiaFKxdrJCskjwLOhFkxhI7XvnibIkiaYFjzoqEo7f9nJ7UI3JG5kAmpputsr9OiaAVcxxE7RRjKbZXO1Y6A/0?wx_fmt=jpeg" alt="公众号二维码"></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Ansible 是什么？&lt;/p&gt;
+&lt;p&gt;Ansible 是一款自动化工具。可以用它来配置系统，部署程序，甚至更高级的持续部署。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="工具" scheme="https://yuanblq.github.io/categories/%E5%B7%A5%E5%85%B7/"/>
+    
+    
+      <category term="Ansible" scheme="https://yuanblq.github.io/tags/Ansible/"/>
+    
+  </entry>
   
   <entry>
     <title>Channel实战-聊天服务器-P02</title>
@@ -1847,60 +1894,6 @@ TIME:  4.002615690231323
     
       &lt;h2 id=&quot;异步实现&quot;&gt;&lt;a href=&quot;#异步实现&quot; class=&quot;headerlink&quot; title=&quot;异步实现&quot;&gt;&lt;/a&gt;异步实现&lt;/h2&gt;&lt;p&gt;要想使用 &lt;code&gt;asyncio&lt;/code&gt; 实现异步，和 &lt;code&gt;gevent&lt;/code&gt; 差不多，都需要相应的代码支持。&lt;code&gt;gevent&lt;/code&gt; 是通过打上“猴子补丁”来实现的，而 &lt;code&gt;asyncio&lt;/code&gt; 和 &lt;code&gt;yield from&lt;/code&gt; 有着千丝万缕的关系，所以先实现就比较简单了。&lt;/p&gt;
 &lt;p&gt;你可以自己用 &lt;code&gt;yield from&lt;/code&gt; 写个协程方法，要么就只能用用别人实现的协程模块。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="知识点" scheme="https://yuanblq.github.io/categories/%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
-    
-    
-      <category term="Python" scheme="https://yuanblq.github.io/tags/Python/"/>
-    
-      <category term="异步" scheme="https://yuanblq.github.io/tags/%E5%BC%82%E6%AD%A5/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>影分身术之-asyncio_part1</title>
-    <link href="https://yuanblq.github.io/2017/07/28/asyncio1/"/>
-    <id>https://yuanblq.github.io/2017/07/28/asyncio1/</id>
-    <published>2017-07-28T04:59:48.000Z</published>
-    <updated>2017-09-20T15:36:59.000Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="创建一个协程"><a href="#创建一个协程" class="headerlink" title="创建一个协程"></a>创建一个协程</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> time</div><div class="line"><span class="keyword">import</span> asyncio</div><div class="line"></div><div class="line">now = <span class="keyword">lambda</span>: time.time()</div><div class="line"></div><div class="line"><span class="comment"># 定义协程函数</span></div><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">do_some_work</span><span class="params">(x)</span>:</span></div><div class="line">    print(<span class="string">'Waiting: '</span>, x)</div></pre></td></tr></table></figure>
-<a id="more"></a>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">start = now()</div><div class="line"></div><div class="line"><span class="string">"""</span></div><div class="line">获取协程对象，协程对象的调用不会立刻执行函数</div><div class="line">协程对象需要注册到事件循环上，由事件循环调用</div><div class="line">"""</div><div class="line">coroutine = do_some_work(<span class="number">2</span>)</div><div class="line"></div><div class="line"><span class="comment"># 获取事件循环对象</span></div><div class="line">loop = asyncio.get_event_loop()</div><div class="line"></div><div class="line"><span class="comment"># 调用协程对象</span></div><div class="line">loop.run_until_complete(coroutine)</div><div class="line"></div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
-<pre><code>Waiting:  2
-TIME:  0.0010256767272949219
-</code></pre><h2 id="创建一个-task"><a href="#创建一个-task" class="headerlink" title="创建一个 task"></a>创建一个 task</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">start = now()</div><div class="line"></div><div class="line">coroutine = do_some_work(<span class="number">3</span>)</div><div class="line"></div><div class="line">loop = asyncio.get_event_loop()</div><div class="line"></div><div class="line"><span class="string">"""</span></div><div class="line">ensure_future() 返回的也是 Furure 对象，</div><div class="line">内部同样是调用的 create_task()</div><div class="line">task = asyncio.ensure_future(coroutine)</div><div class="line">"""</div><div class="line">task = loop.create_task(coroutine)</div><div class="line"></div><div class="line">print(task)</div><div class="line">loop.run_until_complete(task)</div><div class="line">print(task)</div><div class="line"></div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
-<pre><code>&lt;Task pending coro=&lt;do_some_work() running at &lt;ipython-input-12-3ef64d36efb6&gt;:7&gt;&gt;
-Waiting:  3
-&lt;Task finished coro=&lt;do_some_work() done, defined at &lt;ipython-input-12-3ef64d36efb6&gt;:7&gt; result=None&gt;
-TIME:  0.0009589195251464844
-</code></pre><p>所谓 task 对象本质上是一个 <code>Future</code> 对象（是 <code>Future</code> 的子类）。<code>Future</code> 类保存了协程运行后的状态，用于未来获取协程的结果。</p>
-<p>task 在加入事件循环之前是 pending 状态。执行完成之后为 finished 状态。</p>
-<p><code>asyncio.ensure_future(coroutine)</code> 和 <code>loop.create_task(coroutine)</code> 都可以创建一个 task，<code>asyncio.ensure_future(coroutine)</code> 内部就是通过调用 <code>loop.create_task(coroutine)</code> 返回的 task 对象。</p>
-<h2 id="绑定回调"><a href="#绑定回调" class="headerlink" title="绑定回调"></a>绑定回调</h2><p>我们修改一下 <code>do_some_work()</code> 函数：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">do_some_work</span><span class="params">(x)</span>:</span></div><div class="line">    print(<span class="string">'Waiting: '</span>, x)</div><div class="line">    <span class="keyword">return</span> <span class="string">'Done after &#123;&#125;s'</span>.format(x)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">done_callback</span><span class="params">(future)</span>:</span></div><div class="line">    print(<span class="string">'Callback: '</span>, future.result())</div><div class="line"></div><div class="line">start = now()</div><div class="line"></div><div class="line">coroutine = do_some_work(<span class="number">2</span>)</div><div class="line">loop = asyncio.get_event_loop()</div><div class="line">task = asyncio.ensure_future(coroutine)</div><div class="line"></div><div class="line"><span class="comment"># 给 task 对象添加回调函数</span></div><div class="line">task.add_done_callback(done_callback)</div><div class="line">loop.run_until_complete(task)</div><div class="line"></div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
-<pre><code>Waiting:  2
-Callback:  Done after 2s
-TIME:  0.0015606880187988281
-</code></pre><p><code>Future</code> 对象的 <code>add_done_callback()</code> 方法接受一个回调函数对象，并且会把自己也传过去。等 task 调用结束时，就可以通过 task 对象的 <code>result()</code> 方法获取调用返回值。</p>
-<p>如果有这么一种需求，当回调的时候，我们还需要往回调函数传入多个参数。这种情况可以通过偏函数解决：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> functools</div><div class="line"></div><div class="line"><span class="comment"># 注意参数传入的顺序</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">done_callback_part</span><span class="params">(op, future)</span>:</span></div><div class="line">    print(<span class="string">'Callback: '</span>, op, future.result())</div><div class="line"></div><div class="line">start = now()</div><div class="line"></div><div class="line">coroutine = do_some_work(<span class="number">2</span>)</div><div class="line">loop = asyncio.get_event_loop()</div><div class="line">task = asyncio.ensure_future(coroutine)</div><div class="line"></div><div class="line"><span class="comment"># 给 task 对象添加回调函数</span></div><div class="line"><span class="comment"># 注意参数传入的顺序</span></div><div class="line">task.add_done_callback(functools.partial(done_callback_part, <span class="string">"other param"</span>))</div><div class="line">loop.run_until_complete(task)</div><div class="line"></div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
-<pre><code>Waiting:  2
-Callback:  other param Done after 2s
-TIME:  0.00046443939208984375
-</code></pre><h2 id="阻塞和-await"><a href="#阻塞和-await" class="headerlink" title="阻塞和 await"></a>阻塞和 await</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">do_some_work</span><span class="params">(x)</span>:</span></div><div class="line">    print(<span class="string">'Waiting: '</span>, x)</div><div class="line">    <span class="keyword">await</span> asyncio.sleep(x)</div><div class="line">    <span class="keyword">return</span> <span class="string">'Done after &#123;&#125;s'</span>.format(x)</div><div class="line"></div><div class="line">start = now()</div><div class="line"></div><div class="line">coroutine = do_some_work(<span class="number">2</span>)</div><div class="line">loop = asyncio.get_event_loop()</div><div class="line">task = asyncio.ensure_future(coroutine)</div><div class="line">loop.run_until_complete(task)</div><div class="line"></div><div class="line">print(<span class="string">"Task result: "</span>, task.result())</div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
-<pre><code>Waiting:  2
-Task result:  Done after 2s
-TIME:  2.0026657581329346
-</code></pre><p>当 sleep 的时候，使用 <code>await</code> 让出控制权。即当程序执行到耗时操作时，使用 <code>await</code> 方法将协程的控制权让出，以便 <code>loop</code> 调用其他协程。</p>
-<p>上面的例子都只有一个协程，所以看不出有什么效果。接下来我们就上多个协程瞧瞧。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;创建一个协程&quot;&gt;&lt;a href=&quot;#创建一个协程&quot; class=&quot;headerlink&quot; title=&quot;创建一个协程&quot;&gt;&lt;/a&gt;创建一个协程&lt;/h2&gt;&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;6&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;7&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;8&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; time&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; asyncio&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;now = &lt;span class=&quot;keyword&quot;&gt;lambda&lt;/span&gt;: time.time()&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 定义协程函数&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;async&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;do_some_work&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(x)&lt;/span&gt;:&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    print(&lt;span class=&quot;string&quot;&gt;&#39;Waiting: &#39;&lt;/span&gt;, x)&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
     
     </summary>
     
