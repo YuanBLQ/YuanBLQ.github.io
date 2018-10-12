@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2018-10-12T09:03:28.000Z</updated>
+  <updated>2018-10-12T09:10:20.000Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -14,6 +14,63 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Ansible系列（二）</title>
+    <link href="https://yuanblq.github.io/2018/10/13/Ansible%E7%B3%BB%E5%88%97%EF%BC%88%E4%BA%8C%EF%BC%89/"/>
+    <id>https://yuanblq.github.io/2018/10/13/Ansible系列（二）/</id>
+    <published>2018-10-13T09:07:07.000Z</published>
+    <updated>2018-10-12T09:10:20.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>清单配置详解</p>
+<p>Ansible 的“清单”文件就像是黄页电话本。有了它，我们就能和各个主机进行通话交流。</p>
+<a id="more"></a>
+<h3 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h3><p>像这种通讯联系本都会有一个功能 —— 分组，或者说“打标签”。这样无论再多的联系人（主机）我们都能很轻松地找到。</p>
+<p>Ansible 有一个自带的分组名称 —— all。</p>
+<p>没错就是字面意思。该分组包含“清单”中的所有联系人。通过这个关键字 <code>all</code> 我们可以同时对“清单”中所有的主机进行操作:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># /etc/ansible/hosts</div><div class="line"></div><div class="line">host01 ansible_host=x.x.x.x ansible_user=root</div><div class="line">host02 ansible_host=x.x.x.x ansible_user=root</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ansible all -m ping</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">host01 | SUCCESS =&gt; &#123;</div><div class="line">    &quot;changed&quot;: false,</div><div class="line">    &quot;ping&quot;: &quot;pong&quot;</div><div class="line">&#125;</div><div class="line">host02 | SUCCESS =&gt; &#123;</div><div class="line">    &quot;changed&quot;: false,</div><div class="line">    &quot;ping&quot;: &quot;pong&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>接下来，我们自己定义几个分组：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"># /etc/ansible/hosts</div><div class="line"></div><div class="line">[Test]</div><div class="line">test01 ansible_host=x.x.x.x ansible_user=root</div><div class="line"></div><div class="line">[Prod]</div><div class="line">prod02 ansible_host=x.x.x.x ansible_user=root</div><div class="line">prod03 ansible_host=x.x.x.x ansible_user=root</div></pre></td></tr></table></figure>
+<p>上面，我们先定义了两个分组 <code>Test</code>，<code>Prod</code>。接下来我们就可以直接对整个组里的主机进行操作：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ansible Test -m ping</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">test01 | SUCCESS =&gt; &#123;</div><div class="line">    &quot;changed&quot;: false,</div><div class="line">    &quot;ping&quot;: &quot;pong&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ansible Prod -m ping</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">prod02 | SUCCESS =&gt; &#123;</div><div class="line">    &quot;changed&quot;: false,</div><div class="line">    &quot;ping&quot;: &quot;pong&quot;</div><div class="line">&#125;</div><div class="line">prod03 | SUCCESS =&gt; &#123;</div><div class="line">    &quot;changed&quot;: false,</div><div class="line">    &quot;ping&quot;: &quot;pong&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面我们创建了两个分组 —— 测试组和生产组。我们现在可以分别操作这两个组，但是有些操作却是不区分测试组还是生产组的，怎么办呢？</p>
+<p>没错，再建一个同时包含这两个组所有主机的新分组。</p>
+<p>那如果每一个组包含的主机很多，这种做法效率就太低了，我们还有另一种方法 —— 嵌套。</p>
+<p>就是我们在新建的组里面直接添上其他的组名，不用一个个添上其他组内的主机名：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"># /etc/ansible/hosts</div><div class="line"></div><div class="line">[Test]</div><div class="line">test01 ansible_host=x.x.x.x ansible_user=root</div><div class="line"></div><div class="line">[Prod]</div><div class="line">prod02 ansible_host=x.x.x.x ansible_user=root</div><div class="line">prod03 ansible_host=x.x.x.x ansible_user=root</div><div class="line"></div><div class="line">[Basic]</div><div class="line">Test</div><div class="line">Prod</div></pre></td></tr></table></figure>
+<p>这样我们想对所有主机执行一些基础操作的时候，就可以直接操作 <code>Basic</code> 组。</p>
+<h3 id="YAML-语法"><a href="#YAML-语法" class="headerlink" title="YAML 语法"></a>YAML 语法</h3><p>以上“清单”的配置都是 ini 格式的写法，ansible 的“清单”还支持 YAML 格式的语法。</p>
+<p>为什么还要知道 YAML 语法格式的“清单”配置呢？</p>
+<p>后面介绍的 Ansible Playbook 配置使用的就是 YAML 语法，虽然“清单”对于 ini 和 YAML 两种语法都支持，但是我们使用同一种语法格式总是会舒服一点。当然这种舒服也是因人而异的，具体使用中哪个适合自己就是用哪个。</p>
+<p>下面列出几个 ini 和 YAML 两种格式的对比:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"># 最简单的 ini</div><div class="line">x.x.x.x</div><div class="line"></div><div class="line"># 对应的 YAML</div><div class="line">all:</div><div class="line">    hosts:</div><div class="line">        x.x.x.x</div></pre></td></tr></table></figure>
+<p>YAML 格式中，最上方的 <code>all</code> 就是之前我们所说的关键字，在 YAML 中必须把 <code>all</code> 写在最上方。这样才符合 <code>all</code> 这个关键字本身的地位嘛。</p>
+<p>接着来看其他几个格式对比:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"># 简单分组的 ini 格式</div><div class="line">x.x.x.x</div><div class="line"></div><div class="line">[Ga]</div><div class="line">y.y.y.y</div><div class="line"></div><div class="line">[Gb]</div><div class="line">z.z.z.z</div><div class="line"></div><div class="line"># 对应的 YAML</div><div class="line">all:</div><div class="line">    hosts:</div><div class="line">        x.x.x.x</div><div class="line">    children:</div><div class="line">        Ga:</div><div class="line">            hosts:</div><div class="line">                y.y.y.y</div><div class="line">        Gb:</div><div class="line">            hosts:</div><div class="line">                z.z.z.z</div></pre></td></tr></table></figure></p>
+<p>可以看出，YAML 格式中定义“组”需要用到 <code>children</code> 关键字。</p>
+<p>再来看个嵌套分组的对比:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"># ini 格式</div><div class="line">[Ga]</div><div class="line">x.x.x.x</div><div class="line"></div><div class="line">[Gb]</div><div class="line">y.y.y.y</div><div class="line"></div><div class="line">[Gc]</div><div class="line">Ga</div><div class="line">Gb</div><div class="line"></div><div class="line"># 对应的 YAML 格式</div><div class="line">all:</div><div class="line">    children:</div><div class="line">        Gc:</div><div class="line">            children:</div><div class="line">                Ga:</div><div class="line">                    hosts:</div><div class="line">                        x.x.x.x</div><div class="line">                Gb:</div><div class="line">                    hosts:</div><div class="line">                        y.y.y.y</div></pre></td></tr></table></figure></p>
+<p>最后我们再来看一个指定 port、name 的两个格式对比:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"># ini 格式</div><div class="line">x.x.x.x</div><div class="line">host01 ansible_host=y.y.y.y ansible_port=22</div><div class="line"></div><div class="line"># 对应的 YAML 格式</div><div class="line">all:</div><div class="line">    hosts:</div><div class="line">        x.x.x.x</div><div class="line">        host01:</div><div class="line">            ansible_host: y.y.y.y</div><div class="line">            ansible_port: 22</div></pre></td></tr></table></figure></p>
+<p>YAML 语法其实也不是很难，只是把一些逻辑上的层级关系用缩进的形式表现了出来，想要查找学习更多关于“清单”的内容，可以参见<a href="https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html" target="_blank" rel="external">官网文档。</a></p>
+<p><strong>P.S.</strong> 关注我的公众号，第一时间接收更新提醒。</p>
+<div align="center"><br><img src="https://pages-ncdn-1253600859.cos.ap-shanghai.myqcloud.com/Others/%E5%85%AC%E4%BC%97%E5%8F%B7%E4%BA%8C%E7%BB%B4%E7%A0%81.jpeg" width="320" alt="公众号二维码" align="center/"><br></div>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;清单配置详解&lt;/p&gt;
+&lt;p&gt;Ansible 的“清单”文件就像是黄页电话本。有了它，我们就能和各个主机进行通话交流。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="工具" scheme="https://yuanblq.github.io/categories/%E5%B7%A5%E5%85%B7/"/>
+    
+    
+      <category term="Ansible" scheme="https://yuanblq.github.io/tags/Ansible/"/>
+    
+  </entry>
   
   <entry>
     <title>Ansible系列（一）</title>
@@ -1822,79 +1879,6 @@ TIME:  0.649970531463623
 &lt;li&gt;cancelled&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;code&gt;Future&lt;/code&gt; 对象刚创建的时候是 pending 状态，处于调用状态为 running，执行完毕就是 done，如果在执行期间停止事件，则是 cancelled。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="知识点" scheme="https://yuanblq.github.io/categories/%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
-    
-    
-      <category term="Python" scheme="https://yuanblq.github.io/tags/Python/"/>
-    
-      <category term="异步" scheme="https://yuanblq.github.io/tags/%E5%BC%82%E6%AD%A5/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>影分身术之-asyncio_part2</title>
-    <link href="https://yuanblq.github.io/2017/07/29/asyncio2/"/>
-    <id>https://yuanblq.github.io/2017/07/29/asyncio2/</id>
-    <published>2017-07-29T01:14:37.000Z</published>
-    <updated>2017-09-20T15:36:59.000Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="异步实现"><a href="#异步实现" class="headerlink" title="异步实现"></a>异步实现</h2><p>要想使用 <code>asyncio</code> 实现异步，和 <code>gevent</code> 差不多，都需要相应的代码支持。<code>gevent</code> 是通过打上“猴子补丁”来实现的，而 <code>asyncio</code> 和 <code>yield from</code> 有着千丝万缕的关系，所以先实现就比较简单了。</p>
-<p>你可以自己用 <code>yield from</code> 写个协程方法，要么就只能用用别人实现的协程模块。</p>
-<a id="more"></a>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> asyncio</div><div class="line"><span class="keyword">import</span> time</div><div class="line"></div><div class="line">now = <span class="keyword">lambda</span>: time.time()</div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">do_some_work</span><span class="params">(x)</span>:</span></div><div class="line">    print(<span class="string">'Waiting: '</span>, x)</div><div class="line">    <span class="keyword">await</span> asyncio.sleep(x)</div><div class="line">    <span class="keyword">return</span> <span class="string">'work &#123;0&#125; Done after &#123;1&#125;s'</span>.format(x, x)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">done_callback</span><span class="params">(future)</span>:</span></div><div class="line">    print(<span class="string">'Callback: '</span>, future.result())</div><div class="line"></div><div class="line">start = now()</div><div class="line"></div><div class="line">coroutine1 = do_some_work(<span class="number">2</span>)</div><div class="line">coroutine2 = do_some_work(<span class="number">3</span>)</div><div class="line">coroutine3 = do_some_work(<span class="number">4</span>)</div><div class="line"></div><div class="line">tasks = [</div><div class="line">    asyncio.ensure_future(coroutine1),</div><div class="line">    asyncio.ensure_future(coroutine2),</div><div class="line">    asyncio.ensure_future(coroutine3),</div><div class="line">]</div><div class="line"></div><div class="line"><span class="comment"># 完成一个任务打印一个</span></div><div class="line"><span class="keyword">for</span> task <span class="keyword">in</span> tasks:</div><div class="line">    task.add_done_callback(done_callback)</div><div class="line"></div><div class="line">loop = asyncio.get_event_loop()</div><div class="line"></div><div class="line"><span class="comment"># 将协程 task 任务列表添加到事件循环中</span></div><div class="line"><span class="comment"># 这两种方法都能实现添加事件循环</span></div><div class="line">loop.run_until_complete(asyncio.wait(tasks))</div><div class="line"><span class="comment"># loop.run_until_complete(asyncio.gather(*tasks))</span></div><div class="line"></div><div class="line"><span class="comment"># 最后一个任务完成的时候一起打印</span></div><div class="line"><span class="comment"># for task in tasks:</span></div><div class="line"><span class="comment">#     print("Task result: ", task.result())</span></div><div class="line"></div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
-<pre><code>Waiting:  2
-Waiting:  3
-Waiting:  4
-Callback:  work 2 Done after 2s
-Callback:  work 3 Done after 3s
-Callback:  work 4 Done after 4s
-TIME:  4.004777193069458
-</code></pre><p>总计花了 4s 多点的时间，如果是同步的话，至少 9s。可见，我们通过 <code>asyncio</code> 实现了并发功能。</p>
-<h2 id="协程嵌套"><a href="#协程嵌套" class="headerlink" title="协程嵌套"></a>协程嵌套</h2><p>在协程的嵌套中，如何处理协程返回的数据是件很灵活的事。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">do_some_work</span><span class="params">(x)</span>:</span></div><div class="line">    print(<span class="string">'Waiting: '</span>, x)</div><div class="line">    <span class="keyword">await</span> asyncio.sleep(x)</div><div class="line">    <span class="keyword">return</span> <span class="string">'work &#123;0&#125; Done after &#123;1&#125;s'</span>.format(x, x)</div><div class="line"></div><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    coroutine1 = do_some_work(<span class="number">2</span>)</div><div class="line">    coroutine2 = do_some_work(<span class="number">3</span>)</div><div class="line">    coroutine3 = do_some_work(<span class="number">4</span>)</div><div class="line"></div><div class="line">    tasks = [</div><div class="line">        asyncio.ensure_future(coroutine1),</div><div class="line">        asyncio.ensure_future(coroutine2),</div><div class="line">        asyncio.ensure_future(coroutine3),</div><div class="line">    ]</div><div class="line">    </div><div class="line">    <span class="comment"># wait 返回 task 对象</span></div><div class="line">    <span class="comment"># dones, pendings = await asyncio.wait(tasks)</span></div><div class="line">    <span class="comment"># print(dones)</span></div><div class="line">    <span class="comment"># print(pendings)</span></div><div class="line">    <span class="comment"># for task in dones:</span></div><div class="line">    <span class="comment">#     print('Task result: ', task.result())</span></div><div class="line"></div><div class="line">    <span class="comment"># gather 直接返回的是协程运行结果</span></div><div class="line">    results = <span class="keyword">await</span> asyncio.gather(*tasks)</div><div class="line">    <span class="keyword">for</span> result <span class="keyword">in</span> results:</div><div class="line">        print(<span class="string">"Task result: "</span>, result)</div><div class="line">    </div><div class="line">    </div><div class="line">start = now()</div><div class="line"></div><div class="line">loop = asyncio.get_event_loop()</div><div class="line">loop.run_until_complete(main())</div><div class="line"></div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
-<pre><code>Waiting:  2
-Waiting:  3
-Waiting:  4
-Task result:  work 2 Done after 2s
-Task result:  work 3 Done after 3s
-Task result:  work 4 Done after 4s
-TIME:  4.0052490234375
-</code></pre><p>在 <code>main()</code> 协程函数中，可以不直接处理结果，直接返回 <code>await</code> 内容，那么，<code>run_until_complete()</code> 将会接受返回的结果。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    coroutine1 = do_some_work(<span class="number">2</span>)</div><div class="line">    coroutine2 = do_some_work(<span class="number">3</span>)</div><div class="line">    coroutine3 = do_some_work(<span class="number">4</span>)</div><div class="line"></div><div class="line">    tasks = [</div><div class="line">        asyncio.ensure_future(coroutine1),</div><div class="line">        asyncio.ensure_future(coroutine2),</div><div class="line">        asyncio.ensure_future(coroutine3),</div><div class="line">    ]</div><div class="line">    </div><div class="line">    <span class="comment"># wait 返回 task 对象</span></div><div class="line">    <span class="keyword">return</span> <span class="keyword">await</span> asyncio.wait(tasks)</div><div class="line">    </div><div class="line">    </div><div class="line">start = now()</div><div class="line"></div><div class="line">loop = asyncio.get_event_loop()</div><div class="line">dones, pendings = loop.run_until_complete(main())</div><div class="line"><span class="keyword">for</span> done <span class="keyword">in</span> dones:</div><div class="line">    print(<span class="string">"Task result: "</span>, done.result())</div><div class="line"></div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
-<pre><code>Waiting:  2
-Waiting:  3
-Waiting:  4
-Task result:  work 4 Done after 4s
-Task result:  work 2 Done after 2s
-Task result:  work 3 Done after 3s
-TIME:  4.0036780834198
-</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    coroutine1 = do_some_work(<span class="number">2</span>)</div><div class="line">    coroutine2 = do_some_work(<span class="number">3</span>)</div><div class="line">    coroutine3 = do_some_work(<span class="number">4</span>)</div><div class="line"></div><div class="line">    tasks = [</div><div class="line">        asyncio.ensure_future(coroutine1),</div><div class="line">        asyncio.ensure_future(coroutine2),</div><div class="line">        asyncio.ensure_future(coroutine3),</div><div class="line">    ]</div><div class="line"></div><div class="line">    <span class="comment"># gather 直接返回的是协程运行结果</span></div><div class="line">    <span class="keyword">return</span> <span class="keyword">await</span> asyncio.gather(*tasks)</div><div class="line">    </div><div class="line">    </div><div class="line">start = now()</div><div class="line"></div><div class="line">loop = asyncio.get_event_loop()</div><div class="line">results = loop.run_until_complete(main())</div><div class="line"><span class="keyword">for</span> result <span class="keyword">in</span> results:</div><div class="line">    print(<span class="string">"Task result: "</span>, result)</div><div class="line"></div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
-<pre><code>Waiting:  2
-Waiting:  3
-Waiting:  4
-Task result:  work 2 Done after 2s
-Task result:  work 3 Done after 3s
-Task result:  work 4 Done after 4s
-TIME:  4.003807544708252
-</code></pre><p>除此之外，还可以使用 asyncio 的 <code>as_completed()</code> 方法：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    coroutine1 = do_some_work(<span class="number">2</span>)</div><div class="line">    coroutine2 = do_some_work(<span class="number">3</span>)</div><div class="line">    coroutine3 = do_some_work(<span class="number">4</span>)</div><div class="line"></div><div class="line">    tasks = [</div><div class="line">        asyncio.ensure_future(coroutine1),</div><div class="line">        asyncio.ensure_future(coroutine2),</div><div class="line">        asyncio.ensure_future(coroutine3),</div><div class="line">    ]</div><div class="line"></div><div class="line">    <span class="keyword">for</span> task <span class="keyword">in</span> asyncio.as_completed(tasks):</div><div class="line">        result = <span class="keyword">await</span> task</div><div class="line">        print(<span class="string">"Task result: "</span>, result)</div><div class="line">    </div><div class="line">    </div><div class="line">start = now()</div><div class="line"></div><div class="line">loop = asyncio.get_event_loop()</div><div class="line">loop.run_until_complete(main())</div><div class="line"></div><div class="line">print(<span class="string">'TIME: '</span>, now() - start)</div></pre></td></tr></table></figure>
-<pre><code>Waiting:  2
-Waiting:  3
-Waiting:  4
-Task result:  work 2 Done after 2s
-Task result:  work 3 Done after 3s
-Task result:  work 4 Done after 4s
-TIME:  4.002615690231323
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;异步实现&quot;&gt;&lt;a href=&quot;#异步实现&quot; class=&quot;headerlink&quot; title=&quot;异步实现&quot;&gt;&lt;/a&gt;异步实现&lt;/h2&gt;&lt;p&gt;要想使用 &lt;code&gt;asyncio&lt;/code&gt; 实现异步，和 &lt;code&gt;gevent&lt;/code&gt; 差不多，都需要相应的代码支持。&lt;code&gt;gevent&lt;/code&gt; 是通过打上“猴子补丁”来实现的，而 &lt;code&gt;asyncio&lt;/code&gt; 和 &lt;code&gt;yield from&lt;/code&gt; 有着千丝万缕的关系，所以先实现就比较简单了。&lt;/p&gt;
-&lt;p&gt;你可以自己用 &lt;code&gt;yield from&lt;/code&gt; 写个协程方法，要么就只能用用别人实现的协程模块。&lt;/p&gt;
     
     </summary>
     
