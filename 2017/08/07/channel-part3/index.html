@@ -89,25 +89,18 @@
 
 
 
-<meta name="description" content="安装可以直接在 PyPI 上获取 Channels —— 安装，只需运行：
-1pip install -U channels
-安装完之后，你需要把 Channels 添加到你 settings 的 INSTALLED_APPS 中：
-12345678INSTALLED_APPS = [    &apos;django.contrib.auth&apos;,    &apos;django.contrib.contenttype">
+<meta name="description" content="安装可以直接在 PyPI 上获取 Channels —— 安装，只需运行： 1pip install -U channels 安装完之后，你需要把 Channels 添加到你 settings 的 INSTALLED_APPS 中： 12345678INSTALLED_APPS = [    &apos;django.contrib.auth&apos;,    &apos;django.contrib.contenttype">
+<meta name="keywords" content="Django,WebSocket">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Django也能玩实时 —— chapter 3">
 <meta property="og:url" content="https://yuanblq.github.io/2017/08/07/channel-part3/index.html">
 <meta property="og:site_name" content="Yuan">
-<meta property="og:description" content="安装可以直接在 PyPI 上获取 Channels —— 安装，只需运行：
-1pip install -U channels
-安装完之后，你需要把 Channels 添加到你 settings 的 INSTALLED_APPS 中：
-12345678INSTALLED_APPS = [    &apos;django.contrib.auth&apos;,    &apos;django.contrib.contenttype">
+<meta property="og:description" content="安装可以直接在 PyPI 上获取 Channels —— 安装，只需运行： 1pip install -U channels 安装完之后，你需要把 Channels 添加到你 settings 的 INSTALLED_APPS 中： 12345678INSTALLED_APPS = [    &apos;django.contrib.auth&apos;,    &apos;django.contrib.contenttype">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2017-09-20T15:36:58.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Django也能玩实时 —— chapter 3">
-<meta name="twitter:description" content="安装可以直接在 PyPI 上获取 Channels —— 安装，只需运行：
-1pip install -U channels
-安装完之后，你需要把 Channels 添加到你 settings 的 INSTALLED_APPS 中：
-12345678INSTALLED_APPS = [    &apos;django.contrib.auth&apos;,    &apos;django.contrib.contenttype">
+<meta name="twitter:description" content="安装可以直接在 PyPI 上获取 Channels —— 安装，只需运行： 1pip install -U channels 安装完之后，你需要把 Channels 添加到你 settings 的 INSTALLED_APPS 中： 12345678INSTALLED_APPS = [    &apos;django.contrib.auth&apos;,    &apos;django.contrib.contenttype">
 
 
 
@@ -395,16 +388,16 @@
 
       
         <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>可以直接在 PyPI 上获取 Channels —— 安装，只需运行：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install -U channels</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install -U channels</span><br></pre></td></tr></table></figure>
 <p>安装完之后，你需要把 <code>Channels</code> 添加到你 settings 的 <code>INSTALLED_APPS</code> 中：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">INSTALLED_APPS = [</div><div class="line">    <span class="string">'django.contrib.auth'</span>,</div><div class="line">    <span class="string">'django.contrib.contenttypes'</span>,</div><div class="line">    <span class="string">'django.contrib.sessions'</span>,</div><div class="line">    <span class="string">'django.contrib.sites'</span>,</div><div class="line">    ...</div><div class="line">    <span class="string">'channels'</span>,</div><div class="line">]</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">INSTALLED_APPS = [</span><br><span class="line">    <span class="string">'django.contrib.auth'</span>,</span><br><span class="line">    <span class="string">'django.contrib.contenttypes'</span>,</span><br><span class="line">    <span class="string">'django.contrib.sessions'</span>,</span><br><span class="line">    <span class="string">'django.contrib.sites'</span>,</span><br><span class="line">    ...</span><br><span class="line">    <span class="string">'channels'</span>,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
-<p>就这样！完成之后，<code>Channels</code> 会自己集成到 Django，并且接管 <code>runserver</code> 命令。详情见 <a href="http://channels.readthedocs.io/en/latest/getting-started.html" target="_blank" rel="external">Getting Started with Channels</a>。</p>
+<p>就这样！完成之后，<code>Channels</code> 会自己集成到 Django，并且接管 <code>runserver</code> 命令。详情见 <a href="http://channels.readthedocs.io/en/latest/getting-started.html" target="_blank" rel="noopener">Getting Started with Channels</a>。</p>
 <blockquote>
-<p><strong>注意</strong><br>注意其他会替换/重载 <code>runserver</code> 命令的第三方 app。Channels 提供了一个独立的 <code>runserver</code> 命令，可能会引起冲突。有这么一个冲突的例子：<a href="https://github.com/evansd/whitenoise" target="_blank" rel="external">whitenoise</a> 的 <a href="https://github.com/evansd/whitenoise/issues/77" target="_blank" rel="external">whitenoise.runserver_nostatic</a>。为了解决这个问题，可以尝试把 <code>channels</code> 移到你 <code>INSTALLED——APPS</code> 的最上面，或者把其他冲突的 app 删了。</p>
+<p><strong>注意</strong><br>注意其他会替换/重载 <code>runserver</code> 命令的第三方 app。Channels 提供了一个独立的 <code>runserver</code> 命令，可能会引起冲突。有这么一个冲突的例子：<a href="https://github.com/evansd/whitenoise" target="_blank" rel="noopener">whitenoise</a> 的 <a href="https://github.com/evansd/whitenoise/issues/77" target="_blank" rel="noopener">whitenoise.runserver_nostatic</a>。为了解决这个问题，可以尝试把 <code>channels</code> 移到你 <code>INSTALLED——APPS</code> 的最上面，或者把其他冲突的 app 删了。</p>
 </blockquote>
 <h2 id="安装最新的开发版"><a href="#安装最新的开发版" class="headerlink" title="安装最新的开发版"></a>安装最新的开发版</h2><p>要想安装最新的开发版 Channels，克隆它的仓库，切换到仓库，更改仓库文件夹，然后安装到你的虚拟环境中：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ git <span class="built_in">clone</span> git@github.com:django/channels.git</div><div class="line">$ <span class="built_in">cd</span> channels</div><div class="line">$ &lt;activate your project’s virtual environment&gt;</div><div class="line">(environment) $ pip install <span class="_">-e</span> .  <span class="comment"># . 表示当前仓库</span></div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> git@github.com:django/channels.git</span><br><span class="line">$ <span class="built_in">cd</span> channels</span><br><span class="line">$ &lt;activate your project’s virtual environment&gt;</span><br><span class="line">(environment) $ pip install -e .  <span class="comment"># . 表示当前仓库</span></span><br></pre></td></tr></table></figure>
 
       
     </div>

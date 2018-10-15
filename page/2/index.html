@@ -95,6 +95,7 @@
 <meta property="og:url" content="https://yuanblq.github.io/page/2/index.html">
 <meta property="og:site_name" content="Yuan">
 <meta property="og:description" content="interesting">
+<meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Yuan">
 <meta name="twitter:description" content="interesting">
@@ -1198,9 +1199,9 @@
       
         
           <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>可以直接在 PyPI 上获取 Channels —— 安装，只需运行：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install -U channels</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install -U channels</span><br></pre></td></tr></table></figure>
 <p>安装完之后，你需要把 <code>Channels</code> 添加到你 settings 的 <code>INSTALLED_APPS</code> 中：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">INSTALLED_APPS = [</div><div class="line">    <span class="string">'django.contrib.auth'</span>,</div><div class="line">    <span class="string">'django.contrib.contenttypes'</span>,</div><div class="line">    <span class="string">'django.contrib.sessions'</span>,</div><div class="line">    <span class="string">'django.contrib.sites'</span>,</div><div class="line">    ...</div><div class="line">    <span class="string">'channels'</span>,</div><div class="line">]</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">INSTALLED_APPS = [</span><br><span class="line">    <span class="string">'django.contrib.auth'</span>,</span><br><span class="line">    <span class="string">'django.contrib.contenttypes'</span>,</span><br><span class="line">    <span class="string">'django.contrib.sessions'</span>,</span><br><span class="line">    <span class="string">'django.contrib.sites'</span>,</span><br><span class="line">    ...</span><br><span class="line">    <span class="string">'channels'</span>,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/08/07/channel-part3/#more" rel="contents">
@@ -1520,9 +1521,9 @@
 
       
         
-          <h2 id="什么是-Channels？"><a href="#什么是-Channels？" class="headerlink" title="什么是 Channels？"></a>什么是 Channels？</h2><p>通过 Channels，给 Django 添加了一个新的<a href="http://channels.readthedocs.io/en/latest/concepts.html#what-are-channels">传输中间层</a>，通过该层，能实现两个重要的特性：</p>
+          <h2 id="什么是-Channels？"><a href="#什么是-Channels？" class="headerlink" title="什么是 Channels？"></a>什么是 Channels？</h2><p>通过 Channels，给 Django 添加了一个新的<a href="http://channels.readthedocs.io/en/latest/concepts.html#what-are-channels" target="_blank" rel="noopener">传输中间层</a>，通过该层，能实现两个重要的特性：</p>
 <ul>
-<li><a href="http://channels.readthedocs.io/en/latest/getting-started.html#websocket-example">像普通 view 视图一样</a>，处理 WebSocket</li>
+<li><a href="http://channels.readthedocs.io/en/latest/getting-started.html#websocket-example" target="_blank" rel="noopener">像普通 view 视图一样</a>，处理 WebSocket</li>
 <li>作为 Django 的一部分，在同样的服务器中，能运行后台任务</li>
 </ul>
 <p>当然还有其他特性，不过在刚开始时，这两个是我们用的最多的。</p>

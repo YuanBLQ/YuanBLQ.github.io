@@ -95,6 +95,7 @@
 <meta property="og:url" content="https://yuanblq.github.io/page/3/index.html">
 <meta property="og:site_name" content="Yuan">
 <meta property="og:description" content="interesting">
+<meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Yuan">
 <meta name="twitter:description" content="interesting">
@@ -549,7 +550,7 @@
 
       
         
-          <h2 id="创建一个协程"><a href="#创建一个协程" class="headerlink" title="创建一个协程"></a>创建一个协程</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> time</div><div class="line"><span class="keyword">import</span> asyncio</div><div class="line"></div><div class="line">now = <span class="keyword">lambda</span>: time.time()</div><div class="line"></div><div class="line"><span class="comment"># 定义协程函数</span></div><div class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">do_some_work</span><span class="params">(x)</span>:</span></div><div class="line">    print(<span class="string">'Waiting: '</span>, x)</div></pre></td></tr></table></figure>
+          <h2 id="创建一个协程"><a href="#创建一个协程" class="headerlink" title="创建一个协程"></a>创建一个协程</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"></span><br><span class="line">now = <span class="keyword">lambda</span>: time.time()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义协程函数</span></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">do_some_work</span><span class="params">(x)</span>:</span></span><br><span class="line">    print(<span class="string">'Waiting: '</span>, x)</span><br></pre></td></tr></table></figure>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/07/28/asyncio1/#more" rel="contents">
@@ -707,10 +708,10 @@
 
       
         
-          <p>Redis 是键值对存储的，通过键存入的值会永久存储。<a href="http://try.redis.io/">入门 Redis 最好的网站</a></p>
-<h2 id="set-get"><a href="#set-get" class="headerlink" title="set / get"></a>set / get</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">set name &quot;fido&quot;</div></pre></td></tr></table></figure>
-<p><code>set</code> 设置键值对。然后就可以通过 <code>get</code> 键名来获取对应的键值：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">get name</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; &quot;fido&quot;</div></pre></td></tr></table></figure>
+          <p>Redis 是键值对存储的，通过键存入的值会永久存储。<a href="http://try.redis.io/" target="_blank" rel="noopener">入门 Redis 最好的网站</a></p>
+<h2 id="set-get"><a href="#set-get" class="headerlink" title="set / get"></a>set / get</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set name &quot;fido&quot;</span><br></pre></td></tr></table></figure>
+<p><code>set</code> 设置键值对。然后就可以通过 <code>get</code> 键名来获取对应的键值：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get name</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; &quot;fido&quot;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/07/26/Redis/#more" rel="contents">

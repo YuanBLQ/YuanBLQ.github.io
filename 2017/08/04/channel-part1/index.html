@@ -89,31 +89,18 @@
 
 
 
-<meta name="description" content="什么是 Channels？通过 Channels，给 Django 添加了一个新的传输中间层，通过该层，能实现两个重要的特性：
-
-像普通 view 视图一样，处理 WebSocket
-作为 Django 的一部分，在同样的服务器中，能运行后台任务
-
-当然还有其他特性，不过在刚开始时，这两个是我们用的最多的。">
+<meta name="description" content="什么是 Channels？通过 Channels，给 Django 添加了一个新的传输中间层，通过该层，能实现两个重要的特性：  像普通 view 视图一样，处理 WebSocket 作为 Django 的一部分，在同样的服务器中，能运行后台任务  当然还有其他特性，不过在刚开始时，这两个是我们用的最多的。">
+<meta name="keywords" content="Django,WebSocket">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Django也能玩实时 —— chapter 1">
 <meta property="og:url" content="https://yuanblq.github.io/2017/08/04/channel-part1/index.html">
 <meta property="og:site_name" content="Yuan">
-<meta property="og:description" content="什么是 Channels？通过 Channels，给 Django 添加了一个新的传输中间层，通过该层，能实现两个重要的特性：
-
-像普通 view 视图一样，处理 WebSocket
-作为 Django 的一部分，在同样的服务器中，能运行后台任务
-
-当然还有其他特性，不过在刚开始时，这两个是我们用的最多的。">
+<meta property="og:description" content="什么是 Channels？通过 Channels，给 Django 添加了一个新的传输中间层，通过该层，能实现两个重要的特性：  像普通 view 视图一样，处理 WebSocket 作为 Django 的一部分，在同样的服务器中，能运行后台任务  当然还有其他特性，不过在刚开始时，这两个是我们用的最多的。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2017-09-20T15:36:58.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Django也能玩实时 —— chapter 1">
-<meta name="twitter:description" content="什么是 Channels？通过 Channels，给 Django 添加了一个新的传输中间层，通过该层，能实现两个重要的特性：
-
-像普通 view 视图一样，处理 WebSocket
-作为 Django 的一部分，在同样的服务器中，能运行后台任务
-
-当然还有其他特性，不过在刚开始时，这两个是我们用的最多的。">
+<meta name="twitter:description" content="什么是 Channels？通过 Channels，给 Django 添加了一个新的传输中间层，通过该层，能实现两个重要的特性：  像普通 view 视图一样，处理 WebSocket 作为 Django 的一部分，在同样的服务器中，能运行后台任务  当然还有其他特性，不过在刚开始时，这两个是我们用的最多的。">
 
 
 
@@ -400,9 +387,9 @@
       
 
       
-        <h2 id="什么是-Channels？"><a href="#什么是-Channels？" class="headerlink" title="什么是 Channels？"></a>什么是 Channels？</h2><p>通过 Channels，给 Django 添加了一个新的<a href="http://channels.readthedocs.io/en/latest/concepts.html#what-are-channels" target="_blank" rel="external">传输中间层</a>，通过该层，能实现两个重要的特性：</p>
+        <h2 id="什么是-Channels？"><a href="#什么是-Channels？" class="headerlink" title="什么是 Channels？"></a>什么是 Channels？</h2><p>通过 Channels，给 Django 添加了一个新的<a href="http://channels.readthedocs.io/en/latest/concepts.html#what-are-channels" target="_blank" rel="noopener">传输中间层</a>，通过该层，能实现两个重要的特性：</p>
 <ul>
-<li><a href="http://channels.readthedocs.io/en/latest/getting-started.html#websocket-example" target="_blank" rel="external">像普通 view 视图一样</a>，处理 WebSocket</li>
+<li><a href="http://channels.readthedocs.io/en/latest/getting-started.html#websocket-example" target="_blank" rel="noopener">像普通 view 视图一样</a>，处理 WebSocket</li>
 <li>作为 Django 的一部分，在同样的服务器中，能运行后台任务</li>
 </ul>
 <p>当然还有其他特性，不过在刚开始时，这两个是我们用的最多的。</p>
@@ -412,11 +399,11 @@
 <li>一是处理 HTTP 和 WebSocket</li>
 <li>另一个是运行 view 视图函数、websocket 处理器和后台任务（consumers 消费者）</li>
 </ul>
-<p>他们通过一个叫 <a href="http://channels.readthedocs.io/en/latest/asgi.html" target="_blank" rel="external">ASGI</a> 的协议通信。它和 WSGI 很相似，不过 ASGI 能兼容更多协议类型。</p>
+<p>他们通过一个叫 <a href="http://channels.readthedocs.io/en/latest/asgi.html" target="_blank" rel="noopener">ASGI</a> 的协议通信。它和 WSGI 很相似，不过 ASGI 能兼容更多协议类型。</p>
 <p>Channels 不会往你的 Django 代码中引入 asyncio、gevent 或者其他任何异步代码。你的所有业务逻辑都是以同步的方式运行在工作进程/线程。</p>
 <h2 id="我要改变-Django-的运行方式吗？"><a href="#我要改变-Django-的运行方式吗？" class="headerlink" title="我要改变 Django 的运行方式吗？"></a>我要改变 Django 的运行方式吗？</h2><p><strong>不</strong>，所有的额外工作都完全是可选的。如果你愿意，你可以将运行在 WSGI 服务器下的 Django 更改为如下运行方式：</p>
 <ul>
-<li>一个 ASGI 服务器，你可能会选择 <a href="http://github.com/django/daphne/" target="_blank" rel="external">Daphne</a></li>
+<li>一个 ASGI 服务器，你可能会选择 <a href="http://github.com/django/daphne/" target="_blank" rel="noopener">Daphne</a></li>
 <li>Django 的工作服务器，通过 <code>manage.py runworker</code> 来使用</li>
 <li>用来路由 ASGI 请求的东西，比如 Redis</li>
 </ul>
@@ -434,11 +421,11 @@
 <h2 id="能扩展吗？"><a href="#能扩展吗？" class="headerlink" title="能扩展吗？"></a>能扩展吗？</h2><p><strong>当然可以，</strong>你可以运行任意数量的协议服务（用于同时处理 HTTP 和 WebSocket）和工作服务（用来运行你的 Django 代码）来满足你的使用案例。</p>
 <p>ASGI 规范这两个部件之间插入允许大量的不同功能特性的 channel 层。而且它被设计用来支持简单分片以及使用自己的协议和服务器运行单独的集群。</p>
 <h2 id="为什么不采用我最喜欢的消息队列？"><a href="#为什么不采用我最喜欢的消息队列？" class="headerlink" title="为什么不采用我最喜欢的消息队列？"></a>为什么不采用我最喜欢的消息队列？</h2><p>Channel 的设计目的优先于低延迟（目标是几毫秒），并且超过保证传送的高吞吐量，这与某些消息队列设计不匹配。</p>
-<p>一些像<a href="http://channels.readthedocs.io/en/latest/getting-started.html#enforcing-ordering" target="_blank" rel="external">保证消息顺序</a>的特性会降低性能，但它能使它更像个消息队列。</p>
+<p>一些像<a href="http://channels.readthedocs.io/en/latest/getting-started.html#enforcing-ordering" target="_blank" rel="noopener">保证消息顺序</a>的特性会降低性能，但它能使它更像个消息队列。</p>
 <h2 id="我需要把我所有的代码都变成异步吗？"><a href="#我需要把我所有的代码都变成异步吗？" class="headerlink" title="我需要把我所有的代码都变成异步吗？"></a>我需要把我所有的代码都变成异步吗？</h2><p>不，如果没有任何 socket 或 事件循环阻塞，你的代码都可以同步运行。你也可以在一些 Django 的 view 视图或 channel 的 consumer 消费者函数中使用异步代码 —— 比如，并行获取大量 URL，但这不会影响整个站点的部署。</p>
 <h2 id="Channel-支持哪些-Django-版本？"><a href="#Channel-支持哪些-Django-版本？" class="headerlink" title="Channel 支持哪些 Django 版本？"></a>Channel 支持哪些 Django 版本？</h2><p>你可以在 Django &gt;= 1.8 的版本上将 Channels 最为一个库来安装。另外，它可能需要一些额外的依赖，不过你都可以通过 <code>pip</code> 安装。</p>
-<p>一开始的时候，Channels 并不在 Django 的核心功能中，不过自从 2016.9 月以后，它就成为了 Django 的官方项目。更多关于 Channels 被采纳为 官方项目的信息可以从 <a href="https://www.djangoproject.com/weblog/2016/sep/09/channels-adopted-official-django-project/" target="_blank" rel="external">Django blog</a> 中查询。</p>
-<h2 id="接下来我该读什么？"><a href="#接下来我该读什么？" class="headerlink" title="接下来我该读什么？"></a>接下来我该读什么？</h2><p>首先阅读关于 <a href="http://channels.readthedocs.io/en/latest/concepts.html" target="_blank" rel="external">Channel 的一些概念</a>，然后继续阅读我们的<a href="http://channels.readthedocs.io/en/latest/getting-started.html" target="_blank" rel="external">示例教程</a>。</p>
+<p>一开始的时候，Channels 并不在 Django 的核心功能中，不过自从 2016.9 月以后，它就成为了 Django 的官方项目。更多关于 Channels 被采纳为 官方项目的信息可以从 <a href="https://www.djangoproject.com/weblog/2016/sep/09/channels-adopted-official-django-project/" target="_blank" rel="noopener">Django blog</a> 中查询。</p>
+<h2 id="接下来我该读什么？"><a href="#接下来我该读什么？" class="headerlink" title="接下来我该读什么？"></a>接下来我该读什么？</h2><p>首先阅读关于 <a href="http://channels.readthedocs.io/en/latest/concepts.html" target="_blank" rel="noopener">Channel 的一些概念</a>，然后继续阅读我们的<a href="http://channels.readthedocs.io/en/latest/getting-started.html" target="_blank" rel="noopener">示例教程</a>。</p>
 
       
     </div>

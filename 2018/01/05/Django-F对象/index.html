@@ -89,22 +89,18 @@
 
 
 
-<meta name="description" content="F() 表达式Django 常用的保存 model 对象的方法是 save()，但是这种做法并不是在所有情况下都适用的。
-我们得先从数据库获取到对用对象的那条数据，转换成 Python 对象，对 Python 对象进行相应的操作，然后转换成相应数据保存到数据库中。
-相当于先从数据库出来，在 Python 转一圈然后再回到数据库。这样难免会出一些问题。">
+<meta name="description" content="F() 表达式Django 常用的保存 model 对象的方法是 save()，但是这种做法并不是在所有情况下都适用的。 我们得先从数据库获取到对用对象的那条数据，转换成 Python 对象，对 Python 对象进行相应的操作，然后转换成相应数据保存到数据库中。 相当于先从数据库出来，在 Python 转一圈然后再回到数据库。这样难免会出一些问题。">
+<meta name="keywords" content="Python">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Django F对象">
 <meta property="og:url" content="https://yuanblq.github.io/2018/01/05/Django-F对象/index.html">
 <meta property="og:site_name" content="Yuan">
-<meta property="og:description" content="F() 表达式Django 常用的保存 model 对象的方法是 save()，但是这种做法并不是在所有情况下都适用的。
-我们得先从数据库获取到对用对象的那条数据，转换成 Python 对象，对 Python 对象进行相应的操作，然后转换成相应数据保存到数据库中。
-相当于先从数据库出来，在 Python 转一圈然后再回到数据库。这样难免会出一些问题。">
+<meta property="og:description" content="F() 表达式Django 常用的保存 model 对象的方法是 save()，但是这种做法并不是在所有情况下都适用的。 我们得先从数据库获取到对用对象的那条数据，转换成 Python 对象，对 Python 对象进行相应的操作，然后转换成相应数据保存到数据库中。 相当于先从数据库出来，在 Python 转一圈然后再回到数据库。这样难免会出一些问题。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2018-01-05T07:04:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Django F对象">
-<meta name="twitter:description" content="F() 表达式Django 常用的保存 model 对象的方法是 save()，但是这种做法并不是在所有情况下都适用的。
-我们得先从数据库获取到对用对象的那条数据，转换成 Python 对象，对 Python 对象进行相应的操作，然后转换成相应数据保存到数据库中。
-相当于先从数据库出来，在 Python 转一圈然后再回到数据库。这样难免会出一些问题。">
+<meta name="twitter:description" content="F() 表达式Django 常用的保存 model 对象的方法是 save()，但是这种做法并不是在所有情况下都适用的。 我们得先从数据库获取到对用对象的那条数据，转换成 Python 对象，对 Python 对象进行相应的操作，然后转换成相应数据保存到数据库中。 相当于先从数据库出来，在 Python 转一圈然后再回到数据库。这样难免会出一些问题。">
 
 
 
@@ -399,18 +395,18 @@
 <h3 id="直接操作数据库"><a href="#直接操作数据库" class="headerlink" title="直接操作数据库"></a>直接操作数据库</h3><p>F() 对象能直接拿到 model 字段的值，并且不用将它们从数据库拉到 Python 的内存中，而可以直接在数据库层面操作。</p>
 <p>实际上，Django 通过 F() 对象直接生成 SQL 表达式在数据库层级操作数据库。</p>
 <p>通过下面的例子可以直观的理解这点：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">reporter = Reporters.objects.get(name=<span class="string">'Tintin'</span>)</div><div class="line">reporter.stories_filed += <span class="number">1</span></div><div class="line">reporter.save()</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">reporter = Reporters.objects.get(name=<span class="string">'Tintin'</span>)</span><br><span class="line">reporter.stories_filed += <span class="number">1</span></span><br><span class="line">reporter.save()</span><br></pre></td></tr></table></figure>
 <p>我们先从数据库中取出 <code>reporter.stories_field</code> 字段的值，然后经过熟悉的 Python 操作后再把对象存储到数据库中。</p>
 <p>但我们同样可以这么做：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> django.db.models <span class="keyword">import</span> F</div><div class="line"></div><div class="line">reporter = Reporters.objects.get(name=<span class="string">'Tintin'</span>)</div><div class="line">reporter.stories_filed = F(<span class="string">'stories_filed'</span>) + <span class="number">1</span></div><div class="line">reporter.save()</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.db.models <span class="keyword">import</span> F</span><br><span class="line"></span><br><span class="line">reporter = Reporters.objects.get(name=<span class="string">'Tintin'</span>)</span><br><span class="line">reporter.stories_filed = F(<span class="string">'stories_filed'</span>) + <span class="number">1</span></span><br><span class="line">reporter.save()</span><br></pre></td></tr></table></figure>
 <p>虽然这两种操作乍一看感觉不到什么区别，但是，前面我们说过，通过 F() 对象进行的操作是处于数据库层级的。所以，当我们进行 <code>reporter.stories_filed = F(&#39;stories_filed&#39;) + 1</code> 这一步操作的时候，其实并不像之前『把 model 字段值从数据库取出，经过对 Python 对象的一系列操作，最后把 model 对象保存进数据库。』实际上，使用 F() 对象时，我们是不会管当时的 <code>reporter.stories_filed</code> 这个字段的值的，而是会生成为该字段值加1的对应 SQL 语句。</p>
-<p>之后要想获取该字段的新值必须得刷新该对象：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">reporter = Reporters.objects.get(pk=reporter.pk)</div><div class="line"><span class="comment"># 或者这种更简洁的做法:</span></div><div class="line">reporter.refresh_from_db()</div></pre></td></tr></table></figure></p>
+<p>之后要想获取该字段的新值必须得刷新该对象：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">reporter = Reporters.objects.get(pk=reporter.pk)</span><br><span class="line"><span class="comment"># 或者这种更简洁的做法:</span></span><br><span class="line">reporter.refresh_from_db()</span><br></pre></td></tr></table></figure></p>
 <p>另外，还可以直接在 <code>filter()</code> 的 <code>update()</code> 中使用 F() 对象，这样就能避免先 get 到 model 对象，然后修改后 save 对象。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Reporters.objects.filter(name=<span class="string">'Tintin'</span>).update(stories_filed=F(<span class="string">'stories_filed'</span>) + <span class="number">1</span>)</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Reporters.objects.filter(name=<span class="string">'Tintin'</span>).update(stories_filed=F(<span class="string">'stories_filed'</span>) + <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
 <h3 id="避免竞争情况"><a href="#避免竞争情况" class="headerlink" title="避免竞争情况"></a>避免竞争情况</h3><p>有这样一种情况：如果有两个 Python 线程执行上面那个例子中的代码，一条线程“获取”、“增加”、“保存”，另一条只是从数据库“获取”。“获取值”的那条线程获取的值可能是原始值，而不是第一条线程“增加”后的值。也就是说第一条线程所做的基本是无用功。</p>
 <p>正如前面所说的，F() 对象是直接通过 SQL 语句来操作数据库的，所以由 F() 对象操作的话，相当于是在数据库层面，那么此操作更加健壮。当调用 <code>save()</code> 和 <code>update()</code> 时，会基于数据库中的值，而不是获取对象时候对象中的字段值。</p>
 <h3 id="F-永远在-Model-save-之后执行"><a href="#F-永远在-Model-save-之后执行" class="headerlink" title="F() 永远在 Model.save() 之后执行"></a>F() 永远在 Model.save() 之后执行</h3><p>F() 会在每个 <code>save()</code>之后执行一遍，比如：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">reporter = Reporters.objects.get(name=<span class="string">'Tintin'</span>)</div><div class="line">reporter.stories_filed = F(<span class="string">'stories_filed'</span>) + <span class="number">1</span></div><div class="line">reporter.save()</div><div class="line"></div><div class="line">reporter.name = <span class="string">'Tintin Jr.'</span></div><div class="line">reporter.save()</div></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">reporter = Reporters.objects.get(name=<span class="string">'Tintin'</span>)</span><br><span class="line">reporter.stories_filed = F(<span class="string">'stories_filed'</span>) + <span class="number">1</span></span><br><span class="line">reporter.save()</span><br><span class="line"></span><br><span class="line">reporter.name = <span class="string">'Tintin Jr.'</span></span><br><span class="line">reporter.save()</span><br></pre></td></tr></table></figure>
 <p>如果 <code>stories_field</code> 的初始值为1，那么最后该值会变为3。</p>
 
       

@@ -89,20 +89,19 @@
 
 
 
-<meta name="description" content="Ansible 是什么？
-Ansible 是一款自动化工具。可以用它来配置系统，部署程序，甚至更高级的持续部署。">
+<meta name="description" content="Ansible 是什么？ Ansible 是一款自动化工具。可以用它来配置系统，部署程序，甚至更高级的持续部署。">
+<meta name="keywords" content="Ansible">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Ansible系列（一）">
 <meta property="og:url" content="https://yuanblq.github.io/2018/10/11/Ansible系列（一）/index.html">
 <meta property="og:site_name" content="Yuan">
-<meta property="og:description" content="Ansible 是什么？
-Ansible 是一款自动化工具。可以用它来配置系统，部署程序，甚至更高级的持续部署。">
+<meta property="og:description" content="Ansible 是什么？ Ansible 是一款自动化工具。可以用它来配置系统，部署程序，甚至更高级的持续部署。">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://pages-ncdn-1253600859.cos.ap-shanghai.myqcloud.com/Others/%E5%85%AC%E4%BC%97%E5%8F%B7%E4%BA%8C%E7%BB%B4%E7%A0%81.jpeg">
 <meta property="og:updated_time" content="2018-10-12T09:03:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Ansible系列（一）">
-<meta name="twitter:description" content="Ansible 是什么？
-Ansible 是一款自动化工具。可以用它来配置系统，部署程序，甚至更高级的持续部署。">
+<meta name="twitter:description" content="Ansible 是什么？ Ansible 是一款自动化工具。可以用它来配置系统，部署程序，甚至更高级的持续部署。">
 <meta name="twitter:image" content="https://pages-ncdn-1253600859.cos.ap-shanghai.myqcloud.com/Others/%E5%85%AC%E4%BC%97%E5%8F%B7%E4%BA%8C%E7%BB%B4%E7%A0%81.jpeg">
 
 
@@ -396,21 +395,21 @@ Ansible 是一款自动化工具。可以用它来配置系统，部署程序，
 <p>Ansible 难不难？</p>
 <p>Ansible 设计的主要目的就是简单易用。但虽然简单，却拥有极强的安全性和可靠性。Ansible 采用的是 OpenSSH 无代理方式管理机器，由于 OpenSSH 是备受广大用户检验过的开源组件之一，因此安全性极高。同时，Ansible 还是分布式的 — 依赖系统凭据来控制远程主机，无需在远程主机安装客户端。</p>
 <p>直接步入正题吧！</p>
-<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>很简单，直接通过 pip 即可安装：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ pip install ansible</div></pre></td></tr></table></figure></p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>很简单，直接通过 pip 即可安装：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pip install ansible</span><br></pre></td></tr></table></figure></p>
 <h3 id="初步使用"><a href="#初步使用" class="headerlink" title="初步使用"></a>初步使用</h3><p>我们要想控制远程主机，当然得让 Ansible 知道要控制哪台主机。这个信息就存储在一个叫做“清单”的文件中。</p>
-<p>该“清单”文件默认存放在 <code>/etc/ansible/hosts</code> 文件中，我们现在把受管的主机信息添加到 <code>Inventory</code> 清单文件中:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># /etc/ansible/hosts</div><div class="line">x.x.x.x</div></pre></td></tr></table></figure></p>
+<p>该“清单”文件默认存放在 <code>/etc/ansible/hosts</code> 文件中，我们现在把受管的主机信息添加到 <code>Inventory</code> 清单文件中:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># /etc/ansible/hosts</span><br><span class="line">x.x.x.x</span><br></pre></td></tr></table></figure></p>
 <p>如果你想自定义“清单”文件的存储路径，则在执行命令的时候通过 <code>-i &lt;path&gt;</code> 来指定自己的“清单”文件。</p>
-<p>我现在是存在默认位置的，所以我就不使用 <code>-i</code> 参数了，现在执行如下命令:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ ansible x.x.x.x -m ping</div></pre></td></tr></table></figure></p>
+<p>我现在是存在默认位置的，所以我就不使用 <code>-i</code> 参数了，现在执行如下命令:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ansible x.x.x.x -m ping</span><br></pre></td></tr></table></figure></p>
 <p>这个命令很简单，一看就知道是对这台主机进行 ping 操作。</p>
-<p>执行后，返回的结果如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">x.x.x.x | UNREACHABLE! =&gt; &#123;</div><div class="line">    &quot;changed&quot;: false,</div><div class="line">    &quot;msg&quot;: &quot;Failed to connect to the host via ssh: Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password).\r\n&quot;,</div><div class="line">    &quot;unreachable&quot;: true</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>执行后，返回的结果如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x.x.x.x | UNREACHABLE! =&gt; &#123;</span><br><span class="line">    &quot;changed&quot;: false,</span><br><span class="line">    &quot;msg&quot;: &quot;Failed to connect to the host via ssh: Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password).\r\n&quot;,</span><br><span class="line">    &quot;unreachable&quot;: true</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>失败了？为什么会出现这个错误？</p>
 <p>哈哈，我们在“清单”文件中就填了一个 ip，就算 Ansible 再怎么厉害，怎么可能不用密码就能有权限管理这台主机呢。</p>
-<p>我们添上用户名密码配置:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">x.x.x.x ansible_port=22 ansible_user=root ansible_ssh_pass=123456</div></pre></td></tr></table></figure></p>
+<p>我们添上用户名密码配置:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x.x.x.x ansible_port=22 ansible_user=root ansible_ssh_pass=123456</span><br></pre></td></tr></table></figure></p>
 <p>这个配置是基于密码认证的，但是为了提高安全性，通常会基于密钥认证，密码认证甚至都会被禁用。</p>
-<p>我们将本机公钥添加到受管主机的认证列表之后就可以直接这么配置“清单”:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">x.x.x.x ansible_user=root</div></pre></td></tr></table></figure></p>
+<p>我们将本机公钥添加到受管主机的认证列表之后就可以直接这么配置“清单”:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x.x.x.x ansible_user=root</span><br></pre></td></tr></table></figure></p>
 <p>因为添加了公钥，所以可以省略密码，而sshd端口本来就采用的默认 22，所以也可以省略。</p>
-<p>最后，为了以后我们能方便地管理受管主机，我们可以像域名一样给我们的受管主机也起个别名:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">haha ansible_host=x.x.x.x ansible_user=root</div></pre></td></tr></table></figure></p>
-<p>再次执行:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ ansible haha -m ping</div><div class="line"></div><div class="line">haha | SUCCESS =&gt; &#123;</div><div class="line">    &quot;changed&quot;: false,</div><div class="line">    &quot;ping&quot;: &quot;pong&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>最后，为了以后我们能方便地管理受管主机，我们可以像域名一样给我们的受管主机也起个别名:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">haha ansible_host=x.x.x.x ansible_user=root</span><br></pre></td></tr></table></figure></p>
+<p>再次执行:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ ansible haha -m ping</span><br><span class="line"></span><br><span class="line">haha | SUCCESS =&gt; &#123;</span><br><span class="line">    &quot;changed&quot;: false,</span><br><span class="line">    &quot;ping&quot;: &quot;pong&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>成功！</p>
 <p>好了，Ansible 的大体执行流程就是这么简单。下一篇我们接着看看“清单”文件还有有哪些神奇功效。</p>
 <p><strong>P.S.</strong> 关注我的公众号，第一时间接收更新提醒。</p>

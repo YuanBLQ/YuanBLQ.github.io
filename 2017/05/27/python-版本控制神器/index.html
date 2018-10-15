@@ -89,19 +89,18 @@
 
 
 
-<meta name="description" content="由于 python 拥有众多的版本，以及不同模块也有不同的版本。如果每个版本之间相互都不兼容那也就无所谓什么版本控制了，可是同一机器上各个版本的 python 可以相互兼容并存，而且同一模块不同版本有时需要的 python 版本是不相同的，所以 python 的版本控制显得尤为重要。
-pyenv 是个 shell 脚本，能够轻松得实现各个不同版本 python 的相互间切换，而且各个版本的 pyt">
+<meta name="description" content="由于 python 拥有众多的版本，以及不同模块也有不同的版本。如果每个版本之间相互都不兼容那也就无所谓什么版本控制了，可是同一机器上各个版本的 python 可以相互兼容并存，而且同一模块不同版本有时需要的 python 版本是不相同的，所以 python 的版本控制显得尤为重要。 pyenv 是个 shell 脚本，能够轻松得实现各个不同版本 python 的相互间切换，而且各个版本的 pyt">
+<meta name="keywords" content="Python">
 <meta property="og:type" content="article">
 <meta property="og:title" content="python 版本控制神器">
 <meta property="og:url" content="https://yuanblq.github.io/2017/05/27/python-版本控制神器/index.html">
 <meta property="og:site_name" content="Yuan">
-<meta property="og:description" content="由于 python 拥有众多的版本，以及不同模块也有不同的版本。如果每个版本之间相互都不兼容那也就无所谓什么版本控制了，可是同一机器上各个版本的 python 可以相互兼容并存，而且同一模块不同版本有时需要的 python 版本是不相同的，所以 python 的版本控制显得尤为重要。
-pyenv 是个 shell 脚本，能够轻松得实现各个不同版本 python 的相互间切换，而且各个版本的 pyt">
+<meta property="og:description" content="由于 python 拥有众多的版本，以及不同模块也有不同的版本。如果每个版本之间相互都不兼容那也就无所谓什么版本控制了，可是同一机器上各个版本的 python 可以相互兼容并存，而且同一模块不同版本有时需要的 python 版本是不相同的，所以 python 的版本控制显得尤为重要。 pyenv 是个 shell 脚本，能够轻松得实现各个不同版本 python 的相互间切换，而且各个版本的 pyt">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2017-09-20T15:36:58.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python 版本控制神器">
-<meta name="twitter:description" content="由于 python 拥有众多的版本，以及不同模块也有不同的版本。如果每个版本之间相互都不兼容那也就无所谓什么版本控制了，可是同一机器上各个版本的 python 可以相互兼容并存，而且同一模块不同版本有时需要的 python 版本是不相同的，所以 python 的版本控制显得尤为重要。
-pyenv 是个 shell 脚本，能够轻松得实现各个不同版本 python 的相互间切换，而且各个版本的 pyt">
+<meta name="twitter:description" content="由于 python 拥有众多的版本，以及不同模块也有不同的版本。如果每个版本之间相互都不兼容那也就无所谓什么版本控制了，可是同一机器上各个版本的 python 可以相互兼容并存，而且同一模块不同版本有时需要的 python 版本是不相同的，所以 python 的版本控制显得尤为重要。 pyenv 是个 shell 脚本，能够轻松得实现各个不同版本 python 的相互间切换，而且各个版本的 pyt">
 
 
 
@@ -396,27 +395,27 @@ pyenv 是个 shell 脚本，能够轻松得实现各个不同版本 python 的�
 <p>由于 <code>pyenv</code> 是脚本插件，所以只能在类 UNIX 系统上使用。所以，如果你想在 windows 上安装，那就点击左上角去隔壁 <code>virtualenv</code> 瞧瞧。</p>
 <h3 id="安装-pyenv（Ubuntu）"><a href="#安装-pyenv（Ubuntu）" class="headerlink" title="安装 pyenv（Ubuntu）"></a>安装 pyenv（Ubuntu）</h3><ol>
 <li><p><strong>确定你想把 <code>pyenv</code> 安装在哪。</strong>推荐安装在 <code>$HOME/.pyenv</code>，但你也可以安装在任意位置。  </p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git clone https://github.com/pyenv/pyenv.git ~/.pyenv</div></pre></td></tr></table></figure>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git clone https://github.com/pyenv/pyenv.git ~/.pyenv</span><br></pre></td></tr></table></figure>
 </li>
 <li><p><strong>定义你 <code>PYENV_ROOT</code> 的环境变量</strong>来指定你把 pyenv 仓库克隆到了哪，并把 <code>$PYENV_ROOT/bin</code> 添加到你的 <code>$PATH</code> 中，这样就能在命令行使用 <code>pyenv</code> 命令。  </p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ echo &apos;export PYENV_ROOT=&quot;$HOME/.pyenv&quot;&apos; &gt;&gt; ~/.bashrc</div><div class="line">$ echo &apos;export PATH=&quot;$PYENV_ROOT/bin:$PATH&quot;&apos; &gt;&gt; ~/.bashrc</div></pre></td></tr></table></figure>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ echo &apos;export PYENV_ROOT=&quot;$HOME/.pyenv&quot;&apos; &gt;&gt; ~/.bashrc</span><br><span class="line">$ echo &apos;export PATH=&quot;$PYENV_ROOT/bin:$PATH&quot;&apos; &gt;&gt; ~/.bashrc</span><br></pre></td></tr></table></figure>
 </li>
 <li><p><strong>设置启动 shell 时自动加载 pyenv 脚本。</strong>在 shell 配置文件的最后面加上 <code>eval &quot;$(pyenv init -)&quot;</code>。  </p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ echo &apos;eval &quot;$(pyenv init -)&quot;&apos; &gt;&gt; ~/.bashrc</div></pre></td></tr></table></figure>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ echo &apos;eval &quot;$(pyenv init -)&quot;&apos; &gt;&gt; ~/.bashrc</span><br></pre></td></tr></table></figure>
 </li>
 <li><p><strong>重启 shell，使脚本生效。</strong>  </p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ exec $SHELL</div></pre></td></tr></table></figure>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ exec $SHELL</span><br></pre></td></tr></table></figure>
 </li>
 <li><p><strong>安装不同的 python 版本到 <code>$(pyenv root)/versions</code> 文件夹。</strong><br> 在 <code>pyenv</code> 安装之前的所有 python 版本都归为 <code>system</code> 版本。 （可以用 <code>pyenv versions</code> 查看当前安装的 python 版本）<br> 在安装 python 之前，可以使用 <code>pyenv install -l</code> 查看当前可以安装哪些 python 版本。<br> 然后使用 <code>pyenv install 选择的版本</code> 来安装你所选择的 python 版本。比如 <code>pyenv install 3.6.1</code> 安装 python 官网的版本。  </p>
 </li>
 <li><p><strong>如果在安装 python 时报了如下错误，</strong>那就有可能是你的环境依赖没有装好，一般安装以下几个依赖就可以了。  </p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 报错信息</div><div class="line">WARNING: The Python bz2 extension was not compiled. Missing the bzip2 lib</div><div class="line"></div><div class="line">WARNING: The Python readline extension was not compiled. Missing the GNU readline lib</div><div class="line"></div><div class="line">ERROR: The Python ssl extension was not compiled. Missing the OpenSSL lib</div></pre></td></tr></table></figure>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"># 安装以下依赖</div><div class="line">$ sudo apt-get install libbz2-dev</div><div class="line"></div><div class="line">$ sudo apt-get install libssl-dev</div><div class="line"></div><div class="line">$ sudo apt-get install libreadline6 libreadline6-dev</div><div class="line"></div><div class="line">$ sudo apt-get install libsqlite3-dev</div></pre></td></tr></table></figure>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 报错信息</span><br><span class="line">WARNING: The Python bz2 extension was not compiled. Missing the bzip2 lib</span><br><span class="line"></span><br><span class="line">WARNING: The Python readline extension was not compiled. Missing the GNU readline lib</span><br><span class="line"></span><br><span class="line">ERROR: The Python ssl extension was not compiled. Missing the OpenSSL lib</span><br></pre></td></tr></table></figure>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 安装以下依赖</span><br><span class="line">$ sudo apt-get install libbz2-dev</span><br><span class="line"></span><br><span class="line">$ sudo apt-get install libssl-dev</span><br><span class="line"></span><br><span class="line">$ sudo apt-get install libreadline6 libreadline6-dev</span><br><span class="line"></span><br><span class="line">$ sudo apt-get install libsqlite3-dev</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
 <h3 id="使用-git-更新-pyenv"><a href="#使用-git-更新-pyenv" class="headerlink" title="使用 git 更新 pyenv"></a>使用 git 更新 pyenv</h3><p>如果你是按照上面的方法安装的 <code>pyenv</code>，那你可以使用 git 来更新。</p>
-<h4 id="更新为最新的开发版"><a href="#更新为最新的开发版" class="headerlink" title="更新为最新的开发版"></a>更新为最新的开发版</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ cd $(pyenv root)</div><div class="line">$ git pull</div></pre></td></tr></table></figure>
-<h4 id="更新为指定的版本"><a href="#更新为指定的版本" class="headerlink" title="更新为指定的版本"></a>更新为指定的版本</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ cd $(pyenv root)</div><div class="line">$ git fetch</div><div class="line">$ git tag</div><div class="line">v0.1.0</div><div class="line">$ git checkout v0.1.0</div></pre></td></tr></table></figure>
+<h4 id="更新为最新的开发版"><a href="#更新为最新的开发版" class="headerlink" title="更新为最新的开发版"></a>更新为最新的开发版</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd $(pyenv root)</span><br><span class="line">$ git pull</span><br></pre></td></tr></table></figure>
+<h4 id="更新为指定的版本"><a href="#更新为指定的版本" class="headerlink" title="更新为指定的版本"></a>更新为指定的版本</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ cd $(pyenv root)</span><br><span class="line">$ git fetch</span><br><span class="line">$ git tag</span><br><span class="line">v0.1.0</span><br><span class="line">$ git checkout v0.1.0</span><br></pre></td></tr></table></figure>
 <h3 id="pyenv-的基本操作命令"><a href="#pyenv-的基本操作命令" class="headerlink" title="pyenv 的基本操作命令"></a>pyenv 的基本操作命令</h3><ul>
 <li><code>pyenv versions</code> 查看当前已安装的 python 版本</li>
 <li><code>pyenv install ...</code> 安装指定版本的 python</li>
@@ -427,14 +426,14 @@ pyenv 是个 shell 脚本，能够轻松得实现各个不同版本 python 的�
 </ul>
 <h3 id="卸载-pyenv"><a href="#卸载-pyenv" class="headerlink" title="卸载 pyenv"></a>卸载 pyenv</h3><ul>
 <li>如果你只是想禁用 <code>pyenv</code>，那么把 <code>pyenv init</code> 从 shell 的配置文件中移除，然后重启 shell 就行了（移除后 <code>pyenv</code> 命令仍然能使用，但是版本切换命令不会生效）。  </li>
-<li>完整卸载 pyenv。执行上一步，然后把 pyenv 的根目录删除即可全部删除 pyenv（通过 <code>pyenv install ...</code> 安装的 python 版本都会删除）。    <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rm -rf $(pyenv root)</div></pre></td></tr></table></figure>
+<li>完整卸载 pyenv。执行上一步，然后把 pyenv 的根目录删除即可全部删除 pyenv（通过 <code>pyenv install ...</code> 安装的 python 版本都会删除）。    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm -rf $(pyenv root)</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <h3 id="卸载-pyenv-安装的-python-版本"><a href="#卸载-pyenv-安装的-python-版本" class="headerlink" title="卸载 pyenv 安装的 python 版本"></a>卸载 pyenv 安装的 python 版本</h3><ul>
 <li>使用 <code>pyenv uninstall ...</code> 命令。  </li>
 <li>直接删除 <code>versions</code> 文件夹下的对应 python 版本文件夹。  </li>
 </ul>
-<h3 id="pyenv-其他操作命令"><a href="#pyenv-其他操作命令" class="headerlink" title="pyenv 其他操作命令"></a>pyenv 其他操作命令</h3><p>参见 <a href="https://github.com/pyenv/pyenv/blob/master/COMMANDS.md" target="_blank" rel="external">commands.md</a></p>
+<h3 id="pyenv-其他操作命令"><a href="#pyenv-其他操作命令" class="headerlink" title="pyenv 其他操作命令"></a>pyenv 其他操作命令</h3><p>参见 <a href="https://github.com/pyenv/pyenv/blob/master/COMMANDS.md" target="_blank" rel="noopener">commands.md</a></p>
 <p><br><br><br></p>
 <h2 id="管理-python-模块版本"><a href="#管理-python-模块版本" class="headerlink" title="管理 python 模块版本"></a>管理 python 模块版本</h2><p>使用 <code>virtualenv</code> 和 <code>virtualenvwrapper</code> 管理 python 虚拟环境，每次都需要手动激活或退出。对于懒癌晚期患者，<code>pyenv-virtual</code> 的自动激活和退出虚拟环境功能简直不能再赞。另外搭配 <code>pyenv</code> 食用效果更佳。</p>
 <h3 id="安装-pyenv-virtualenv（Ubuntu）"><a href="#安装-pyenv-virtualenv（Ubuntu）" class="headerlink" title="安装 pyenv-virtualenv（Ubuntu）"></a>安装 pyenv-virtualenv（Ubuntu）</h3><p>由于 <code>pyenv-virtualenv</code> 是 <code>pyenv</code> 的一个插件，所以安装之前需要先安装 <code>pyenv</code>。</p>
@@ -443,7 +442,7 @@ pyenv 是个 shell 脚本，能够轻松得实现各个不同版本 python 的�
 <ol>
 <li>克隆 <code>pyenv-virtual</code> 仓库到 <code>plugin</code> 文件夹下。</li>
 <li><p>（可选/重点）添加 <code>pyenv virtualenv-init</code> 到你的 shell 配置文件中，这样进入指定文件夹自动进入虚拟环境，离开文件夹退出虚拟环境。</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ echo &apos;eval &quot;$(pyenv virtualenv-init -)&quot;&apos; &gt;&gt; ~/.bashrc</div></pre></td></tr></table></figure>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ echo &apos;eval &quot;$(pyenv virtualenv-init -)&quot;&apos; &gt;&gt; ~/.bashrc</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>重启 shell。</p>
 </li>
