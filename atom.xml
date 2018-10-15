@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2018-10-12T09:10:20.000Z</updated>
+  <updated>2018-10-15T15:46:22.000Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -14,6 +14,102 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Ansible系列（三）</title>
+    <link href="https://yuanblq.github.io/2018/10/16/Ansible%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%89%EF%BC%89/"/>
+    <id>https://yuanblq.github.io/2018/10/16/Ansible系列（三）/</id>
+    <published>2018-10-16T15:39:45.000Z</published>
+    <updated>2018-10-15T15:46:22.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>前面我们安装并大体了解了 Ansible 的使用，接下来在我们开始学习 Playbook 以及其他好玩的内容之前，先来瞧瞧 <code>ad-hoc</code> 这个命令。</p>
+<a id="more"></a>
+<h3 id="什么是-ad-hoc"><a href="#什么是-ad-hoc" class="headerlink" title="什么是 ad-hoc"></a>什么是 ad-hoc</h3><p><code>ad-hoc</code> 命令和 Python 的 shell 命令差不多，用来快速执行验证一些命令。后面编写的 Playbook 就好像是 Python 的 <code>.py</code> 文件，通过 <code>ad-hoc</code> 就像使用 <code>iPython</code> 一样能帮助我们更好地学习 Playbook。</p>
+<p>之前我们用到的 <code>ansible all -m ping</code> 就是一个 <code>ad-hoc</code> 命令。</p>
+<h3 id="分身数"><a href="#分身数" class="headerlink" title="分身数"></a>分身数</h3><p>在上一篇讲到可以在“清单”文件中定义主机组，一个组里面可能有几个主机，也可能有十几个、几十个。我们执行 <code>ad-hoc</code> 命令的时候 Ansible 能在同一时间同时操作几台主机，在 Ansible 的配置文件中默认定义为 5 个，我们也可以在执行 <code>ad-hoc</code> 命令的时候通过 <code>-f</code> 参数手动指定：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ansible all -m ping -f 10</span><br></pre></td></tr></table></figure>
+<h3 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h3><p>就如 Python 拥有许多内置包一样，Ansible 也有许多内置模块。</p>
+<p>前面我们一直使用的 <code>ping</code> 就是其中的一个模块，下面再介绍几个常用的模块。</p>
+<p>使用 <code>ansible-doc -l</code> 可以查看到 Ansible 有哪些内置的模块，以及这些模块的简介。</p>
+<p>我们在想要实现一个功能的时候可以通过 <code>ansible-doc -l | grep &quot;功能关键字&quot;</code> 来快速搜索。</p>
+<p>找到对应的模块名字之后，我们可以使用 <code>ansible-doc -s ping</code> 来查看详细关于模块的使用方法（示例为查看 ping 模块的具体使用方法）。</p>
+<h4 id="shell"><a href="#shell" class="headerlink" title="shell"></a>shell</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ansible all -m shell -a &apos;echo $PWD&apos;</span><br></pre></td></tr></table></figure>
+<p>上面调用 <code>shell</code> 模块，并通过 <code>-a</code> 参数传入执行 shell 命令时候的参数。</p>
+<p>在传入参数的时候需要注意单引号和双引号的区别：上面使用的单引号里面的 <code>$PWD</code> 是远程主机的环境变量，如果换成双引号则 <code>$PWD</code> 使用的是当前执行 Ansible 命令的主机的环境变量。</p>
+<p>还记得我们之前说的，Ansible 具有“幂等性”的特征吗。到目前为止，我们一直在使用简单的命令。但是大多数的 Ansible 模块并不是简单的执行命令，它们能在执行命令前计算出最终的状态，然后判断到底需不需要执行我们传进来的命令。</p>
+<h4 id="文件传输"><a href="#文件传输" class="headerlink" title="文件传输"></a>文件传输</h4><h5 id="copy"><a href="#copy" class="headerlink" title="copy"></a>copy</h5><p>我们先通过 <code>ansible-doc -s copy</code> 看看有哪些常用操作：</p>
+<ul>
+<li>src：本地需要复制到远程主机的文件或目录，可以是绝对路径，也可以是相对路径。<ul>
+<li>指定的路径是文件：没话说，直接复制该文件</li>
+<li>指定的路径是文件夹：如果不是以“/”结尾，那就是把该文件夹整个复制，如果是以“/”结尾，则是把文件夹里面的内容复制到远程主机。</li>
+</ul>
+</li>
+<li>dest：复制到远程主机的哪个路径。<ul>
+<li>如果“src”是一个文件夹，“dest”也必须是个文件夹。</li>
+<li>如果指定的“src”路径不存在并且“dest”以“/”结尾或者“src”是个文件夹，“dest”会以 <code>mkdir -p</code> 的形式创建。</li>
+<li>如果“src”和“dest”都是文件，那么“dest”路径不存在则会执行失败。</li>
+</ul>
+</li>
+<li>force：默认“yes”。当文件名一样，但是内容不一样时，是否强制替换。</li>
+<li>backup：当强制替换文件的时候，是否需要备份原文件。</li>
+<li>mode：修改文件或文件夹的权限。对于习惯使用 <code>chmod</code> 的人来说，如果指定数字，则必须使用八进制（如 0644 或 01777 这样的），如果指定字符串，则使用引号（如 ‘644’ 或 ‘1777’ 这样的）。Ansible 1.8版本之后可以使用符号模式（如 u+rwx 或 u=rw,g=r,o=r 这样的）。</li>
+</ul>
+<p>直接把文件复制到远程主机：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ansible all -m copy -a &quot;src=/etc/hosts dest=/tmp/hosts&quot;</span><br></pre></td></tr></table></figure>
+<h5 id="file"><a href="#file" class="headerlink" title="file"></a>file</h5><ul>
+<li>path：需要管理的文件对象</li>
+<li>state：<ul>
+<li>directory：类似 <code>mkdir -p</code></li>
+<li>file：</li>
+<li>link：创建软链接</li>
+<li>hard：创建硬链接</li>
+<li>absent：删除文件或文件夹，解除软硬链接</li>
+<li>touch：如果 path 不存在，则创建一个空文件。如果 path 存在，则更新该文件的权限或者修改时间</li>
+</ul>
+</li>
+<li>src：当 state=link/hard 的时候我们需要指定链接的源文件<ul>
+<li>绝对路径</li>
+<li>相对路径：相对要被创建链接的文件的路径</li>
+<li>空路径</li>
+</ul>
+</li>
+<li>force：作用于创建链接的时候<ul>
+<li>源文件不存在（之后会有）</li>
+<li>目标链接已存在（则会先解除原来的链接，再创建当前新的链接）</li>
+</ul>
+</li>
+<li>mode：和 <code>copy</code> 模块的 mode 一致</li>
+<li>recurse：当操作的目标为文件夹的时候，recurse=yes，可以递归地修改文件夹中文件的属性</li>
+</ul>
+<p>修改权限<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ansible all -m file -a &quot;dest=/srv/foo/a.txt mode=600 owner=haha group=haha&quot;</span><br></pre></td></tr></table></figure></p>
+<p>创建文件夹<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ansible all -m file -a &quot;dest=/path/to/new/dir mode=755 owner=haha group=haha state=directory&quot;</span><br></pre></td></tr></table></figure></p>
+<p>删除文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ansible all -m file -a &quot;dest=/path/to/new/dir state=absent&quot;</span><br></pre></td></tr></table></figure></p>
+<h4 id="git"><a href="#git" class="headerlink" title="git"></a>git</h4><p>当我们部署 webapp 的时候如果是从 git 拉取代码的话，可以使用 git 模块：</p>
+<ul>
+<li>repo：git 仓库地址（必填）</li>
+<li>accept_hostkey：设为 yes，能帮我们自动把 git 服务器添加到 <code>known_hosts</code> 中。</li>
+<li>clone：如果目标路径不存在，则不会 clone 远程仓库（默认 yes）</li>
+<li>dest：把远程仓库 clone 到哪里（除非上面 clone=no，不然必填）</li>
+<li>force：如果设为 yes，会丢掉本地仓库的任何变动</li>
+<li>version：checkout 到哪个分支（也可以是 HEAD，分支名，tag 名，SHA-1 值）</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ansible all -m git -a &quot;repo=https://foo.example/org/repo.git dest=/srv/myapp version=develop accept_hostkey=yes force=yes&quot;</span><br></pre></td></tr></table></figure>
+<p>Ansible 拥有众多模块，暂且不展开讲述了，等用到的时候查下基本就知道怎么用了，多实践才能熟练。</p>
+<p><strong>P.S.</strong> 关注我的公众号，第一时间接收更新提醒。</p>
+<div align="center"><br><img src="https://pages-ncdn-1253600859.cos.ap-shanghai.myqcloud.com/Others/%E5%85%AC%E4%BC%97%E5%8F%B7%E4%BA%8C%E7%BB%B4%E7%A0%81.jpeg" width="320" alt="公众号二维码" align="center/"><br></div>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;前面我们安装并大体了解了 Ansible 的使用，接下来在我们开始学习 Playbook 以及其他好玩的内容之前，先来瞧瞧 &lt;code&gt;ad-hoc&lt;/code&gt; 这个命令。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="工具" scheme="https://yuanblq.github.io/categories/%E5%B7%A5%E5%85%B7/"/>
+    
+    
+      <category term="Ansible" scheme="https://yuanblq.github.io/tags/Ansible/"/>
+    
+  </entry>
   
   <entry>
     <title>Ansible系列（二）</title>
@@ -1818,67 +1914,6 @@ More work --&gt; 3
       &lt;h2 id=&quot;不同线程的事件循环&quot;&gt;&lt;a href=&quot;#不同线程的事件循环&quot; class=&quot;headerlink&quot; title=&quot;不同线程的事件循环&quot;&gt;&lt;/a&gt;不同线程的事件循环&lt;/h2&gt;&lt;p&gt;通过前面的介绍，我们现在能在单线程中实现多协程的工作。&lt;/p&gt;
 &lt;p&gt;这节就说说怎么在多线程中管理协程。&lt;/p&gt;
 &lt;p&gt;对于多线程中的协程操作，我们一般把一个线程当做管理线程，而另一个当做工作线程，其中有多个协程进行不同的 task 操作。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="知识点" scheme="https://yuanblq.github.io/categories/%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
-    
-    
-      <category term="Python" scheme="https://yuanblq.github.io/tags/Python/"/>
-    
-      <category term="异步" scheme="https://yuanblq.github.io/tags/%E5%BC%82%E6%AD%A5/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>影分身术之-asyncio_part3</title>
-    <link href="https://yuanblq.github.io/2017/07/30/asyncio3/"/>
-    <id>https://yuanblq.github.io/2017/07/30/asyncio3/</id>
-    <published>2017-07-30T03:27:31.000Z</published>
-    <updated>2017-09-20T15:36:58.000Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="停止协程"><a href="#停止协程" class="headerlink" title="停止协程"></a>停止协程</h2><p><code>Future</code> 对象有几种状态：</p>
-<ul>
-<li>pending</li>
-<li>running</li>
-<li>done</li>
-<li>cancelled</li>
-</ul>
-<p><code>Future</code> 对象刚创建的时候是 pending 状态，处于调用状态为 running，执行完毕就是 done，如果在执行期间停止事件，则是 cancelled。</p>
-<a id="more"></a>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">now = <span class="keyword">lambda</span>: time.time()</span><br></pre></td></tr></table></figure>
-<h3 id="逐个停止"><a href="#逐个停止" class="headerlink" title="逐个停止"></a>逐个停止</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">do_some_work</span><span class="params">(x)</span>:</span></span><br><span class="line">    print(<span class="string">'Waiting: '</span>, x)</span><br><span class="line">    <span class="keyword">await</span> asyncio.sleep(x)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'work &#123;0&#125; Done after &#123;1&#125;s'</span>.format(x, x)</span><br><span class="line"></span><br><span class="line">coroutine1 = do_some_work(<span class="number">2</span>)</span><br><span class="line">coroutine2 = do_some_work(<span class="number">3</span>)</span><br><span class="line">coroutine3 = do_some_work(<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">tasks = [</span><br><span class="line">    asyncio.ensure_future(coroutine1),</span><br><span class="line">    asyncio.ensure_future(coroutine2),</span><br><span class="line">    asyncio.ensure_future(coroutine3),</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">start = now()</span><br><span class="line"></span><br><span class="line">loop = asyncio.get_event_loop()</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    loop.run_until_complete(asyncio.wait(tasks))</span><br><span class="line"><span class="keyword">except</span> KeyboardInterrupt <span class="keyword">as</span> e:</span><br><span class="line">    print(asyncio.Task.all_tasks())</span><br><span class="line">    <span class="keyword">for</span> task <span class="keyword">in</span> asyncio.Task.all_tasks():</span><br><span class="line">        print(task.cancel())</span><br><span class="line">    loop.stop()</span><br><span class="line">    loop.run_forever()</span><br><span class="line"><span class="keyword">finally</span>:</span><br><span class="line">    loop.close()</span><br><span class="line"></span><br><span class="line">print(<span class="string">'TIME: '</span>, now() - start)</span><br></pre></td></tr></table></figure>
-<pre><code>Waiting:  2
-Waiting:  3
-Waiting:  4
-{&lt;Task pending coro=&lt;do_some_work() running at &lt;ipython-input-2-d349a09958ba&gt;:3&gt; wait_for=&lt;Future pending cb=[Task._wakeup()]&gt; cb=[_wait.&lt;locals&gt;._on_completion() at /home/chy/.pyenv/versions/3.5.3/lib/python3.5/asyncio/tasks.py:422]&gt;, &lt;Task pending coro=&lt;wait() running at /home/chy/.pyenv/versions/3.5.3/lib/python3.5/asyncio/tasks.py:355&gt; wait_for=&lt;Future pending cb=[Task._wakeup()]&gt; cb=[_run_until_complete_cb() at /home/chy/.pyenv/versions/3.5.3/lib/python3.5/asyncio/base_events.py:176]&gt;, &lt;Task pending coro=&lt;do_some_work() running at &lt;ipython-input-2-d349a09958ba&gt;:3&gt; wait_for=&lt;Future pending cb=[Task._wakeup()]&gt; cb=[_wait.&lt;locals&gt;._on_completion() at /home/chy/.pyenv/versions/3.5.3/lib/python3.5/asyncio/tasks.py:422]&gt;, &lt;Task pending coro=&lt;do_some_work() running at &lt;ipython-input-2-d349a09958ba&gt;:3&gt; wait_for=&lt;Future pending cb=[Task._wakeup()]&gt; cb=[_wait.&lt;locals&gt;._on_completion() at /home/chy/.pyenv/versions/3.5.3/lib/python3.5/asyncio/tasks.py:422]&gt;}
-True
-True
-True
-True
-TIME:  1.8798322677612305
-</code></pre><p><code>True</code> 表示取消成功。</p>
-<p>上述方法是逐个 <code>cancel</code>。也可以像之前提到的，把所有的 task 封装在一个函数中，这样，该函数就相当于是最外面的一个 task，那么可以对该函数处理：</p>
-<h3 id="打包停止"><a href="#打包停止" class="headerlink" title="打包停止"></a>打包停止</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">do_some_work</span><span class="params">(x)</span>:</span></span><br><span class="line">    print(<span class="string">'Waiting: '</span>, x)</span><br><span class="line">    <span class="keyword">await</span> asyncio.sleep(x)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'work &#123;0&#125; Done after &#123;1&#125;s'</span>.format(x, x)</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    coroutine1 = do_some_work(<span class="number">2</span>)</span><br><span class="line">    coroutine2 = do_some_work(<span class="number">3</span>)</span><br><span class="line">    coroutine3 = do_some_work(<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">    tasks = [</span><br><span class="line">        asyncio.ensure_future(coroutine1),</span><br><span class="line">        asyncio.ensure_future(coroutine2),</span><br><span class="line">        asyncio.ensure_future(coroutine3),</span><br><span class="line">    ]</span><br><span class="line">    </span><br><span class="line">    dones, pendings = <span class="keyword">await</span> asyncio.wait(tasks)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> task <span class="keyword">in</span> dones:</span><br><span class="line">        print(<span class="string">'Task result: '</span>, task.result())</span><br><span class="line"></span><br><span class="line">start = now()</span><br><span class="line"></span><br><span class="line">loop = asyncio.get_event_loop()</span><br><span class="line"></span><br><span class="line">task = asyncio.ensure_future(main())</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    loop.run_until_complete(task)</span><br><span class="line"><span class="keyword">except</span> KeyboardInterrupt <span class="keyword">as</span> e:</span><br><span class="line">    print(asyncio.Task.all_tasks())</span><br><span class="line">    print(asyncio.gather(*asyncio.Task.all_tasks()).cancel())</span><br><span class="line">    loop.stop()</span><br><span class="line">    loop.run_forever()</span><br><span class="line"><span class="keyword">finally</span>:</span><br><span class="line">    loop.close()</span><br><span class="line">    </span><br><span class="line">print(<span class="string">'TIME: '</span>, now() - start)</span><br></pre></td></tr></table></figure>
-<pre><code>Waiting:  2
-Waiting:  3
-Waiting:  4
-{&lt;Task pending coro=&lt;do_some_work() running at &lt;ipython-input-2-daa7e16e8aa3&gt;:3&gt; wait_for=&lt;Future pending cb=[Task._wakeup()]&gt; cb=[_wait.&lt;locals&gt;._on_completion() at /home/chy/.pyenv/versions/3.5.3/lib/python3.5/asyncio/tasks.py:422]&gt;, &lt;Task pending coro=&lt;main() running at &lt;ipython-input-2-daa7e16e8aa3&gt;:17&gt; wait_for=&lt;Future pending cb=[Task._wakeup()]&gt; cb=[_run_until_complete_cb() at /home/chy/.pyenv/versions/3.5.3/lib/python3.5/asyncio/base_events.py:176]&gt;, &lt;Task pending coro=&lt;do_some_work() running at &lt;ipython-input-2-daa7e16e8aa3&gt;:3&gt; wait_for=&lt;Future pending cb=[Task._wakeup()]&gt; cb=[_wait.&lt;locals&gt;._on_completion() at /home/chy/.pyenv/versions/3.5.3/lib/python3.5/asyncio/tasks.py:422]&gt;, &lt;Task pending coro=&lt;do_some_work() running at &lt;ipython-input-2-daa7e16e8aa3&gt;:3&gt; wait_for=&lt;Future pending cb=[Task._wakeup()]&gt; cb=[_wait.&lt;locals&gt;._on_completion() at /home/chy/.pyenv/versions/3.5.3/lib/python3.5/asyncio/tasks.py:422]&gt;}
-True
-TIME:  0.649970531463623
-</code></pre><p>到目前为止，我们已经能够简单地开启多个协程，管理多个协程，可是，如果一个协程耗时过长，那么整个线程依旧会阻塞，这时我们只有开启多线程或者多进程来实现并行操作。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;停止协程&quot;&gt;&lt;a href=&quot;#停止协程&quot; class=&quot;headerlink&quot; title=&quot;停止协程&quot;&gt;&lt;/a&gt;停止协程&lt;/h2&gt;&lt;p&gt;&lt;code&gt;Future&lt;/code&gt; 对象有几种状态：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;pending&lt;/li&gt;
-&lt;li&gt;running&lt;/li&gt;
-&lt;li&gt;done&lt;/li&gt;
-&lt;li&gt;cancelled&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;code&gt;Future&lt;/code&gt; 对象刚创建的时候是 pending 状态，处于调用状态为 running，执行完毕就是 done，如果在执行期间停止事件，则是 cancelled。&lt;/p&gt;
     
     </summary>
     
