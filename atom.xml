@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2018-10-15T15:54:42.000Z</updated>
+  <updated>2018-10-17T07:34:21.000Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -14,6 +14,49 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>一台机器配置多个Git账号</title>
+    <link href="https://yuanblq.github.io/2018/10/18/%E4%B8%80%E5%8F%B0%E6%9C%BA%E5%99%A8%E9%85%8D%E7%BD%AE%E5%A4%9A%E4%B8%AAGit%E8%B4%A6%E5%8F%B7/"/>
+    <id>https://yuanblq.github.io/2018/10/18/一台机器配置多个Git账号/</id>
+    <published>2018-10-18T07:00:57.000Z</published>
+    <updated>2018-10-17T07:34:21.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>作为一条优秀的程序狗，不单单要完成公司的开发项目，自己也会有几个开发项目。</p>
+<p>不同项目之间如果想使用不同的 Git 账号管理，我们就需要进行如下配置。</p>
+<a id="more"></a>
+<h3 id="生成各自的-SSH-key"><a href="#生成各自的-SSH-key" class="headerlink" title="生成各自的 SSH key"></a>生成各自的 SSH key</h3><p>不同的 Git 账号，区分使用不同的 SSH key。</p>
+<p>生成用户名为 one_git_name 的 SSH key：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-keygen -t rsa -C &quot;one_git_name&quot; -f ~/.ssh/one-key</span><br></pre></td></tr></table></figure></p>
+<p>生成用户名为 another_git_name 的 SSH key：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-keygen -t rsa -C &quot;another_git_name&quot; -f ~/.ssh/another-key</span><br></pre></td></tr></table></figure></p>
+<h3 id="配置对应的-SSH-key"><a href="#配置对应的-SSH-key" class="headerlink" title="配置对应的 SSH key"></a>配置对应的 SSH key</h3><p>生成了不同的 SSH key 之后，来为不同的账号配置对应的 SSH key。</p>
+<p>在 <code>~/.ssh</code> 目录下，新建 <code>config</code> 文件，在其中进行如下配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Host host-alias1（以后不同 Git 账号连接远程服务器时使用的别名，详见下面示例）</span><br><span class="line">    HostName github.com（对应 Git 服务提供商的域名）</span><br><span class="line">    User 登录用户名</span><br><span class="line">    Port 默认22，可不填（open-ssh 端口）</span><br><span class="line">    IdentityFile 私钥地址（例如：~/.ssh/one-key）</span><br><span class="line"></span><br><span class="line">Host host-alias2（以后不同 Git 账号连接远程服务器时使用的别名，详见下面示例）</span><br><span class="line">    HostName github.com（对应 Git 服务提供商的域名）</span><br><span class="line">    User 登录用户名</span><br><span class="line">    Port 默认22，可不填（open-ssh 端口）</span><br><span class="line">    IdentityFile 私钥地址（例如：~/.ssh/another-key）</span><br></pre></td></tr></table></figure>
+<h3 id="测试是否连通"><a href="#测试是否连通" class="headerlink" title="测试是否连通"></a>测试是否连通</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh -T git@host-alias1（上面配置的 Git 远程服务商别名）</span><br></pre></td></tr></table></figure>
+<p>如果成功会有对应的提示，也可以 <code>ssh -vT git@host-alias1</code> 打出具体的 debug 信息，方便出错以后的调试。</p>
+<h3 id="配置本地-Git-账号"><a href="#配置本地-Git-账号" class="headerlink" title="配置本地 Git 账号"></a>配置本地 Git 账号</h3><p>本地操作 Git 仓库的时候需要指定一个 Git 账号，可以配置一个全局的账号：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.email &quot;email@xx.com&quot;</span><br><span class="line">git config --global user.name &quot;username&quot;</span><br></pre></td></tr></table></figure>
+<p>也可以在不同的项目仓库配置不同的 Git 账号：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 先进入对应的 Git 仓库文件夹中</span><br><span class="line"></span><br><span class="line">git config user.email &quot;email@xx.com&quot;</span><br><span class="line">git config user.name &quot;username&quot;</span><br></pre></td></tr></table></figure></p>
+<p>当然也可以直接修改不同 Git 仓库根目录下的 <code>.git/config</code> 文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"># 注意 [remote &quot;origin&quot;] 中的 url 这项配置</span><br><span class="line"># [user] 就是上面在项目仓库目录下的 git config user.email/name 配置，这里我们不使用命令而是直接手动写入文件</span><br><span class="line">[core]</span><br><span class="line">        repositoryformatversion = 0</span><br><span class="line">        filemode = true</span><br><span class="line">        bare = false</span><br><span class="line">        logallrefupdates = true</span><br><span class="line">        ignorecase = true</span><br><span class="line">        precomposeunicode = true</span><br><span class="line">[remote &quot;origin&quot;]</span><br><span class="line">        url = git@host-alias1（就是之前我们在 .ssh/config 中配置不同 Git远程服务的别名）:项目.git</span><br><span class="line">        fetch = +refs/heads/*:refs/remotes/origin/*</span><br><span class="line">[branch &quot;develop&quot;]</span><br><span class="line">        remote = origin</span><br><span class="line">        merge = refs/heads/develop</span><br><span class="line">[user]</span><br><span class="line">        email = email@xxx.com</span><br><span class="line">        name = username</span><br></pre></td></tr></table></figure>
+<p>OK，配置完毕，继续 coding …</p>
+<p><strong>P.S.</strong> 关注我的公众号，第一时间接收更新提醒。</p>
+<div align="center"><br><img src="https://pages-ncdn-1253600859.cos.ap-shanghai.myqcloud.com/Others/%E5%85%AC%E4%BC%97%E5%8F%B7%E4%BA%8C%E7%BB%B4%E7%A0%81.jpeg" width="320" alt="公众号二维码" align="center/"><br></div>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;作为一条优秀的程序狗，不单单要完成公司的开发项目，自己也会有几个开发项目。&lt;/p&gt;
+&lt;p&gt;不同项目之间如果想使用不同的 Git 账号管理，我们就需要进行如下配置。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="工具" scheme="https://yuanblq.github.io/categories/%E5%B7%A5%E5%85%B7/"/>
+    
+      <category term="文档" scheme="https://yuanblq.github.io/categories/%E5%B7%A5%E5%85%B7/%E6%96%87%E6%A1%A3/"/>
+    
+    
+      <category term="Git" scheme="https://yuanblq.github.io/tags/Git/"/>
+    
+  </entry>
   
   <entry>
     <title>Ansible系列（三）</title>
@@ -1877,52 +1920,6 @@ RuntimeError:
       <category term="Django" scheme="https://yuanblq.github.io/tags/Django/"/>
     
       <category term="WebSocket" scheme="https://yuanblq.github.io/tags/WebSocket/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>影分身术之-asyncio_part4</title>
-    <link href="https://yuanblq.github.io/2017/07/31/asyncio4/"/>
-    <id>https://yuanblq.github.io/2017/07/31/asyncio4/</id>
-    <published>2017-07-31T07:08:14.000Z</published>
-    <updated>2017-09-20T15:36:58.000Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="不同线程的事件循环"><a href="#不同线程的事件循环" class="headerlink" title="不同线程的事件循环"></a>不同线程的事件循环</h2><p>通过前面的介绍，我们现在能在单线程中实现多协程的工作。</p>
-<p>这节就说说怎么在多线程中管理协程。</p>
-<p>对于多线程中的协程操作，我们一般把一个线程当做管理线程，而另一个当做工作线程，其中有多个协程进行不同的 task 操作。</p>
-<a id="more"></a>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">now = <span class="keyword">lambda</span>: time.time()</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">start_loop</span><span class="params">(loop)</span>:</span></span><br><span class="line">    asyncio.set_event_loop(loop)</span><br><span class="line">    loop.run_forever()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">more_work</span><span class="params">(x)</span>:</span></span><br><span class="line">    print(<span class="string">'More work start --&gt; &#123;&#125;'</span>.format(x))</span><br><span class="line">    time.sleep(x)</span><br><span class="line">    print(<span class="string">'Finished more work &#123;&#125;'</span>.format(x))</span><br><span class="line"></span><br><span class="line">start = now()</span><br><span class="line"></span><br><span class="line">new_loop = asyncio.new_event_loop()</span><br><span class="line"></span><br><span class="line">t = Thread(target=start_loop, args=(new_loop,))</span><br><span class="line">t.start()</span><br><span class="line"></span><br><span class="line">new_loop.call_soon_threadsafe(more_work, <span class="number">6</span>)</span><br><span class="line">new_loop.call_soon_threadsafe(more_work, <span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">print(<span class="string">'TIME: &#123;&#125;'</span>.format(now() - start))</span><br></pre></td></tr></table></figure>
-<pre><code>TIME: 0.0023021697998046875
-More work start --&gt; 6
-Finished more work 6
-More work start --&gt; 3
-Finished more work 3
-</code></pre><p>可见，当前线程不会阻塞。新的线程会按顺序执行 <code>call_soon_threadsafe()</code> 方法中注册的函数，因为注册的方法不是协程，所以新开的线程大概会执行 6+3 s。</p>
-<p>那么，多线程实现协程的过程大致也是这样：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">start_loop</span><span class="params">(loop)</span>:</span></span><br><span class="line">    asyncio.set_event_loop(loop)</span><br><span class="line">    loop.run_forever()</span><br><span class="line">    </span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">do_some_work</span><span class="params">(x)</span>:</span></span><br><span class="line">    print(<span class="string">'More work --&gt; &#123;&#125;'</span>.format(x))</span><br><span class="line">    <span class="keyword">await</span> asyncio.sleep(x)</span><br><span class="line">    print(<span class="string">'&#123;&#125; Done after &#123;&#125;s'</span>.format(x, x))</span><br><span class="line"></span><br><span class="line">start = now()</span><br><span class="line"></span><br><span class="line">new_loop = asyncio.new_event_loop()</span><br><span class="line"></span><br><span class="line">t = Thread(target=start_loop, args=(new_loop,))</span><br><span class="line">t.start()</span><br><span class="line"></span><br><span class="line">asyncio.run_coroutine_threadsafe(do_some_work(<span class="number">6</span>), new_loop)</span><br><span class="line">asyncio.run_coroutine_threadsafe(do_some_work(<span class="number">3</span>), new_loop)</span><br><span class="line"></span><br><span class="line">print(<span class="string">'TIME: '</span>, now() - start)</span><br></pre></td></tr></table></figure>
-<pre><code>TIME:  0.0006730556488037109
-More work --&gt; 6
-More work --&gt; 3
-3 Done after 3s
-6 Done after 6s
-</code></pre><p>由于我们在子线程开启的是协程任务，所以子线程大概耗时 6s。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;不同线程的事件循环&quot;&gt;&lt;a href=&quot;#不同线程的事件循环&quot; class=&quot;headerlink&quot; title=&quot;不同线程的事件循环&quot;&gt;&lt;/a&gt;不同线程的事件循环&lt;/h2&gt;&lt;p&gt;通过前面的介绍，我们现在能在单线程中实现多协程的工作。&lt;/p&gt;
-&lt;p&gt;这节就说说怎么在多线程中管理协程。&lt;/p&gt;
-&lt;p&gt;对于多线程中的协程操作，我们一般把一个线程当做管理线程，而另一个当做工作线程，其中有多个协程进行不同的 task 操作。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="知识点" scheme="https://yuanblq.github.io/categories/%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
-    
-    
-      <category term="Python" scheme="https://yuanblq.github.io/tags/Python/"/>
-    
-      <category term="异步" scheme="https://yuanblq.github.io/tags/%E5%BC%82%E6%AD%A5/"/>
     
   </entry>
   
