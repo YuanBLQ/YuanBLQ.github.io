@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2018-10-24T12:58:39.000Z</updated>
+  <updated>2018-10-24T13:16:59.000Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="https://yuanblq.github.io/2018/10/24/Ansible%E7%B3%BB%E5%88%97%EF%BC%88%E5%9B%9B%EF%BC%89/"/>
     <id>https://yuanblq.github.io/2018/10/24/Ansible系列（四）/</id>
     <published>2018-10-24T04:56:35.000Z</published>
-    <updated>2018-10-24T12:58:39.000Z</updated>
+    <updated>2018-10-24T13:16:59.000Z</updated>
     
     <content type="html"><![CDATA[<p>如果说前面讲过的模块是雕刻工具，那么 Playbook 就是一份说明书，而清单中的主机就是原材料。</p>
 <p>这三者联合起来，就能像流水线一样批量把清单中的主机改造成说明书里描述的样子。</p>
@@ -28,12 +28,25 @@
 <h3 id="单口相声"><a href="#单口相声" class="headerlink" title="单口相声"></a>单口相声</h3><p>Playbook 顾名思义就是“剧本”，而剧本就是由一幕幕的戏剧构成。在每一幕剧中，清单中的主机充当各种主角，演绎剧本中的各种桥段。</p>
 <p>我们来看一段只有一出戏的剧本：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 01-playbook.yml</span><br><span class="line">---</span><br><span class="line">- hosts: host01</span><br><span class="line">  remote_user: root</span><br><span class="line">  tasks:</span><br><span class="line">  - name: ping the remote host</span><br><span class="line">    ping:</span><br><span class="line">  - name: copy local file to remote</span><br><span class="line">    copy:</span><br><span class="line">      src: /etc/hosts</span><br><span class="line">      dest: /tmp/hosts</span><br></pre></td></tr></table></figure>
-<p>这份剧本里面只有一出戏（两个动作：ping、copy），然后导演这出戏：</p>
+<p>这份剧本解说：</p>
+<ul>
+<li>hosts：出演角色，可以一个人也可以一组人（对应清单中记录的姓名）。</li>
+<li>remote_user：出道的艺名（以哪个用户身份登录远程主机）。</li>
+<li>tasks：有哪些戏码。<ul>
+<li>name：该戏码的名称。</li>
+<li><code>ping</code>/<code>copy</code> 道具（使用的模块名字）。<ul>
+<li><code>src</code>/<code>dest</code> 道具使用方式（模块参数）。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>然后导演这出戏：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ansible-playbook 01-playbook.yml</span><br></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">PLAY [host01] ******************************************************************************************************</span><br><span class="line"></span><br><span class="line">TASK [Gathering Facts] *********************************************************************************************</span><br><span class="line">ok: [host01]</span><br><span class="line"></span><br><span class="line">TASK [ping the remote host] ****************************************************************************************</span><br><span class="line">ok: [host01]</span><br><span class="line"></span><br><span class="line">TASK [copy local file to remote] ***********************************************************************************</span><br><span class="line">changed: [host01]</span><br><span class="line"></span><br><span class="line">PLAY RECAP *********************************************************************************************************</span><br><span class="line">host01                        : ok=3    changed=1    unreachable=0    failed=0</span><br></pre></td></tr></table></figure>
 <p>执行结果如上所示：<br><code>PLAY [host01]</code> 表示这出戏的主角是 <code>host01</code> 这位。</p>
 <p><code>TASK [...]</code> 这个则是这出戏中主角的一系列演出动作，<code>TASK [Gathering Facts]</code> 这个动作则是每出戏都必备的，用来搜集主角当前的各种状态，之前不是说过 Ansible 自带“幂等性”功能嘛，这个准备工作也是在这步搜集信息的。其他两个 <code>TASK</code> 则是我们在剧本中指定的。</p>
-<p><code>PLAY RECAP</code> 是这出戏表演完之后的“评分”。</p>
+<p><code>PLAY RECAP</code> 是观众对这出戏表演完之后的“评价”。</p>
 <h3 id="对口相声"><a href="#对口相声" class="headerlink" title="对口相声"></a>对口相声</h3><p>我们现在再来增加一位角色：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># 02-playbook.yml</span><br><span class="line">---</span><br><span class="line">- hosts: host01</span><br><span class="line">  remote_user: root</span><br><span class="line">  tasks:</span><br><span class="line">  - name: ping the remote host</span><br><span class="line">    ping:</span><br><span class="line"></span><br><span class="line">- hosts: host02</span><br><span class="line">  remote_user: root</span><br><span class="line">  tasks:</span><br><span class="line">  - name: copy local file to remote</span><br><span class="line">    copy:</span><br><span class="line">      src: /etc/hosts</span><br><span class="line">      dest: /tmp/hosts</span><br></pre></td></tr></table></figure>
 <p>开导，<code>ansible-playbook 02-playbook.yml</code>：</p>
