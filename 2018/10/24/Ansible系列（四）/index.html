@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Python," />
+  <meta name="keywords" content="Ansible," />
 
 
 
@@ -89,18 +89,20 @@
 
 
 
-<meta name="description" content="前面已经创建了 Django 的视图，但还没有数据。由于我们使用的是 Django，所以我们不必担心自己不会使用 SQL 语言。Django 内置了众多 API 帮助我们处理数据库。">
-<meta name="keywords" content="Python">
+<meta name="description" content="如果说前面讲过的模块是雕刻工具，那么 Playbook 就是一份说明书，而清单中的主机就是原材料。 这三者联合起来，就能像流水线一样批量把清单中的主机改造成说明书里描述的样子。">
+<meta name="keywords" content="Ansible">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Django创建数据模型">
-<meta property="og:url" content="https://yuanblq.github.io/2017/03/10/Django创建数据模型/index.html">
+<meta property="og:title" content="Ansible系列（四）">
+<meta property="og:url" content="https://yuanblq.github.io/2018/10/24/Ansible系列（四）/index.html">
 <meta property="og:site_name" content="Yuan">
-<meta property="og:description" content="前面已经创建了 Django 的视图，但还没有数据。由于我们使用的是 Django，所以我们不必担心自己不会使用 SQL 语言。Django 内置了众多 API 帮助我们处理数据库。">
+<meta property="og:description" content="如果说前面讲过的模块是雕刻工具，那么 Playbook 就是一份说明书，而清单中的主机就是原材料。 这三者联合起来，就能像流水线一样批量把清单中的主机改造成说明书里描述的样子。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-09-20T15:36:58.000Z">
+<meta property="og:image" content="https://pages-ncdn-1253600859.cos.ap-shanghai.myqcloud.com/Others/%E5%85%AC%E4%BC%97%E5%8F%B7%E4%BA%8C%E7%BB%B4%E7%A0%81.jpeg">
+<meta property="og:updated_time" content="2018-10-24T12:58:39.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Django创建数据模型">
-<meta name="twitter:description" content="前面已经创建了 Django 的视图，但还没有数据。由于我们使用的是 Django，所以我们不必担心自己不会使用 SQL 语言。Django 内置了众多 API 帮助我们处理数据库。">
+<meta name="twitter:title" content="Ansible系列（四）">
+<meta name="twitter:description" content="如果说前面讲过的模块是雕刻工具，那么 Playbook 就是一份说明书，而清单中的主机就是原材料。 这三者联合起来，就能像流水线一样批量把清单中的主机改造成说明书里描述的样子。">
+<meta name="twitter:image" content="https://pages-ncdn-1253600859.cos.ap-shanghai.myqcloud.com/Others/%E5%85%AC%E4%BC%97%E5%8F%B7%E4%BA%8C%E7%BB%B4%E7%A0%81.jpeg">
 
 
 
@@ -128,13 +130,13 @@
 
 
 
-  <link rel="canonical" href="https://yuanblq.github.io/2017/03/10/Django创建数据模型/"/>
+  <link rel="canonical" href="https://yuanblq.github.io/2018/10/24/Ansible系列（四）/"/>
 
 
 
 
 
-  <title> Django创建数据模型 | Yuan </title>
+  <title> Ansible系列（四） | Yuan </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -282,7 +284,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://yuanblq.github.io/2017/03/10/Django创建数据模型/">
+    <link itemprop="mainEntityOfPage" href="https://yuanblq.github.io/2018/10/24/Ansible系列（四）/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Yuan">
@@ -303,7 +305,7 @@
             
             
               
-                Django创建数据模型
+                Ansible系列（四）
               
             
           </h1>
@@ -318,8 +320,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-10T22:43:18+08:00">
-                2017-03-10
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-24T12:56:35+08:00">
+                2018-10-24
               </time>
             
 
@@ -341,8 +343,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Django/" itemprop="url" rel="index">
-                    <span itemprop="name">Django</span>
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
                   </a>
                 </span>
 
@@ -358,7 +360,7 @@
 
           
           
-             <span id="/2017/03/10/Django创建数据模型/" class="leancloud_visitors" data-flag-title="Django创建数据模型">
+             <span id="/2018/10/24/Ansible系列（四）/" class="leancloud_visitors" data-flag-title="Ansible系列（四）">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -387,12 +389,26 @@
       
 
       
-        <p>前面已经创建了 Django 的视图，但还没有数据。由于我们使用的是 Django，所以我们不必担心自己不会使用 SQL 语言。Django 内置了众多 API 帮助我们处理数据库。</p>
+        <p>如果说前面讲过的模块是雕刻工具，那么 Playbook 就是一份说明书，而清单中的主机就是原材料。</p>
+<p>这三者联合起来，就能像流水线一样批量把清单中的主机改造成说明书里描述的样子。</p>
 <a id="more"></a>
-<h2 id="我们只需在-model-py-中创建数据模型即可。"><a href="#我们只需在-model-py-中创建数据模型即可。" class="headerlink" title="我们只需在 model.py 中创建数据模型即可。"></a>我们只需在 <code>model.py</code> 中创建数据模型即可。</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Question</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    question_text = models.CharField(max_length=<span class="number">200</span>)</span><br><span class="line">    pub_date = models.DateTimeField(verbose_name=<span class="string">'date published'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.question_text</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Choice</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    <span class="comment"># 通过ForeignKey告诉Django每个Choice关联一个Question</span></span><br><span class="line">    question = models.ForeignKey(Question, on_delete=models.CASCADE)</span><br><span class="line">    choice_text = models.CharField(max_length=<span class="number">200</span>)</span><br><span class="line">    votes = models.IntegerField(default=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.choice_text</span><br></pre></td></tr></table></figure>
-<h2 id="通过以下命令创建迁移文件"><a href="#通过以下命令创建迁移文件" class="headerlink" title="通过以下命令创建迁移文件"></a>通过以下命令创建迁移文件</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py makemigrations polls</span><br></pre></td></tr></table></figure>
-<h2 id="更新数据库"><a href="#更新数据库" class="headerlink" title="更新数据库"></a>更新数据库</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py migrate</span><br></pre></td></tr></table></figure>
-<h2 id="以下是-Django-内置的一些数据库-API"><a href="#以下是-Django-内置的一些数据库-API" class="headerlink" title="以下是 Django 内置的一些数据库 API"></a>以下是 Django 内置的一些数据库 API</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#--------------------一般API---------------------</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>Question.objects.all()    <span class="comment">#所有Question实例的set集</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>q = Question(question_text=<span class="string">"xxx"</span>, pub_date=timezone.now())    <span class="comment">#创建Question实例</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>q.save()    <span class="comment">#保存实例</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>q.question_text    q.pub_date    q.id     <span class="comment">#调用实例的一些属性</span></span><br><span class="line"><span class="comment">#---------------------查找API---------------------</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>Question.objects.filter(id = <span class="number">1</span>)   <span class="comment">#根据id查找</span></span><br><span class="line">filter(question_text__startswith = <span class="string">"xxx"</span>)    <span class="comment">#通过某些关系函数查找</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>Question.objects.get(pub_date__year = current_year)     <span class="comment">#通过get查找具体实例</span></span><br><span class="line">get(pk = <span class="number">1</span>)    <span class="comment">#通过键值查找</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>q.choice_set.all()    <span class="comment">#返回与当前question实例相关的所有choice的set集</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>c = q.choice_set.create(choice_text=<span class="string">"xxx"</span>, vote=<span class="number">0</span>)    <span class="comment">#为当前question实例的choice集创建一个实例</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>c.question     <span class="comment">#返回与当前choice相关的question实例</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>c.delete()    <span class="comment">#删除当前实例，同时id和pk值也会删掉</span></span><br></pre></td></tr></table></figure>
+<h3 id="单口相声"><a href="#单口相声" class="headerlink" title="单口相声"></a>单口相声</h3><p>Playbook 顾名思义就是“剧本”，而剧本就是由一幕幕的戏剧构成。在每一幕剧中，清单中的主机充当各种主角，演绎剧本中的各种桥段。</p>
+<p>我们来看一段只有一出戏的剧本：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 01-playbook.yml</span><br><span class="line">---</span><br><span class="line">- hosts: host01</span><br><span class="line">  remote_user: root</span><br><span class="line">  tasks:</span><br><span class="line">  - name: ping the remote host</span><br><span class="line">    ping:</span><br><span class="line">  - name: copy local file to remote</span><br><span class="line">    copy:</span><br><span class="line">      src: /etc/hosts</span><br><span class="line">      dest: /tmp/hosts</span><br></pre></td></tr></table></figure>
+<p>这份剧本里面只有一出戏（两个动作：ping、copy），然后导演这出戏：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ansible-playbook 01-playbook.yml</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">PLAY [host01] ******************************************************************************************************</span><br><span class="line"></span><br><span class="line">TASK [Gathering Facts] *********************************************************************************************</span><br><span class="line">ok: [host01]</span><br><span class="line"></span><br><span class="line">TASK [ping the remote host] ****************************************************************************************</span><br><span class="line">ok: [host01]</span><br><span class="line"></span><br><span class="line">TASK [copy local file to remote] ***********************************************************************************</span><br><span class="line">changed: [host01]</span><br><span class="line"></span><br><span class="line">PLAY RECAP *********************************************************************************************************</span><br><span class="line">host01                        : ok=3    changed=1    unreachable=0    failed=0</span><br></pre></td></tr></table></figure>
+<p>执行结果如上所示：<br><code>PLAY [host01]</code> 表示这出戏的主角是 <code>host01</code> 这位。</p>
+<p><code>TASK [...]</code> 这个则是这出戏中主角的一系列演出动作，<code>TASK [Gathering Facts]</code> 这个动作则是每出戏都必备的，用来搜集主角当前的各种状态，之前不是说过 Ansible 自带“幂等性”功能嘛，这个准备工作也是在这步搜集信息的。其他两个 <code>TASK</code> 则是我们在剧本中指定的。</p>
+<p><code>PLAY RECAP</code> 是这出戏表演完之后的“评分”。</p>
+<h3 id="对口相声"><a href="#对口相声" class="headerlink" title="对口相声"></a>对口相声</h3><p>我们现在再来增加一位角色：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># 02-playbook.yml</span><br><span class="line">---</span><br><span class="line">- hosts: host01</span><br><span class="line">  remote_user: root</span><br><span class="line">  tasks:</span><br><span class="line">  - name: ping the remote host</span><br><span class="line">    ping:</span><br><span class="line"></span><br><span class="line">- hosts: host02</span><br><span class="line">  remote_user: root</span><br><span class="line">  tasks:</span><br><span class="line">  - name: copy local file to remote</span><br><span class="line">    copy:</span><br><span class="line">      src: /etc/hosts</span><br><span class="line">      dest: /tmp/hosts</span><br></pre></td></tr></table></figure>
+<p>开导，<code>ansible-playbook 02-playbook.yml</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">PLAY [host01] ******************************************************************************************************</span><br><span class="line"></span><br><span class="line">TASK [Gathering Facts] *********************************************************************************************</span><br><span class="line">ok: [host01]</span><br><span class="line"></span><br><span class="line">TASK [ping the remote host] ****************************************************************************************</span><br><span class="line">ok: [host01]</span><br><span class="line"></span><br><span class="line">PLAY [host02] ******************************************************************************************************</span><br><span class="line"></span><br><span class="line">TASK [Gathering Facts] *********************************************************************************************</span><br><span class="line">ok: [host02]</span><br><span class="line"></span><br><span class="line">TASK [copy local file to remote] ***********************************************************************************</span><br><span class="line">changed: [host02]</span><br><span class="line"></span><br><span class="line">PLAY RECAP *********************************************************************************************************</span><br><span class="line">host02                    : ok=2    changed=1    unreachable=0    failed=0</span><br><span class="line">host01                    : ok=2    changed=0    unreachable=0    failed=0</span><br></pre></td></tr></table></figure>
+<p>哈哈，导演一部两个人的剧也并不是很难嘛！</p>
+<p>Playbook 的基本概念也就这么简单，无非就是看你导演的水平如何，能否导出一手好戏。</p>
+<p><strong>P.S.</strong> 关注我的公众号，第一时间接收更新提醒。</p>
+<div align="center"><br><img src="https://pages-ncdn-1253600859.cos.ap-shanghai.myqcloud.com/Others/%E5%85%AC%E4%BC%97%E5%8F%B7%E4%BA%8C%E7%BB%B4%E7%A0%81.jpeg" width="320" alt="公众号二维码" align="center/"><br></div>
       
     </div>
 
@@ -421,7 +437,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Python/" rel="tag"># Python</a>
+            <a href="/tags/Ansible/" rel="tag"># Ansible</a>
           
         </div>
       
@@ -434,8 +450,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/02/26/sina新闻爬虫/" rel="next" title="sina新闻爬虫">
-                <i class="fa fa-chevron-left"></i> sina新闻爬虫
+              <a href="/2018/10/18/一台机器配置多个Git账号/" rel="next" title="一台机器配置多个Git账号">
+                <i class="fa fa-chevron-left"></i> 一台机器配置多个Git账号
               </a>
             
           </div>
@@ -443,10 +459,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/03/22/Django提交表单/" rel="prev" title="Django提交表单以及类视图">
-                Django提交表单以及类视图 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -595,7 +607,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#我们只需在-model-py-中创建数据模型即可。"><span class="nav-number">1.</span> <span class="nav-text">我们只需在 model.py 中创建数据模型即可。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过以下命令创建迁移文件"><span class="nav-number">2.</span> <span class="nav-text">通过以下命令创建迁移文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更新数据库"><span class="nav-number">3.</span> <span class="nav-text">更新数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#以下是-Django-内置的一些数据库-API"><span class="nav-number">4.</span> <span class="nav-text">以下是 Django 内置的一些数据库 API</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#单口相声"><span class="nav-number">1.</span> <span class="nav-text">单口相声</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对口相声"><span class="nav-number">2.</span> <span class="nav-text">对口相声</span></a></li></ol></div>
             
 
           </div>
