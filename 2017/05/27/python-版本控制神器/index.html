@@ -97,7 +97,7 @@
 <meta property="og:site_name" content="Yuan">
 <meta property="og:description" content="由于 python 拥有众多的版本，以及不同模块也有不同的版本。如果每个版本之间相互都不兼容那也就无所谓什么版本控制了，可是同一机器上各个版本的 python 可以相互兼容并存，而且同一模块不同版本有时需要的 python 版本是不相同的，所以 python 的版本控制显得尤为重要。 pyenv 是个 shell 脚本，能够轻松得实现各个不同版本 python 的相互间切换，而且各个版本的 pyt">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-09-20T15:36:58.000Z">
+<meta property="og:updated_time" content="2018-11-07T08:32:31.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python 版本控制神器">
 <meta name="twitter:description" content="由于 python 拥有众多的版本，以及不同模块也有不同的版本。如果每个版本之间相互都不兼容那也就无所谓什么版本控制了，可是同一机器上各个版本的 python 可以相互兼容并存，而且同一模块不同版本有时需要的 python 版本是不相同的，所以 python 的版本控制显得尤为重要。 pyenv 是个 shell 脚本，能够轻松得实现各个不同版本 python 的相互间切换，而且各个版本的 pyt">
@@ -440,7 +440,9 @@
 <p><strong>注意：</strong>如果 <code>pyenv</code> 的安装目录不是 <code>$HOME/.pyenv</code> 需要确保克隆下来的仓库位于你所安装的 <code>pyenv</code> 目录下的 <code>plugin</code> 文件夹下。</p>
 <p>接下来就可以执行安装步骤了：</p>
 <ol>
-<li>克隆 <code>pyenv-virtual</code> 仓库到 <code>plugin</code> 文件夹下。</li>
+<li><p>克隆 <code>pyenv-virtual</code> 仓库到 <code>plugin</code> 文件夹下。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>（可选/重点）添加 <code>pyenv virtualenv-init</code> 到你的 shell 配置文件中，这样进入指定文件夹自动进入虚拟环境，离开文件夹退出虚拟环境。</p>
  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ echo &apos;eval &quot;$(pyenv virtualenv-init -)&quot;&apos; &gt;&gt; ~/.bashrc</span><br></pre></td></tr></table></figure>
 </li>
@@ -601,7 +603,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">47</span>
+                <span class="site-state-item-count">48</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -623,7 +625,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">22</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
