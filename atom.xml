@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2018-11-25T06:39:35.000Z</updated>
+  <updated>2018-11-25T06:55:17.000Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="https://yuanblq.github.io/2018/11/25/Pandas%EF%BC%88%E5%9B%9B%EF%BC%89/"/>
     <id>https://yuanblq.github.io/2018/11/25/Pandas（四）/</id>
     <published>2018-11-25T06:36:44.000Z</published>
-    <updated>2018-11-25T06:39:35.000Z</updated>
+    <updated>2018-11-25T06:55:17.000Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>Pandas 学习系列（四）</p>
@@ -28,10 +28,68 @@
 <a id="more"></a>
 <h2 id="数据处理兼容性"><a href="#数据处理兼容性" class="headerlink" title="数据处理兼容性"></a>数据处理兼容性</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入相关库</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">index = pd.Index(data=[<span class="string">"Tom"</span>, <span class="string">"Bob"</span>, <span class="string">"Mary"</span>, <span class="string">"James"</span>, <span class="string">"Andy"</span>, <span class="string">"Alice"</span>], name=<span class="string">"name"</span>)</span><br><span class="line"></span><br><span class="line">data = &#123;</span><br><span class="line">    <span class="string">"age"</span>: [<span class="number">18</span>, <span class="number">30</span>, np.nan, <span class="number">40</span>, np.nan, <span class="number">30</span>],</span><br><span class="line">    <span class="string">"city"</span>: [<span class="string">"Bei Jing "</span>, <span class="string">"Shang Hai "</span>, <span class="string">"Guang Zhou"</span>, <span class="string">"Shen Zhen"</span>, np.nan, <span class="string">" "</span>],</span><br><span class="line">    <span class="string">"sex"</span>: [<span class="keyword">None</span>, <span class="string">"male"</span>, <span class="string">"female"</span>, <span class="string">"male"</span>, np.nan, <span class="string">"unknown"</span>],</span><br><span class="line">    <span class="string">"birth"</span>: [<span class="string">"2000-02-10"</span>, <span class="string">"1988-10-17"</span>, <span class="keyword">None</span>, <span class="string">"1978-08-08"</span>, np.nan, <span class="string">"1988-10-17"</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">user_info = pd.DataFrame(data=data, index=index)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将出生日期转为时间戳</span></span><br><span class="line">user_info[<span class="string">"birth"</span>] = pd.to_datetime(user_info.birth)</span><br><span class="line">user_info</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>      <th>sex</th><br>      <th>birth</th><br>    </tr><br>    <tr><br>      <th>name</th><br>      <th></th><br>      <th></th><br>      <th></th><br>      <th></th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Tom</th><br>      <td>18.0</td><br>      <td>Bei Jing</td><br>      <td>None</td><br>      <td>2000-02-10</td><br>    </tr><br>    <tr><br>      <th>Bob</th><br>      <td>30.0</td><br>      <td>Shang Hai</td><br>      <td>male</td><br>      <td>1988-10-17</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <td>NaN</td><br>      <td>Guang Zhou</td><br>      <td>female</td><br>      <td>NaT</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <td>40.0</td><br>      <td>Shen Zhen</td><br>      <td>male</td><br>      <td>1978-08-08</td><br>    </tr><br>    <tr><br>      <th>Andy</th><br>      <td>NaN</td><br>      <td>NaN</td><br>      <td>NaN</td><br>      <td>NaT</td><br>    </tr><br>    <tr><br>      <th>Alice</th><br>      <td>30.0</td><br>      <td></td><br>      <td>unknown</td><br>      <td>1988-10-17</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+<th style="text-align:center">sex</th>
+<th style="text-align:center">birth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">name</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">18.0</td>
+<td style="text-align:center">Bei Jing</td>
+<td style="text-align:center">None</td>
+<td style="text-align:center">2000-02-10</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">30.0</td>
+<td style="text-align:center">Shang Hai</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">1988-10-17</td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">Guang Zhou</td>
+<td style="text-align:center">female</td>
+<td style="text-align:center">NaT</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">40.0</td>
+<td style="text-align:center">Shen Zhen</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">1978-08-08</td>
+</tr>
+<tr>
+<td style="text-align:center">Andy</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">NaT</td>
+</tr>
+<tr>
+<td style="text-align:center">Alice</td>
+<td style="text-align:center">30.0</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">unknown</td>
+<td style="text-align:center">1988-10-17</td>
+</tr>
+</tbody>
+</table>
 <p>之前说过，如果要处理 Series 中的每一个元素，我们可以使用 <code>map</code> 或 <code>apply</code> 方法：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 将所有城市都转成小写</span></span><br><span class="line">user_info.city.map(<span class="keyword">lambda</span> x: x.lower())</span><br></pre></td></tr></table></figure>
 <pre><code>---------------------------------------------------------------------------
@@ -143,7 +201,7 @@ Name: city, dtype: object
 
 
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user_info.city.str.extractall(<span class="string">r'(\w+)\s+'</span>)</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th></th><br>      <th>0</th><br>    </tr><br>    <tr><br>      <th>name</th><br>      <th>match</th><br>      <th></th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th rowspan="2" valign="top">Tom</th><br>      <th>0</th><br>      <td>Bei</td><br>    </tr><br>    <tr><br>      <th>1</th><br>      <td>Jing</td><br>    </tr><br>    <tr><br>      <th rowspan="2" valign="top">Bob</th><br>      <th>0</th><br>      <td>Shang</td><br>    </tr><br>    <tr><br>      <th>1</th><br>      <td>Hai</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <th>0</th><br>      <td>Guang</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <th>0</th><br>      <td>Shen</td><br>    </tr><br>  </tbody><br></table><br></div>
+<div><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th></th><br>      <th>0</th><br>    </tr><br>    <tr><br>      <th>name</th><br>      <th>match</th><br>      <th></th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th rowspan="2" valign="top">Tom</th><br>      <th>0</th><br>      <td>Bei</td><br>    </tr><br>    <tr><br>      <th>1</th><br>      <td>Jing</td><br>    </tr><br>    <tr><br>      <th rowspan="2" valign="top">Bob</th><br>      <th>0</th><br>      <td>Shang</td><br>    </tr><br>    <tr><br>      <th>1</th><br>      <td>Hai</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <th>0</th><br>      <td>Guang</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <th>0</th><br>      <td>Shen</td><br>    </tr><br>  </tbody><br></table><br></div>
 
 
 
