@@ -97,7 +97,7 @@
 <meta property="og:site_name" content="Yuan">
 <meta property="og:description" content="Pandas 学习系列（四）">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-11-25T06:58:00.000Z">
+<meta property="og:updated_time" content="2018-11-26T14:00:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Pandas（四）">
 <meta name="twitter:description" content="Pandas 学习系列（四）">
@@ -542,34 +542,246 @@ Alice
 Name: city, dtype: object
 </code></pre><p><code>split()</code> 方法有个参数很有意思，<code>expand=True</code> 可以把返回的列表数据以 DataFrame 形式返回：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user_info.city.str.split(<span class="string">' '</span>, expand=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>0</th><br>      <th>1</th><br>      <th>2</th><br>    </tr><br>    <tr><br>      <th>name</th><br>      <th></th><br>      <th></th><br>      <th></th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Tom</th><br>      <td>Bei</td><br>      <td>Jing</td><br>      <td></td><br>    </tr><br>    <tr><br>      <th>Bob</th><br>      <td>Shang</td><br>      <td>Hai</td><br>      <td></td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <td>Guang</td><br>      <td>Zhou</td><br>      <td>None</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <td>Shen</td><br>      <td>Zhen</td><br>      <td>None</td><br>    </tr><br>    <tr><br>      <th>Andy</th><br>      <td>NaN</td><br>      <td>NaN</td><br>      <td>NaN</td><br>    </tr><br>    <tr><br>      <th>Alice</th><br>      <td></td><br>      <td></td><br>      <td>None</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">0</th>
+<th style="text-align:center">1</th>
+<th style="text-align:center">2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">name</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">Bei</td>
+<td style="text-align:center">Jing</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">Guang</td>
+<td style="text-align:center">Zhou</td>
+<td style="text-align:center">None</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">Shen</td>
+<td style="text-align:center">Zhen</td>
+<td style="text-align:center">None</td>
+</tr>
+<tr>
+<td style="text-align:center">Andy</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">NaN</td>
+</tr>
+<tr>
+<td style="text-align:center">Alice</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">None</td>
+</tr>
+</tbody>
+</table>
 <h3 id="提取子字符串"><a href="#提取子字符串" class="headerlink" title="提取子字符串"></a>提取子字符串</h3><p><code>extract()</code> 方法接收一个正则表达式。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 匹配空字符串前面的所有字母</span></span><br><span class="line">user_info.city.str.extract(<span class="string">r'(\w+)\s+'</span>, expand=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>0</th><br>    </tr><br>    <tr><br>      <th>name</th><br>      <th></th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Tom</th><br>      <td>Bei</td><br>    </tr><br>    <tr><br>      <th>Bob</th><br>      <td>Shang</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <td>Guang</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <td>Shen</td><br>    </tr><br>    <tr><br>      <th>Andy</th><br>      <td>NaN</td><br>    </tr><br>    <tr><br>      <th>Alice</th><br>      <td>NaN</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">name</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">Bei</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">Shang</td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">Guang</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">Shen</td>
+</tr>
+<tr>
+<td style="text-align:center">Andy</td>
+<td style="text-align:center">NaN</td>
+</tr>
+<tr>
+<td style="text-align:center">Alice</td>
+<td style="text-align:center">NaN</td>
+</tr>
+</tbody>
+</table>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 匹配空格前后的字符串</span></span><br><span class="line">user_info.city.str.extract(<span class="string">r'(\w+)\s+(\w+)'</span>, expand=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>0</th><br>      <th>1</th><br>    </tr><br>    <tr><br>      <th>name</th><br>      <th></th><br>      <th></th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Tom</th><br>      <td>Bei</td><br>      <td>Jing</td><br>    </tr><br>    <tr><br>      <th>Bob</th><br>      <td>Shang</td><br>      <td>Hai</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <td>Guang</td><br>      <td>Zhou</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <td>Shen</td><br>      <td>Zhen</td><br>    </tr><br>    <tr><br>      <th>Andy</th><br>      <td>NaN</td><br>      <td>NaN</td><br>    </tr><br>    <tr><br>      <th>Alice</th><br>      <td>NaN</td><br>      <td>NaN</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">0</th>
+<th style="text-align:center">1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">name</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">Bei</td>
+<td style="text-align:center">Jing</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">Shang</td>
+<td style="text-align:center">Hai</td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">Guang</td>
+<td style="text-align:center">Zhou</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">Shen</td>
+<td style="text-align:center">Zhen</td>
+</tr>
+<tr>
+<td style="text-align:center">Andy</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">NaN</td>
+</tr>
+<tr>
+<td style="text-align:center">Alice</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">NaN</td>
+</tr>
+</tbody>
+</table>
 <p><code>extract()</code> 只能返回匹配的第一个元素，<code>extractall()</code> 则会返回所有的匹配元素：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user_info.city.str.extractall(<span class="string">r'(\w+)'</span>)</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th></th><br>      <th>0</th><br>    </tr><br>    <tr><br>      <th>name</th><br>      <th>match</th><br>      <th></th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th rowspan="2" valign="top">Tom</th><br>      <th>0</th><br>      <td>Bei</td><br>    </tr><br>    <tr><br>      <th>1</th><br>      <td>Jing</td><br>    </tr><br>    <tr><br>      <th rowspan="2" valign="top">Bob</th><br>      <th>0</th><br>      <td>Shang</td><br>    </tr><br>    <tr><br>      <th>1</th><br>      <td>Hai</td><br>    </tr><br>    <tr><br>      <th rowspan="2" valign="top">Mary</th><br>      <th>0</th><br>      <td>Guang</td><br>    </tr><br>    <tr><br>      <th>1</th><br>      <td>Zhou</td><br>    </tr><br>    <tr><br>      <th rowspan="2" valign="top">James</th><br>      <th>0</th><br>      <td>Shen</td><br>    </tr><br>    <tr><br>      <th>1</th><br>      <td>Zhen</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center"></th>
+<th style="text-align:center">0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">name</td>
+<td style="text-align:center">match</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">Bei</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">Jing</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">Shang</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">Hai</td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">Guang</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">Zhou</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">Shen</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">Zhen</td>
+</tr>
+</tbody>
+</table>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user_info.city.str.extractall(<span class="string">r'(\w+)\s+'</span>)</span><br></pre></td></tr></table></figure>
-<div><br><table border="1"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th></th><br>      <th>0</th><br>    </tr><br>    <tr><br>      <th>name</th><br>      <th>match</th><br>      <th></th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th rowspan="2" valign="top">Tom</th><br>      <th>0</th><br>      <td>Bei</td><br>    </tr><br>    <tr><br>      <th>1</th><br>      <td>Jing</td><br>    </tr><br>    <tr><br>      <th rowspan="2" valign="top">Bob</th><br>      <th>0</th><br>      <td>Shang</td><br>    </tr><br>    <tr><br>      <th>1</th><br>      <td>Hai</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <th>0</th><br>      <td>Guang</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <th>0</th><br>      <td>Shen</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center"></th>
+<th style="text-align:center">0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">name</td>
+<td style="text-align:center">match</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">Bei</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">Jing</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">Shang</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">Hai</td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">Guang</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">Shen</td>
+</tr>
+</tbody>
+</table>
 <p>最后列举一下 <code>str</code> 所支持常用方法：</p>
 <table>
 <thead>

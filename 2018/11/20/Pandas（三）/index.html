@@ -97,7 +97,7 @@
 <meta property="og:site_name" content="Yuan">
 <meta property="og:description" content="Pandas 学习系列（三）">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-11-25T06:39:11.000Z">
+<meta property="og:updated_time" content="2018-11-26T14:19:42.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Pandas（三）">
 <meta name="twitter:description" content="Pandas 学习系列（三）">
@@ -399,29 +399,246 @@
 <li>使用其他对象填充</li>
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 示例数据</span></span><br><span class="line">index = pd.Index(data=[<span class="string">'Tom'</span>, <span class="string">'Bob'</span>, <span class="string">'Mary'</span>, <span class="string">'James'</span>, <span class="string">'Andy'</span>, <span class="string">'Alice'</span>], name=<span class="string">'name'</span>)</span><br><span class="line"></span><br><span class="line">data = &#123;</span><br><span class="line">    <span class="string">'age'</span>: [<span class="number">18</span>, <span class="number">30</span>, np.nan, <span class="number">40</span>, np.nan, <span class="number">30</span>],</span><br><span class="line">    <span class="string">'city'</span>: [<span class="string">'Beijing'</span>, <span class="string">'Shanghai'</span>, <span class="string">'Guangzhou'</span>, <span class="string">'Shenzhen'</span>, np.nan, <span class="string">' '</span>],</span><br><span class="line">    <span class="string">'sex'</span>: [<span class="keyword">None</span>, <span class="string">'male'</span>, <span class="string">'female'</span>, <span class="string">'male'</span>, np.nan, <span class="string">'unknown'</span>],</span><br><span class="line">    <span class="string">'birth'</span>: [<span class="string">'2000-02-10'</span>, <span class="string">'1988-10-17'</span>, <span class="keyword">None</span>, <span class="string">'1978-8-8'</span>, np.nan, <span class="string">'1988-10-11'</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">user_info = pd.DataFrame(data=data, index=index)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将出生日期转化为时间戳</span></span><br><span class="line">user_info[<span class="string">'birth'</span>] = pd.to_datetime(user_info.birth)</span><br><span class="line"></span><br><span class="line">user_info</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>      <th>sex</th><br>      <th>birth</th><br>    </tr><br>    <tr><br>      <th>name</th><br>      <th></th><br>      <th></th><br>      <th></th><br>      <th></th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Tom</th><br>      <td>18.0</td><br>      <td>Beijing</td><br>      <td>None</td><br>      <td>2000-02-10</td><br>    </tr><br>    <tr><br>      <th>Bob</th><br>      <td>30.0</td><br>      <td>Shanghai</td><br>      <td>male</td><br>      <td>1988-10-17</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <td>NaN</td><br>      <td>Guangzhou</td><br>      <td>female</td><br>      <td>NaT</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <td>40.0</td><br>      <td>Shenzhen</td><br>      <td>male</td><br>      <td>1978-08-08</td><br>    </tr><br>    <tr><br>      <th>Andy</th><br>      <td>NaN</td><br>      <td>NaN</td><br>      <td>NaN</td><br>      <td>NaT</td><br>    </tr><br>    <tr><br>      <th>Alice</th><br>      <td>30.0</td><br>      <td></td><br>      <td>unknown</td><br>      <td>1988-10-11</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+<th style="text-align:center">sex</th>
+<th style="text-align:center">birth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">name</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">18.0</td>
+<td style="text-align:center">Beijing</td>
+<td style="text-align:center">None</td>
+<td style="text-align:center">2000-02-10</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">30.0</td>
+<td style="text-align:center">Shanghai</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">1988-10-17</td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">Guangzhou</td>
+<td style="text-align:center">female</td>
+<td style="text-align:center">NaT</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">40.0</td>
+<td style="text-align:center">Shenzhen</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">1978-08-08</td>
+</tr>
+<tr>
+<td style="text-align:center">Andy</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">NaT</td>
+</tr>
+<tr>
+<td style="text-align:center">Alice</td>
+<td style="text-align:center">30.0</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">unknown</td>
+<td style="text-align:center">1988-10-11</td>
+</tr>
+</tbody>
+</table>
 <p>上面数据中，Tom、Mary 的数据都有缺失，可以使用 <code>isnull()</code>，<code>notnull()</code> 方法来查找：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user_info.isnull()</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>      <th>sex</th><br>      <th>birth</th><br>    </tr><br>    <tr><br>      <th>name</th><br>      <th></th><br>      <th></th><br>      <th></th><br>      <th></th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Tom</th><br>      <td>False</td><br>      <td>False</td><br>      <td>True</td><br>      <td>False</td><br>    </tr><br>    <tr><br>      <th>Bob</th><br>      <td>False</td><br>      <td>False</td><br>      <td>False</td><br>      <td>False</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <td>True</td><br>      <td>False</td><br>      <td>False</td><br>      <td>True</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <td>False</td><br>      <td>False</td><br>      <td>False</td><br>      <td>False</td><br>    </tr><br>    <tr><br>      <th>Andy</th><br>      <td>True</td><br>      <td>True</td><br>      <td>True</td><br>      <td>True</td><br>    </tr><br>    <tr><br>      <th>Alice</th><br>      <td>False</td><br>      <td>False</td><br>      <td>False</td><br>      <td>False</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+<th style="text-align:center">sex</th>
+<th style="text-align:center">birth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">name</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">False</td>
+<td style="text-align:center">False</td>
+<td style="text-align:center">True</td>
+<td style="text-align:center">False</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">False</td>
+<td style="text-align:center">False</td>
+<td style="text-align:center">False</td>
+<td style="text-align:center">False</td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">True</td>
+<td style="text-align:center">False</td>
+<td style="text-align:center">False</td>
+<td style="text-align:center">True</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">False</td>
+<td style="text-align:center">False</td>
+<td style="text-align:center">False</td>
+<td style="text-align:center">False</td>
+</tr>
+<tr>
+<td style="text-align:center">Andy</td>
+<td style="text-align:center">True</td>
+<td style="text-align:center">True</td>
+<td style="text-align:center">True</td>
+<td style="text-align:center">True</td>
+</tr>
+<tr>
+<td style="text-align:center">Alice</td>
+<td style="text-align:center">False</td>
+<td style="text-align:center">False</td>
+<td style="text-align:center">False</td>
+<td style="text-align:center">False</td>
+</tr>
+</tbody>
+</table>
 <p>除了简单的查找识别哪些数据是缺失的，还可以有其他的一些操作，比如过滤掉用户年龄为空的用户：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user_info[user_info.age.notnull()]</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>      <th>sex</th><br>      <th>birth</th><br>    </tr><br>    <tr><br>      <th>name</th><br>      <th></th><br>      <th></th><br>      <th></th><br>      <th></th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Tom</th><br>      <td>18.0</td><br>      <td>Beijing</td><br>      <td>None</td><br>      <td>2000-02-10</td><br>    </tr><br>    <tr><br>      <th>Bob</th><br>      <td>30.0</td><br>      <td>Shanghai</td><br>      <td>male</td><br>      <td>1988-10-17</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <td>40.0</td><br>      <td>Shenzhen</td><br>      <td>male</td><br>      <td>1978-08-08</td><br>    </tr><br>    <tr><br>      <th>Alice</th><br>      <td>30.0</td><br>      <td></td><br>      <td>unknown</td><br>      <td>1988-10-11</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+<th style="text-align:center">sex</th>
+<th style="text-align:center">birth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">name</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">18.0</td>
+<td style="text-align:center">Beijing</td>
+<td style="text-align:center">None</td>
+<td style="text-align:center">2000-02-10</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">30.0</td>
+<td style="text-align:center">Shanghai</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">1988-10-17</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">40.0</td>
+<td style="text-align:center">Shenzhen</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">1978-08-08</td>
+</tr>
+<tr>
+<td style="text-align:center">Alice</td>
+<td style="text-align:center">30.0</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">unknown</td>
+<td style="text-align:center">1988-10-11</td>
+</tr>
+</tbody>
+</table>
 <h3 id="丢弃"><a href="#丢弃" class="headerlink" title="丢弃"></a>丢弃</h3><p>使用 <code>dropna</code> 方法丢弃缺失值：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user_info</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>      <th>sex</th><br>      <th>birth</th><br>    </tr><br>    <tr><br>      <th>name</th><br>      <th></th><br>      <th></th><br>      <th></th><br>      <th></th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Tom</th><br>      <td>18.0</td><br>      <td>Beijing</td><br>      <td>None</td><br>      <td>2000-02-10</td><br>    </tr><br>    <tr><br>      <th>Bob</th><br>      <td>30.0</td><br>      <td>Shanghai</td><br>      <td>male</td><br>      <td>1988-10-17</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <td>NaN</td><br>      <td>Guangzhou</td><br>      <td>female</td><br>      <td>NaT</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <td>40.0</td><br>      <td>Shenzhen</td><br>      <td>male</td><br>      <td>1978-08-08</td><br>    </tr><br>    <tr><br>      <th>Andy</th><br>      <td>NaN</td><br>      <td>NaN</td><br>      <td>NaN</td><br>      <td>NaT</td><br>    </tr><br>    <tr><br>      <th>Alice</th><br>      <td>30.0</td><br>      <td></td><br>      <td>unknown</td><br>      <td>1988-10-11</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+<th style="text-align:center">sex</th>
+<th style="text-align:center">birth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">name</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">18.0</td>
+<td style="text-align:center">Beijing</td>
+<td style="text-align:center">None</td>
+<td style="text-align:center">2000-02-10</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">30.0</td>
+<td style="text-align:center">Shanghai</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">1988-10-17</td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">Guangzhou</td>
+<td style="text-align:center">female</td>
+<td style="text-align:center">NaT</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">40.0</td>
+<td style="text-align:center">Shenzhen</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">1978-08-08</td>
+</tr>
+<tr>
+<td style="text-align:center">Andy</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">NaT</td>
+</tr>
+<tr>
+<td style="text-align:center">Alice</td>
+<td style="text-align:center">30.0</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">unknown</td>
+<td style="text-align:center">1988-10-11</td>
+</tr>
+</tbody>
+</table>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clean_age = user_info.age.dropna()</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clean_age</span><br></pre></td></tr></table></figure>
 <pre><code>name
@@ -438,28 +655,201 @@ Name: age, dtype: float64
 <li><code>thresh</code> 参数，阈值，表示有几个实际值以后就不删除，比如 <code>thresh=3</code> 一行/列非空值大于 3 个就将其保留。</li>
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 一行数据只要有一个字段存在空值就删除</span></span><br><span class="line">user_info.dropna(axis=<span class="number">0</span>, how=<span class="string">'any'</span>)</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>      <th>sex</th><br>      <th>birth</th><br>    </tr><br>    <tr><br>      <th>name</th><br>      <th></th><br>      <th></th><br>      <th></th><br>      <th></th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Bob</th><br>      <td>30.0</td><br>      <td>Shanghai</td><br>      <td>male</td><br>      <td>1988-10-17</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <td>40.0</td><br>      <td>Shenzhen</td><br>      <td>male</td><br>      <td>1978-08-08</td><br>    </tr><br>    <tr><br>      <th>Alice</th><br>      <td>30.0</td><br>      <td></td><br>      <td>unknown</td><br>      <td>1988-10-11</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+<th style="text-align:center">sex</th>
+<th style="text-align:center">birth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">name</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">30.0</td>
+<td style="text-align:center">Shanghai</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">1988-10-17</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">40.0</td>
+<td style="text-align:center">Shenzhen</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">1978-08-08</td>
+</tr>
+<tr>
+<td style="text-align:center">Alice</td>
+<td style="text-align:center">30.0</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">unknown</td>
+<td style="text-align:center">1988-10-11</td>
+</tr>
+</tbody>
+</table>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 一行数据所有字段都为空才删除</span></span><br><span class="line">user_info.dropna(axis=<span class="number">0</span>, how=<span class="string">'all'</span>)</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>      <th>sex</th><br>      <th>birth</th><br>    </tr><br>    <tr><br>      <th>name</th><br>      <th></th><br>      <th></th><br>      <th></th><br>      <th></th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Tom</th><br>      <td>18.0</td><br>      <td>Beijing</td><br>      <td>None</td><br>      <td>2000-02-10</td><br>    </tr><br>    <tr><br>      <th>Bob</th><br>      <td>30.0</td><br>      <td>Shanghai</td><br>      <td>male</td><br>      <td>1988-10-17</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <td>NaN</td><br>      <td>Guangzhou</td><br>      <td>female</td><br>      <td>NaT</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <td>40.0</td><br>      <td>Shenzhen</td><br>      <td>male</td><br>      <td>1978-08-08</td><br>    </tr><br>    <tr><br>      <th>Alice</th><br>      <td>30.0</td><br>      <td></td><br>      <td>unknown</td><br>      <td>1988-10-11</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+<th style="text-align:center">sex</th>
+<th style="text-align:center">birth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">name</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">18.0</td>
+<td style="text-align:center">Beijing</td>
+<td style="text-align:center">None</td>
+<td style="text-align:center">2000-02-10</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">30.0</td>
+<td style="text-align:center">Shanghai</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">1988-10-17</td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">Guangzhou</td>
+<td style="text-align:center">female</td>
+<td style="text-align:center">NaT</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">40.0</td>
+<td style="text-align:center">Shenzhen</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">1978-08-08</td>
+</tr>
+<tr>
+<td style="text-align:center">Alice</td>
+<td style="text-align:center">30.0</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">unknown</td>
+<td style="text-align:center">1988-10-11</td>
+</tr>
+</tbody>
+</table>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># city 或 sex 存在空值即删除</span></span><br><span class="line">user_info.dropna(axis=<span class="number">0</span>, how=<span class="string">'any'</span>, subset=[<span class="string">'city'</span>, <span class="string">'sex'</span>])</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>      <th>sex</th><br>      <th>birth</th><br>    </tr><br>    <tr><br>      <th>name</th><br>      <th></th><br>      <th></th><br>      <th></th><br>      <th></th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Bob</th><br>      <td>30.0</td><br>      <td>Shanghai</td><br>      <td>male</td><br>      <td>1988-10-17</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <td>NaN</td><br>      <td>Guangzhou</td><br>      <td>female</td><br>      <td>NaT</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <td>40.0</td><br>      <td>Shenzhen</td><br>      <td>male</td><br>      <td>1978-08-08</td><br>    </tr><br>    <tr><br>      <th>Alice</th><br>      <td>30.0</td><br>      <td></td><br>      <td>unknown</td><br>      <td>1988-10-11</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+<th style="text-align:center">sex</th>
+<th style="text-align:center">birth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">name</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">30.0</td>
+<td style="text-align:center">Shanghai</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">1988-10-17</td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">Guangzhou</td>
+<td style="text-align:center">female</td>
+<td style="text-align:center">NaT</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">40.0</td>
+<td style="text-align:center">Shenzhen</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">1978-08-08</td>
+</tr>
+<tr>
+<td style="text-align:center">Alice</td>
+<td style="text-align:center">30.0</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">unknown</td>
+<td style="text-align:center">1988-10-11</td>
+</tr>
+</tbody>
+</table>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 要有三个即以上实际值就不删除</span></span><br><span class="line">user_info.dropna(axis=<span class="number">0</span>, thresh=<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>      <th>sex</th><br>      <th>birth</th><br>    </tr><br>    <tr><br>      <th>name</th><br>      <th></th><br>      <th></th><br>      <th></th><br>      <th></th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Tom</th><br>      <td>18.0</td><br>      <td>Beijing</td><br>      <td>None</td><br>      <td>2000-02-10</td><br>    </tr><br>    <tr><br>      <th>Bob</th><br>      <td>30.0</td><br>      <td>Shanghai</td><br>      <td>male</td><br>      <td>1988-10-17</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <td>40.0</td><br>      <td>Shenzhen</td><br>      <td>male</td><br>      <td>1978-08-08</td><br>    </tr><br>    <tr><br>      <th>Alice</th><br>      <td>30.0</td><br>      <td></td><br>      <td>unknown</td><br>      <td>1988-10-11</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+<th style="text-align:center">sex</th>
+<th style="text-align:center">birth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">name</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">18.0</td>
+<td style="text-align:center">Beijing</td>
+<td style="text-align:center">None</td>
+<td style="text-align:center">2000-02-10</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">30.0</td>
+<td style="text-align:center">Shanghai</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">1988-10-17</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">40.0</td>
+<td style="text-align:center">Shenzhen</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">1978-08-08</td>
+</tr>
+<tr>
+<td style="text-align:center">Alice</td>
+<td style="text-align:center">30.0</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">unknown</td>
+<td style="text-align:center">1988-10-11</td>
+</tr>
+</tbody>
+</table>
 <h3 id="填充缺失值"><a href="#填充缺失值" class="headerlink" title="填充缺失值"></a>填充缺失值</h3><p>最常见的就是使用 <code>fillna</code> 完成填充。</p>
 <p>常见的填充方式是使用一个标量来填充。例如，将所有缺失的年龄都填充为 0：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user_info.age.fillna(<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
@@ -553,16 +943,131 @@ Alice    30.0
 Name: age, dtype: float64
 </code></pre><p>对于 DataFrame，可以指定每列要替换的值：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user_info</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>      <th>sex</th><br>      <th>birth</th><br>    </tr><br>    <tr><br>      <th>name</th><br>      <th></th><br>      <th></th><br>      <th></th><br>      <th></th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Tom</th><br>      <td>18.0</td><br>      <td>Beijing</td><br>      <td>None</td><br>      <td>2000-02-10</td><br>    </tr><br>    <tr><br>      <th>Bob</th><br>      <td>30.0</td><br>      <td>Shanghai</td><br>      <td>male</td><br>      <td>1988-10-17</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <td>NaN</td><br>      <td>Guangzhou</td><br>      <td>female</td><br>      <td>NaT</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <td>40.0</td><br>      <td>Shenzhen</td><br>      <td>male</td><br>      <td>1978-08-08</td><br>    </tr><br>    <tr><br>      <th>Andy</th><br>      <td>NaN</td><br>      <td>NaN</td><br>      <td>NaN</td><br>      <td>NaT</td><br>    </tr><br>    <tr><br>      <th>Alice</th><br>      <td>30.0</td><br>      <td></td><br>      <td>unknown</td><br>      <td>1988-10-11</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+<th style="text-align:center">sex</th>
+<th style="text-align:center">birth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">name</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">18.0</td>
+<td style="text-align:center">Beijing</td>
+<td style="text-align:center">None</td>
+<td style="text-align:center">2000-02-10</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">30.0</td>
+<td style="text-align:center">Shanghai</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">1988-10-17</td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">Guangzhou</td>
+<td style="text-align:center">female</td>
+<td style="text-align:center">NaT</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">40.0</td>
+<td style="text-align:center">Shenzhen</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">1978-08-08</td>
+</tr>
+<tr>
+<td style="text-align:center">Andy</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">NaT</td>
+</tr>
+<tr>
+<td style="text-align:center">Alice</td>
+<td style="text-align:center">30.0</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">unknown</td>
+<td style="text-align:center">1988-10-11</td>
+</tr>
+</tbody>
+</table>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user_info.replace(&#123;<span class="string">'age'</span>: <span class="number">40</span>, <span class="string">'birth'</span>: pd.Timestamp(<span class="string">'1978-8-8'</span>)&#125;, np.nan)</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>      <th>sex</th><br>      <th>birth</th><br>    </tr><br>    <tr><br>      <th>name</th><br>      <th></th><br>      <th></th><br>      <th></th><br>      <th></th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Tom</th><br>      <td>18.0</td><br>      <td>Beijing</td><br>      <td>None</td><br>      <td>2000-02-10</td><br>    </tr><br>    <tr><br>      <th>Bob</th><br>      <td>30.0</td><br>      <td>Shanghai</td><br>      <td>male</td><br>      <td>1988-10-17</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <td>NaN</td><br>      <td>Guangzhou</td><br>      <td>female</td><br>      <td>NaT</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <td>NaN</td><br>      <td>Shenzhen</td><br>      <td>male</td><br>      <td>NaT</td><br>    </tr><br>    <tr><br>      <th>Andy</th><br>      <td>NaN</td><br>      <td>NaN</td><br>      <td>NaN</td><br>      <td>NaT</td><br>    </tr><br>    <tr><br>      <th>Alice</th><br>      <td>30.0</td><br>      <td></td><br>      <td>unknown</td><br>      <td>1988-10-11</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+<th style="text-align:center">sex</th>
+<th style="text-align:center">birth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">name</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">18.0</td>
+<td style="text-align:center">Beijing</td>
+<td style="text-align:center">None</td>
+<td style="text-align:center">2000-02-10</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">30.0</td>
+<td style="text-align:center">Shanghai</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">1988-10-17</td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">Guangzhou</td>
+<td style="text-align:center">female</td>
+<td style="text-align:center">NaT</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">Shenzhen</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">NaT</td>
+</tr>
+<tr>
+<td style="text-align:center">Andy</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">NaN</td>
+<td style="text-align:center">NaT</td>
+</tr>
+<tr>
+<td style="text-align:center">Alice</td>
+<td style="text-align:center">30.0</td>
+<td style="text-align:center"></td>
+<td style="text-align:center">unknown</td>
+<td style="text-align:center">1988-10-11</td>
+</tr>
+</tbody>
+</table>
 <p>还可以将特定字符串进行替换：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 将 unknown 进行替换</span></span><br><span class="line">user_info.sex.replace(<span class="string">'unknown'</span>, np.nan)</span><br></pre></td></tr></table></figure>
 <pre><code>name
