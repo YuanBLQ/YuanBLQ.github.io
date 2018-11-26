@@ -97,7 +97,7 @@
 <meta property="og:site_name" content="Yuan">
 <meta property="og:description" content="Pandas 学习系列（一）">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-11-25T06:36:07.000Z">
+<meta property="og:updated_time" content="2018-11-26T14:57:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Pandas（一）">
 <meta name="twitter:description" content="Pandas 学习系列（一）">
@@ -481,22 +481,103 @@ Name: user_age_info, dtype: float64
 <p>接着上面的例子，这次我们不止要存储用户的年龄，还要存储城市信息，那我们该如何构建 Dataframe 呢？</p>
 <p>我们可以把每个用户的数据存在一个个列表中传过去：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Tom = [<span class="number">18</span>, <span class="string">'Shanghai'</span>]</span><br><span class="line">Bob = [<span class="number">30</span>, <span class="string">'Beijing'</span>]</span><br><span class="line">Mary = [<span class="number">25</span>, <span class="string">'Guangzhou'</span>]</span><br><span class="line">James = [<span class="number">40</span>, <span class="string">'Shenzhen'</span>]</span><br><span class="line"></span><br><span class="line">user_info = pd.DataFrame(data=[Tom, Bob, Mary, James])</span><br><span class="line">user_info</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>0</th><br>      <th>1</th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>0</th><br>      <td>18</td><br>      <td>Shanghai</td><br>    </tr><br>    <tr><br>      <th>1</th><br>      <td>30</td><br>      <td>Beijing</td><br>    </tr><br>    <tr><br>      <th>2</th><br>      <td>25</td><br>      <td>Guangzhou</td><br>    </tr><br>    <tr><br>      <th>3</th><br>      <td>40</td><br>      <td>Shenzhen</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">0</th>
+<th style="text-align:center">1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">18</td>
+<td style="text-align:center">Shanghai</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">30</td>
+<td style="text-align:center">Beijing</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">Guangzhou</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">40</td>
+<td style="text-align:center">Shenzhen</td>
+</tr>
+</tbody>
+</table>
 <p>同样，这样一张光秃秃的表格，除了数据我们一无所知。为了以后查阅方便我们得添加点额外信息：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">columns = [<span class="string">'age'</span>, <span class="string">'city'</span>]</span><br><span class="line">index = [<span class="string">'Tom'</span>, <span class="string">'Bob'</span>, <span class="string">'Mary'</span>, <span class="string">'James'</span>]</span><br><span class="line">user_info.columns = columns</span><br><span class="line">user_info.index = index</span><br><span class="line"></span><br><span class="line">user_info</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Tom</th><br>      <td>18</td><br>      <td>Shanghai</td><br>    </tr><br>    <tr><br>      <th>Bob</th><br>      <td>30</td><br>      <td>Beijing</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <td>25</td><br>      <td>Guangzhou</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <td>40</td><br>      <td>Shenzhen</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">18</td>
+<td style="text-align:center">Shanghai</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">30</td>
+<td style="text-align:center">Beijing</td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">Guangzhou</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">40</td>
+<td style="text-align:center">Shenzhen</td>
+</tr>
+</tbody>
+</table>
 <p>除此之外，我们也可直接传入 dict 数据，dict 的 key 即为该数据的 column：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">user_data = &#123;</span><br><span class="line">    <span class="string">'age'</span>: [<span class="number">18</span>, <span class="number">30</span>, <span class="number">25</span>, <span class="number">40</span>],</span><br><span class="line">    <span class="string">'city'</span>: [<span class="string">'Shanghai'</span>, <span class="string">'Beijing'</span>, <span class="string">'Guangzhou'</span>, <span class="string">'Shenzhen'</span>]</span><br><span class="line">&#125;</span><br><span class="line">user_info = pd.DataFrame(data=user_data, index=index)</span><br><span class="line"></span><br><span class="line">user_info</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Tom</th><br>      <td>18</td><br>      <td>Shanghai</td><br>    </tr><br>    <tr><br>      <th>Bob</th><br>      <td>30</td><br>      <td>Beijing</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <td>25</td><br>      <td>Guangzhou</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <td>40</td><br>      <td>Shenzhen</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">18</td>
+<td style="text-align:center">Shanghai</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">30</td>
+<td style="text-align:center">Beijing</td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">Guangzhou</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">40</td>
+<td style="text-align:center">Shenzhen</td>
+</tr>
+</tbody>
+</table>
 <h3 id="访问数据"><a href="#访问数据" class="headerlink" title="访问数据"></a>访问数据</h3><h4 id="访问行"><a href="#访问行" class="headerlink" title="访问行"></a>访问行</h4><p>从打印出来的 DataFrame 可见，每一行就表示一个用户的数据，那我们需要取某一个用户的数据时该怎么做呢？</p>
 <p>直接通过索引访问：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 通过索引名称访问</span></span><br><span class="line">user_info.loc[<span class="string">'Tom'</span>]</span><br></pre></td></tr></table></figure>
@@ -508,28 +589,94 @@ Name: Tom, dtype: object
 city    Shanghai
 Name: Tom, dtype: object
 </code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 还支持切片操作</span></span><br><span class="line">user_info.iloc[<span class="number">1</span>:<span class="number">3</span>]</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Bob</th><br>      <td>30</td><br>      <td>Beijing</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <td>25</td><br>      <td>Guangzhou</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">30</td>
+<td style="text-align:center">Beijing</td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">Guangzhou</td>
+</tr>
+</tbody>
+</table>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 同样还支持索引名称操作！</span></span><br><span class="line">user_info.loc[<span class="string">'Tom'</span>: <span class="string">'Mary'</span>]</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Tom</th><br>      <td>18</td><br>      <td>Shanghai</td><br>    </tr><br>    <tr><br>      <th>Bob</th><br>      <td>30</td><br>      <td>Beijing</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <td>25</td><br>      <td>Guangzhou</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">18</td>
+<td style="text-align:center">Shanghai</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">30</td>
+<td style="text-align:center">Beijing</td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">Guangzhou</td>
+</tr>
+</tbody>
+</table>
 <p>DataFrame 的索引操作还可以直接这么做：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user_info[<span class="string">'Tom'</span>: <span class="string">'Bob'</span>]</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Tom</th><br>      <td>18</td><br>      <td>Shanghai</td><br>    </tr><br>    <tr><br>      <th>Bob</th><br>      <td>30</td><br>      <td>Beijing</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">18</td>
+<td style="text-align:center">Shanghai</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">30</td>
+<td style="text-align:center">Beijing</td>
+</tr>
+</tbody>
+</table>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user_info[<span class="number">1</span>: <span class="number">2</span>]</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Bob</th><br>      <td>30</td><br>      <td>Beijing</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">30</td>
+<td style="text-align:center">Beijing</td>
+</tr>
+</tbody>
+</table>
 <h4 id="访问列"><a href="#访问列" class="headerlink" title="访问列"></a>访问列</h4><p>如果我想获取所有人的年龄信息，即访问数据的列数据，有两种办法：</p>
 <p>一、使用 <code>.attr</code> 操作：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user_info.age</span><br></pre></td></tr></table></figure>
@@ -547,40 +694,227 @@ James    40
 Name: age, dtype: int64
 </code></pre><p>那要是相同时获取多个列的数据呢？直接传入列的列表即可：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user_info[[<span class="string">'age'</span>, <span class="string">'city'</span>]]</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Tom</th><br>      <td>18</td><br>      <td>Shanghai</td><br>    </tr><br>    <tr><br>      <th>Bob</th><br>      <td>30</td><br>      <td>Beijing</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <td>25</td><br>      <td>Guangzhou</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <td>40</td><br>      <td>Shenzhen</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">18</td>
+<td style="text-align:center">Shanghai</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">30</td>
+<td style="text-align:center">Beijing</td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">Guangzhou</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">40</td>
+<td style="text-align:center">Shenzhen</td>
+</tr>
+</tbody>
+</table>
 <h3 id="增加-删除列"><a href="#增加-删除列" class="headerlink" title="增加/删除列"></a>增加/删除列</h3><p>一个 DataFrame 构建完成之后，如果我们还想增加/删除某一列该怎么办呢？</p>
 <p>还记得我们可以直接传递一个 dict 到 DataFrame 吗，同样，我们可以像操作字典一样直接加 column：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">user_info[<span class="string">'gender'</span>] = <span class="string">'male'</span></span><br><span class="line"></span><br><span class="line">user_info</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>      <th>gender</th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Tom</th><br>      <td>18</td><br>      <td>Shanghai</td><br>      <td>male</td><br>    </tr><br>    <tr><br>      <th>Bob</th><br>      <td>30</td><br>      <td>Beijing</td><br>      <td>male</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <td>25</td><br>      <td>Guangzhou</td><br>      <td>male</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <td>40</td><br>      <td>Shenzhen</td><br>      <td>male</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+<th style="text-align:center">gender</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">18</td>
+<td style="text-align:center">Shanghai</td>
+<td style="text-align:center">male</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">30</td>
+<td style="text-align:center">Beijing</td>
+<td style="text-align:center">male</td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">Guangzhou</td>
+<td style="text-align:center">male</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">40</td>
+<td style="text-align:center">Shenzhen</td>
+<td style="text-align:center">male</td>
+</tr>
+</tbody>
+</table>
 <p>想删除某一列，同样如此简单：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">user_info.pop(<span class="string">'gender'</span>)</span><br><span class="line"></span><br><span class="line">user_info</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Tom</th><br>      <td>18</td><br>      <td>Shanghai</td><br>    </tr><br>    <tr><br>      <th>Bob</th><br>      <td>30</td><br>      <td>Beijing</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <td>25</td><br>      <td>Guangzhou</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <td>40</td><br>      <td>Shenzhen</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">18</td>
+<td style="text-align:center">Shanghai</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">30</td>
+<td style="text-align:center">Beijing</td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">Guangzhou</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">40</td>
+<td style="text-align:center">Shenzhen</td>
+</tr>
+</tbody>
+</table>
 <p>当然，给 DataFrame 增加列时，可以传入列表（不过要注意，如果列表元素长度不匹配会报错）：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">user_info[<span class="string">'gender'</span>] = [<span class="string">'male'</span>, <span class="string">'male'</span>, <span class="string">'female'</span>, <span class="string">'male'</span>]</span><br><span class="line"></span><br><span class="line">user_info</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>      <th>gender</th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Tom</th><br>      <td>18</td><br>      <td>Shanghai</td><br>      <td>male</td><br>    </tr><br>    <tr><br>      <th>Bob</th><br>      <td>30</td><br>      <td>Beijing</td><br>      <td>male</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <td>25</td><br>      <td>Guangzhou</td><br>      <td>female</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <td>40</td><br>      <td>Shenzhen</td><br>      <td>male</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+<th style="text-align:center">gender</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">18</td>
+<td style="text-align:center">Shanghai</td>
+<td style="text-align:center">male</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">30</td>
+<td style="text-align:center">Beijing</td>
+<td style="text-align:center">male</td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">Guangzhou</td>
+<td style="text-align:center">female</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">40</td>
+<td style="text-align:center">Shenzhen</td>
+<td style="text-align:center">male</td>
+</tr>
+</tbody>
+</table>
 <p>上面都会在原来的 DataFrame 上做出修改，如果想保留原来的 DataFrame 不变，所有的修改产生出新的 DataFrame 的话，可以使用 <code>assign</code> 方法：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">new_user_info = user_info.assign(next_year_age=user_info[<span class="string">'age'</span>] + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">user_info</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>      <th>gender</th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Tom</th><br>      <td>18</td><br>      <td>Shanghai</td><br>      <td>male</td><br>    </tr><br>    <tr><br>      <th>Bob</th><br>      <td>30</td><br>      <td>Beijing</td><br>      <td>male</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <td>25</td><br>      <td>Guangzhou</td><br>      <td>female</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <td>40</td><br>      <td>Shenzhen</td><br>      <td>male</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+<th style="text-align:center">gender</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">18</td>
+<td style="text-align:center">Shanghai</td>
+<td style="text-align:center">male</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">30</td>
+<td style="text-align:center">Beijing</td>
+<td style="text-align:center">male</td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">Guangzhou</td>
+<td style="text-align:center">female</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">40</td>
+<td style="text-align:center">Shenzhen</td>
+<td style="text-align:center">male</td>
+</tr>
+</tbody>
+</table>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">new_user_info</span><br></pre></td></tr></table></figure>
-<div><br><style scoped><br>    .dataframe tbody tr th:only-of-type {<br>        vertical-align: middle;<br>    }<br><br>    .dataframe tbody tr th {<br>        vertical-align: top;<br>    }<br><br>    .dataframe thead th {<br>        text-align: right;<br>    }<br></style><br><table border="1" class="dataframe"><br>  <thead><br>    <tr style="text-align: right;"><br>      <th></th><br>      <th>age</th><br>      <th>city</th><br>      <th>gender</th><br>      <th>next_year_age</th><br>    </tr><br>  </thead><br>  <tbody><br>    <tr><br>      <th>Tom</th><br>      <td>18</td><br>      <td>Shanghai</td><br>      <td>male</td><br>      <td>19</td><br>    </tr><br>    <tr><br>      <th>Bob</th><br>      <td>30</td><br>      <td>Beijing</td><br>      <td>male</td><br>      <td>31</td><br>    </tr><br>    <tr><br>      <th>Mary</th><br>      <td>25</td><br>      <td>Guangzhou</td><br>      <td>female</td><br>      <td>26</td><br>    </tr><br>    <tr><br>      <th>James</th><br>      <td>40</td><br>      <td>Shenzhen</td><br>      <td>male</td><br>      <td>41</td><br>    </tr><br>  </tbody><br></table><br></div>
-
-
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">age</th>
+<th style="text-align:center">city</th>
+<th style="text-align:center">gender</th>
+<th style="text-align:center">next_year_age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Tom</td>
+<td style="text-align:center">18</td>
+<td style="text-align:center">Shanghai</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">19</td>
+</tr>
+<tr>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">30</td>
+<td style="text-align:center">Beijing</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">31</td>
+</tr>
+<tr>
+<td style="text-align:center">Mary</td>
+<td style="text-align:center">25</td>
+<td style="text-align:center">Guangzhou</td>
+<td style="text-align:center">female</td>
+<td style="text-align:center">26</td>
+</tr>
+<tr>
+<td style="text-align:center">James</td>
+<td style="text-align:center">40</td>
+<td style="text-align:center">Shenzhen</td>
+<td style="text-align:center">male</td>
+<td style="text-align:center">41</td>
+</tr>
+</tbody>
+</table>
 
       
     </div>
