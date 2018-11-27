@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Django,WebSocket," />
+  <meta name="keywords" content="Algorithms," />
 
 
 
@@ -89,18 +89,18 @@
 
 
 
-<meta name="description" content="什么是 Channels？通过 Channels，给 Django 添加了一个新的传输中间层，通过该层，能实现两个重要的特性：  像普通 view 视图一样，处理 WebSocket 作为 Django 的一部分，在同样的服务器中，能运行后台任务  当然还有其他特性，不过在刚开始时，这两个是我们用的最多的。">
-<meta name="keywords" content="Django,WebSocket">
+<meta name="description" content="在绝大多数的变成语言中都会有数组这么一种最基础的数据结构，而且基本都是从 0 开始编号的。 为什么要从 0 开始编号而不是 1 呢？">
+<meta name="keywords" content="Algorithms">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Django也能玩实时 —— chapter 1">
-<meta property="og:url" content="https://yuanblq.github.io/2017/08/04/channel-part1/index.html">
+<meta property="og:title" content="数据结构——数组">
+<meta property="og:url" content="https://yuanblq.github.io/2018/11/27/数据结构——数组/index.html">
 <meta property="og:site_name" content="Yuan">
-<meta property="og:description" content="什么是 Channels？通过 Channels，给 Django 添加了一个新的传输中间层，通过该层，能实现两个重要的特性：  像普通 view 视图一样，处理 WebSocket 作为 Django 的一部分，在同样的服务器中，能运行后台任务  当然还有其他特性，不过在刚开始时，这两个是我们用的最多的。">
+<meta property="og:description" content="在绝大多数的变成语言中都会有数组这么一种最基础的数据结构，而且基本都是从 0 开始编号的。 为什么要从 0 开始编号而不是 1 呢？">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-09-20T15:36:58.000Z">
+<meta property="og:updated_time" content="2018-11-27T02:37:00.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Django也能玩实时 —— chapter 1">
-<meta name="twitter:description" content="什么是 Channels？通过 Channels，给 Django 添加了一个新的传输中间层，通过该层，能实现两个重要的特性：  像普通 view 视图一样，处理 WebSocket 作为 Django 的一部分，在同样的服务器中，能运行后台任务  当然还有其他特性，不过在刚开始时，这两个是我们用的最多的。">
+<meta name="twitter:title" content="数据结构——数组">
+<meta name="twitter:description" content="在绝大多数的变成语言中都会有数组这么一种最基础的数据结构，而且基本都是从 0 开始编号的。 为什么要从 0 开始编号而不是 1 呢？">
 
 
 
@@ -128,13 +128,13 @@
 
 
 
-  <link rel="canonical" href="https://yuanblq.github.io/2017/08/04/channel-part1/"/>
+  <link rel="canonical" href="https://yuanblq.github.io/2018/11/27/数据结构——数组/"/>
 
 
 
 
 
-  <title> Django也能玩实时 —— chapter 1 | Yuan </title>
+  <title> 数据结构——数组 | Yuan </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -282,7 +282,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://yuanblq.github.io/2017/08/04/channel-part1/">
+    <link itemprop="mainEntityOfPage" href="https://yuanblq.github.io/2018/11/27/数据结构——数组/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Yuan">
@@ -303,7 +303,7 @@
             
             
               
-                Django也能玩实时 —— chapter 1
+                数据结构——数组
               
             
           </h1>
@@ -318,8 +318,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-04T19:22:14+08:00">
-                2017-08-04
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-27T10:32:21+08:00">
+                2018-11-27
               </time>
             
 
@@ -341,8 +341,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/文档/" itemprop="url" rel="index">
-                    <span itemprop="name">文档</span>
+                  <a href="/categories/知识点/" itemprop="url" rel="index">
+                    <span itemprop="name">知识点</span>
                   </a>
                 </span>
 
@@ -358,7 +358,7 @@
 
           
           
-             <span id="/2017/08/04/channel-part1/" class="leancloud_visitors" data-flag-title="Django也能玩实时 —— chapter 1">
+             <span id="/2018/11/27/数据结构——数组/" class="leancloud_visitors" data-flag-title="数据结构——数组">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -387,45 +387,24 @@
       
 
       
-        <h2 id="什么是-Channels？"><a href="#什么是-Channels？" class="headerlink" title="什么是 Channels？"></a>什么是 Channels？</h2><p>通过 Channels，给 Django 添加了一个新的<a href="http://channels.readthedocs.io/en/latest/concepts.html#what-are-channels" target="_blank" rel="noopener">传输中间层</a>，通过该层，能实现两个重要的特性：</p>
-<ul>
-<li><a href="http://channels.readthedocs.io/en/latest/getting-started.html#websocket-example" target="_blank" rel="noopener">像普通 view 视图一样</a>，处理 WebSocket</li>
-<li>作为 Django 的一部分，在同样的服务器中，能运行后台任务</li>
-</ul>
-<p>当然还有其他特性，不过在刚开始时，这两个是我们用的最多的。</p>
+        <p>在绝大多数的变成语言中都会有数组这么一种最基础的数据结构，而且基本都是从 0 开始编号的。</p>
+<p><strong>为什么要从 0 开始编号而不是 1 呢？</strong></p>
 <a id="more"></a>
-<h2 id="如何使用呢？"><a href="#如何使用呢？" class="headerlink" title="如何使用呢？"></a>如何使用呢？</h2><p>他将 Django 的处理过程分成了两类：</p>
-<ul>
-<li>一是处理 HTTP 和 WebSocket</li>
-<li>另一个是运行 view 视图函数、websocket 处理器和后台任务（consumers 消费者）</li>
-</ul>
-<p>他们通过一个叫 <a href="http://channels.readthedocs.io/en/latest/asgi.html" target="_blank" rel="noopener">ASGI</a> 的协议通信。它和 WSGI 很相似，不过 ASGI 能兼容更多协议类型。</p>
-<p>Channels 不会往你的 Django 代码中引入 asyncio、gevent 或者其他任何异步代码。你的所有业务逻辑都是以同步的方式运行在工作进程/线程。</p>
-<h2 id="我要改变-Django-的运行方式吗？"><a href="#我要改变-Django-的运行方式吗？" class="headerlink" title="我要改变 Django 的运行方式吗？"></a>我要改变 Django 的运行方式吗？</h2><p><strong>不</strong>，所有的额外工作都完全是可选的。如果你愿意，你可以将运行在 WSGI 服务器下的 Django 更改为如下运行方式：</p>
-<ul>
-<li>一个 ASGI 服务器，你可能会选择 <a href="http://github.com/django/daphne/" target="_blank" rel="noopener">Daphne</a></li>
-<li>Django 的工作服务器，通过 <code>manage.py runworker</code> 来使用</li>
-<li>用来路由 ASGI 请求的东西，比如 Redis</li>
-</ul>
-<p>当你使用 Channels 时，如果默认把所有的 HTTP 请求都路由给 Django view 视图系统，那它就和之前几乎没有任何差异。</p>
-<h2 id="Channels-还能给我什么惊喜？"><a href="#Channels-还能给我什么惊喜？" class="headerlink" title="Channels 还能给我什么惊喜？"></a>Channels 还能给我什么惊喜？</h2><p>还包括如下特性：</p>
-<ul>
-<li>同一时刻，支持上千个简单的 HTTP 长轮询</li>
-<li>对于 websocket，提供完整的 session 和 auth 支持</li>
-<li>对于 websocket，基于站点 cookie 自动完成用户登录</li>
-<li>对于大量的触发事件，拥有内置 primitive 支持（聊天、实时博客…）</li>
-<li>工作服务不停，浏览器暂停的零停机部署</li>
-<li>基于 per-URL 的可选低级 HTTP 控制</li>
-<li>可以扩展到其他协议或事件源（比如：WebRTC、原生 UDP、SMS）</li>
-</ul>
-<h2 id="能扩展吗？"><a href="#能扩展吗？" class="headerlink" title="能扩展吗？"></a>能扩展吗？</h2><p><strong>当然可以，</strong>你可以运行任意数量的协议服务（用于同时处理 HTTP 和 WebSocket）和工作服务（用来运行你的 Django 代码）来满足你的使用案例。</p>
-<p>ASGI 规范这两个部件之间插入允许大量的不同功能特性的 channel 层。而且它被设计用来支持简单分片以及使用自己的协议和服务器运行单独的集群。</p>
-<h2 id="为什么不采用我最喜欢的消息队列？"><a href="#为什么不采用我最喜欢的消息队列？" class="headerlink" title="为什么不采用我最喜欢的消息队列？"></a>为什么不采用我最喜欢的消息队列？</h2><p>Channel 的设计目的优先于低延迟（目标是几毫秒），并且超过保证传送的高吞吐量，这与某些消息队列设计不匹配。</p>
-<p>一些像<a href="http://channels.readthedocs.io/en/latest/getting-started.html#enforcing-ordering" target="_blank" rel="noopener">保证消息顺序</a>的特性会降低性能，但它能使它更像个消息队列。</p>
-<h2 id="我需要把我所有的代码都变成异步吗？"><a href="#我需要把我所有的代码都变成异步吗？" class="headerlink" title="我需要把我所有的代码都变成异步吗？"></a>我需要把我所有的代码都变成异步吗？</h2><p>不，如果没有任何 socket 或 事件循环阻塞，你的代码都可以同步运行。你也可以在一些 Django 的 view 视图或 channel 的 consumer 消费者函数中使用异步代码 —— 比如，并行获取大量 URL，但这不会影响整个站点的部署。</p>
-<h2 id="Channel-支持哪些-Django-版本？"><a href="#Channel-支持哪些-Django-版本？" class="headerlink" title="Channel 支持哪些 Django 版本？"></a>Channel 支持哪些 Django 版本？</h2><p>你可以在 Django &gt;= 1.8 的版本上将 Channels 最为一个库来安装。另外，它可能需要一些额外的依赖，不过你都可以通过 <code>pip</code> 安装。</p>
-<p>一开始的时候，Channels 并不在 Django 的核心功能中，不过自从 2016.9 月以后，它就成为了 Django 的官方项目。更多关于 Channels 被采纳为 官方项目的信息可以从 <a href="https://www.djangoproject.com/weblog/2016/sep/09/channels-adopted-official-django-project/" target="_blank" rel="noopener">Django blog</a> 中查询。</p>
-<h2 id="接下来我该读什么？"><a href="#接下来我该读什么？" class="headerlink" title="接下来我该读什么？"></a>接下来我该读什么？</h2><p>首先阅读关于 <a href="http://channels.readthedocs.io/en/latest/concepts.html" target="_blank" rel="noopener">Channel 的一些概念</a>，然后继续阅读我们的<a href="http://channels.readthedocs.io/en/latest/getting-started.html" target="_blank" rel="noopener">示例教程</a>。</p>
+<h3 id="如何实现随机访问"><a href="#如何实现随机访问" class="headerlink" title="如何实现随机访问"></a>如何实现随机访问</h3><p>数组，是一种<code>线性表数据结构</code>。它用一组<code>连续的内存空间</code>，来存储一组具有<code>相同类型的数据</code>。</p>
+<p><code>线性表结构</code>，限制了数组只有前后两个方向。这个时候，再加上<code>连续的内存空间</code>和<code>相同的数据类型</code>这两个特点，这就使数组拥有了<code>随机访问</code>的特性。但与此同时，也给数组在删除、插入一个数据的时候带来了麻烦。</p>
+<p>假设有一个长度为 10 的 int 类型的数组 <code>int[] a = new int[10]</code>，在内存中我们给分配了这样一块内存空间 1000~1039，内存块的首地址 base_address=1000。</p>
+<p>计算机是通过内存地址来访问到这块内存里的数据。对于上面数组这块内存，我们很容易通过下面这个公式，使用下标访问任意一个数组元素：</p>
+<p><code>a[i]_address = base_address + i * data_type_size</code></p>
+<p><code>data_type_size</code> 表示数组中每个元素的大小，所举的例子中是 int 类型，所以 <code>data_type_size</code> 大小就为 4 个字节。</p>
+<p>通过这个公式，我们很容易就知道了为什么数组能实现随机访问。另外，如果我们要访问第一个元素的时候，i 的值为 0，这就是为什么下标基本都是从 0 开始的原因。</p>
+<p>可能有人会说，把公式变成 <code>a[i]_address = base_address + (i - 1) * data_type_size</code>，这样下标不就可以按照人类数数的习惯，直接从 1 开始了吗。但这会有一个小问题，就是多了的 <code>-1</code> 操作是有效率损耗的，毕竟多做了一步操作。</p>
+<h3 id="插入操作"><a href="#插入操作" class="headerlink" title="插入操作"></a>插入操作</h3><p>上面我们提到，由于数组的连续特性，导致插入操作会比较麻烦，有什么改进的办法吗？</p>
+<p>比如我们现在要在第 k 个位置插入一个元素，需要把 k 位以后的所有数据都依次往后挪。假如一开始一共有 n 个元素，那么需要移动 n-k 个元素。最好的情况是直接在数组末尾增加一个元素，此时的时间复杂度很明显是 O(1)。最坏情况就是在数组开头插入一个元素，这时时间复杂度为 O(n)。因为每个位置插入的元素的概率是一样的，所以平均时间复杂度： (1+2+..+n)/n，为 O(n) 的时间复杂度。</p>
+<p>如果我们对于数组元素的顺序没有要求，那么在 k 位置插入元素可以这么优化：先把原来第 k 位的元素移动到数组末尾，然后在 k 位插入新的数据。这样能把时间复杂度将为 O(1)。快排中就用到了这个思想。</p>
+<h3 id="删除操作"><a href="#删除操作" class="headerlink" title="删除操作"></a>删除操作</h3><p>删除操作和插入操作类似，为了内存的连续性，也需要搬迁数据。</p>
+<p>如果删除的是末尾数据，则是最好的情况，时间复杂度为 O(1)；如果删除的是头部数据，则是最坏情况，时间复杂度为 O(n)；平均复杂度同样也是 O(n)。</p>
+<p>在某些特定的场景下，如果对数组数据的连续性没有要求，那么可以将多次的删除操作合并起来。大概流程是这样的：当我们想要删除某个元素的时候，可以先把这个元素做个标记，表示已经删除了，但实际还未删除（软删除操作），然后等攒到一定数量或者存储空间不够之后之后再统一一起删除。</p>
+<p>这个听起来不就是标记清除法的核心思想吗。算法与数据结构的魅力就在于此，其背后的思想和处理技巧这些东西才是最有价值的。</p>
 
       
     </div>
@@ -455,9 +434,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Django/" rel="tag"># Django</a>
-          
-            <a href="/tags/WebSocket/" rel="tag"># WebSocket</a>
+            <a href="/tags/Algorithms/" rel="tag"># Algorithms</a>
           
         </div>
       
@@ -470,8 +447,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/07/31/asyncio4/" rel="next" title="影分身术之-asyncio_part4">
-                <i class="fa fa-chevron-left"></i> 影分身术之-asyncio_part4
+              <a href="/2018/11/25/Pandas（四）/" rel="next" title="Pandas（四）">
+                <i class="fa fa-chevron-left"></i> Pandas（四）
               </a>
             
           </div>
@@ -479,10 +456,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/08/06/channel-part2/" rel="prev" title="Django也能玩实时 —— chapter 2">
-                Django也能玩实时 —— chapter 2 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -631,7 +604,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是-Channels？"><span class="nav-number">1.</span> <span class="nav-text">什么是 Channels？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何使用呢？"><span class="nav-number">2.</span> <span class="nav-text">如何使用呢？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#我要改变-Django-的运行方式吗？"><span class="nav-number">3.</span> <span class="nav-text">我要改变 Django 的运行方式吗？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Channels-还能给我什么惊喜？"><span class="nav-number">4.</span> <span class="nav-text">Channels 还能给我什么惊喜？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#能扩展吗？"><span class="nav-number">5.</span> <span class="nav-text">能扩展吗？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么不采用我最喜欢的消息队列？"><span class="nav-number">6.</span> <span class="nav-text">为什么不采用我最喜欢的消息队列？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#我需要把我所有的代码都变成异步吗？"><span class="nav-number">7.</span> <span class="nav-text">我需要把我所有的代码都变成异步吗？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Channel-支持哪些-Django-版本？"><span class="nav-number">8.</span> <span class="nav-text">Channel 支持哪些 Django 版本？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#接下来我该读什么？"><span class="nav-number">9.</span> <span class="nav-text">接下来我该读什么？</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何实现随机访问"><span class="nav-number">1.</span> <span class="nav-text">如何实现随机访问</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插入操作"><span class="nav-number">2.</span> <span class="nav-text">插入操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除操作"><span class="nav-number">3.</span> <span class="nav-text">删除操作</span></a></li></ol></div>
             
 
           </div>

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://yuanblq.github.io/"/>
-  <updated>2018-11-26T14:00:09.000Z</updated>
+  <updated>2018-11-27T02:37:00.000Z</updated>
   <id>https://yuanblq.github.io/</id>
   
   <author>
@@ -14,6 +14,47 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>数据结构——数组</title>
+    <link href="https://yuanblq.github.io/2018/11/27/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E2%80%94%E2%80%94%E6%95%B0%E7%BB%84/"/>
+    <id>https://yuanblq.github.io/2018/11/27/数据结构——数组/</id>
+    <published>2018-11-27T02:32:21.000Z</published>
+    <updated>2018-11-27T02:37:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>在绝大多数的变成语言中都会有数组这么一种最基础的数据结构，而且基本都是从 0 开始编号的。</p>
+<p><strong>为什么要从 0 开始编号而不是 1 呢？</strong></p>
+<a id="more"></a>
+<h3 id="如何实现随机访问"><a href="#如何实现随机访问" class="headerlink" title="如何实现随机访问"></a>如何实现随机访问</h3><p>数组，是一种<code>线性表数据结构</code>。它用一组<code>连续的内存空间</code>，来存储一组具有<code>相同类型的数据</code>。</p>
+<p><code>线性表结构</code>，限制了数组只有前后两个方向。这个时候，再加上<code>连续的内存空间</code>和<code>相同的数据类型</code>这两个特点，这就使数组拥有了<code>随机访问</code>的特性。但与此同时，也给数组在删除、插入一个数据的时候带来了麻烦。</p>
+<p>假设有一个长度为 10 的 int 类型的数组 <code>int[] a = new int[10]</code>，在内存中我们给分配了这样一块内存空间 1000~1039，内存块的首地址 base_address=1000。</p>
+<p>计算机是通过内存地址来访问到这块内存里的数据。对于上面数组这块内存，我们很容易通过下面这个公式，使用下标访问任意一个数组元素：</p>
+<p><code>a[i]_address = base_address + i * data_type_size</code></p>
+<p><code>data_type_size</code> 表示数组中每个元素的大小，所举的例子中是 int 类型，所以 <code>data_type_size</code> 大小就为 4 个字节。</p>
+<p>通过这个公式，我们很容易就知道了为什么数组能实现随机访问。另外，如果我们要访问第一个元素的时候，i 的值为 0，这就是为什么下标基本都是从 0 开始的原因。</p>
+<p>可能有人会说，把公式变成 <code>a[i]_address = base_address + (i - 1) * data_type_size</code>，这样下标不就可以按照人类数数的习惯，直接从 1 开始了吗。但这会有一个小问题，就是多了的 <code>-1</code> 操作是有效率损耗的，毕竟多做了一步操作。</p>
+<h3 id="插入操作"><a href="#插入操作" class="headerlink" title="插入操作"></a>插入操作</h3><p>上面我们提到，由于数组的连续特性，导致插入操作会比较麻烦，有什么改进的办法吗？</p>
+<p>比如我们现在要在第 k 个位置插入一个元素，需要把 k 位以后的所有数据都依次往后挪。假如一开始一共有 n 个元素，那么需要移动 n-k 个元素。最好的情况是直接在数组末尾增加一个元素，此时的时间复杂度很明显是 O(1)。最坏情况就是在数组开头插入一个元素，这时时间复杂度为 O(n)。因为每个位置插入的元素的概率是一样的，所以平均时间复杂度： (1+2+..+n)/n，为 O(n) 的时间复杂度。</p>
+<p>如果我们对于数组元素的顺序没有要求，那么在 k 位置插入元素可以这么优化：先把原来第 k 位的元素移动到数组末尾，然后在 k 位插入新的数据。这样能把时间复杂度将为 O(1)。快排中就用到了这个思想。</p>
+<h3 id="删除操作"><a href="#删除操作" class="headerlink" title="删除操作"></a>删除操作</h3><p>删除操作和插入操作类似，为了内存的连续性，也需要搬迁数据。</p>
+<p>如果删除的是末尾数据，则是最好的情况，时间复杂度为 O(1)；如果删除的是头部数据，则是最坏情况，时间复杂度为 O(n)；平均复杂度同样也是 O(n)。</p>
+<p>在某些特定的场景下，如果对数组数据的连续性没有要求，那么可以将多次的删除操作合并起来。大概流程是这样的：当我们想要删除某个元素的时候，可以先把这个元素做个标记，表示已经删除了，但实际还未删除（软删除操作），然后等攒到一定数量或者存储空间不够之后之后再统一一起删除。</p>
+<p>这个听起来不就是标记清除法的核心思想吗。算法与数据结构的魅力就在于此，其背后的思想和处理技巧这些东西才是最有价值的。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在绝大多数的变成语言中都会有数组这么一种最基础的数据结构，而且基本都是从 0 开始编号的。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;为什么要从 0 开始编号而不是 1 呢？&lt;/strong&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="知识点" scheme="https://yuanblq.github.io/categories/%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
+    
+    
+      <category term="Algorithms" scheme="https://yuanblq.github.io/tags/Algorithms/"/>
+    
+  </entry>
   
   <entry>
     <title>Pandas（四）</title>
@@ -4478,58 +4519,6 @@ RuntimeError:
     
     
       <category term="Celery" scheme="https://yuanblq.github.io/tags/Celery/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis安全说明</title>
-    <link href="https://yuanblq.github.io/2018/01/10/Redis%E5%AE%89%E5%85%A8%E8%AF%B4%E6%98%8E/"/>
-    <id>https://yuanblq.github.io/2018/01/10/Redis安全说明/</id>
-    <published>2018-01-10T06:20:58.000Z</published>
-    <updated>2018-01-10T09:27:49.000Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="Redis-安全"><a href="#Redis-安全" class="headerlink" title="Redis 安全"></a>Redis 安全</h2><h3 id="普通安全模型"><a href="#普通安全模型" class="headerlink" title="普通安全模型"></a>普通安全模型</h3><p>redis 设计的初衷就是用来给在可信环境的可信客户端访问的，也就是说直接把 redis 实例暴露在网络或者不可信的环境中不是一个明智的选择。</p>
-<p>比如在一个普通的 web 应用上下文中，使用 redis 作为数据库、缓存、消息系统，位于 web 前端的客户端应用或者甚至是用户都可以通过查询 redis 来获取请求的操作页面。</p>
-<p>这种情况下，web 应用暴露在 redis 和不可信的客户端之间（用户通过 web 应用访问）。</p>
-<p>这是一个特殊案例，但通常对于连接到 redis 的不可信访问都必须通过一层 ACL 层来验证用户的输入，判断应该做出什么样的操作行为。</p>
-<a id="more"></a>
-<h3 id="网络安全"><a href="#网络安全" class="headerlink" title="网络安全"></a>网络安全</h3><p>如果你只是在自己电脑上用用 redis，那么就没必要把 redis 的端口暴露在网络中。通过在 <code>redis.conf</code> 文件中的以下命令可以实现只是自己电脑的 redis 客户端通过回环接口访问：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bind 127.0.0.1</span><br></pre></td></tr></table></figure></p>
-<p>如果防止 redis 端口暴露在外部环境的尝试失败，那么将可能引发不可想象的毁灭。比如一个简单的 <code>FLUSHALL</code> 命令能删光你的所有数据。</p>
-<h3 id="保护模式"><a href="#保护模式" class="headerlink" title="保护模式"></a>保护模式</h3><p>从 3.2.0 版本开始，默认情况下，redis 处于“保护模式”状态。该模式下，redis 只回复回环接口的 query 请求。保护请求依然可以被手动取消或者可以开放其他接口。</p>
-<h3 id="设置密码"><a href="#设置密码" class="headerlink" title="设置密码"></a>设置密码</h3><p>对于访问操作，redis 并没有做处理，而是加了一层验证层，可以在 <code>redis.conf</code> 配置文件中设置。</p>
-<p>设置完密码后可以通过 <code>AUTH &lt;password&gt;</code> 命令发送验证。该密码一般有系统管理员在 <code>redis.conf</code> 文件中配置，而且应尽量的复杂：</p>
-<ul>
-<li>redis 查询速度很快，所以短时间内攻击者可以尝试很多次</li>
-<li>密码以明文的形式配置在 <code>redis.conf</code> 文件中，所以即使很复杂也不必担心忘记</li>
-</ul>
-<p>但 <code>AUTH</code> 命令和其他 redis 命令一样是不加密处理的。所以还是抵御不了一些有足够权限的攻击者。</p>
-<h3 id="数据加密支持"><a href="#数据加密支持" class="headerlink" title="数据加密支持"></a>数据加密支持</h3><p>redis 本身不支持加密处理，但可以添加额外的层来实现，比如增加 SSL 代理，推荐使用 <a href="http://www.tarsnap.com/spiped.html" target="_blank" rel="noopener">spiped</a></p>
-<h3 id="禁用指定命令"><a href="#禁用指定命令" class="headerlink" title="禁用指定命令"></a>禁用指定命令</h3><p>redis 有个 <code>CONFIG</code> 命令，用来操作 redis 的配置。如任何人都能操作这个命令那也是件很危险的事情。还好有两种方法可以解决这个问题：</p>
-<ul>
-<li>重命名 <code>CONFIG</code> 命令</li>
-<li>隐藏 <code>CONFIG</code> 命令</li>
-</ul>
-<p>这两种方法实际上是同一种操作。redis 提供对命令的重命名操作：在 <code>redis.conf</code> 配置文件中通过添加如下一行即可对一个命令进行重命名：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rename-command CONFIG b840fc02d524045429941cc15f59e41cb7be6c52</span><br></pre></td></tr></table></figure></p>
-<p>通过上面的配置之后 <code>redis-cli</code> 中就再也没有 <code>CONFIG</code> 这个命令了，取而代之的是 <code>b840fc02d524045429941cc15f59e41cb7be6c52</code>。蛤蛤，想不到吧，别人得猜到什么时候才能知道原来 <code>CONFIG</code> 的名字被改成了 <code>b840fc02d524045429941cc15f59e41cb7be6c52</code>。</p>
-<p>当然如果你把 <code>CONFIG</code> 直接命名为 <code>&quot;&quot;</code>，那就是把这个命令隐藏了。</p>
-<h3 id="字符串转义和-NoSQL-注入"><a href="#字符串转义和-NoSQL-注入" class="headerlink" title="字符串转义和 NoSQL 注入"></a>字符串转义和 NoSQL 注入</h3><p>redis 协议不存在字符串转义这个概念，所以对于一个正常的客户端来说，注入不存在的，都是安全的二进制。</p>
-<h3 id="代码安全性"><a href="#代码安全性" class="headerlink" title="代码安全性"></a>代码安全性</h3><p>由于可以通过 <code>CONFIG</code> 命令来改变程序的工作目录或者改变 dump file 的名字。这也意味着客户端可能会随意地在任何地方写人 redis 的 RDB 文件。这个<a href="http://antirez.com/news/96" target="_blank" rel="noopener">安全问题</a>。</p>
-<p>redis 的运行不需要 root 权限。redis 的作者正在调研是否要添加新的配置参数来禁止 <code>CONFIG SET/GET dir</code> 和类似的运行时配置。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;Redis-安全&quot;&gt;&lt;a href=&quot;#Redis-安全&quot; class=&quot;headerlink&quot; title=&quot;Redis 安全&quot;&gt;&lt;/a&gt;Redis 安全&lt;/h2&gt;&lt;h3 id=&quot;普通安全模型&quot;&gt;&lt;a href=&quot;#普通安全模型&quot; class=&quot;headerlink&quot; title=&quot;普通安全模型&quot;&gt;&lt;/a&gt;普通安全模型&lt;/h3&gt;&lt;p&gt;redis 设计的初衷就是用来给在可信环境的可信客户端访问的，也就是说直接把 redis 实例暴露在网络或者不可信的环境中不是一个明智的选择。&lt;/p&gt;
-&lt;p&gt;比如在一个普通的 web 应用上下文中，使用 redis 作为数据库、缓存、消息系统，位于 web 前端的客户端应用或者甚至是用户都可以通过查询 redis 来获取请求的操作页面。&lt;/p&gt;
-&lt;p&gt;这种情况下，web 应用暴露在 redis 和不可信的客户端之间（用户通过 web 应用访问）。&lt;/p&gt;
-&lt;p&gt;这是一个特殊案例，但通常对于连接到 redis 的不可信访问都必须通过一层 ACL 层来验证用户的输入，判断应该做出什么样的操作行为。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="文档" scheme="https://yuanblq.github.io/categories/%E6%96%87%E6%A1%A3/"/>
-    
-    
-      <category term="Database" scheme="https://yuanblq.github.io/tags/Database/"/>
     
   </entry>
   
