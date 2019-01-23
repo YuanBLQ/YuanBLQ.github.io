@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
-  <meta name="keywords" content="Ansible,">
+  <meta name="keywords" content="SQLAlchemy,">
 
 
 
@@ -89,20 +89,18 @@
 
 
 
-<meta name="description" content="清单配置详解 Ansible 的“清单”文件就像是黄页电话本。有了它，我们就能和各个主机进行通话交流。">
-<meta name="keywords" content="Ansible">
+<meta name="description" content="目标 创建一个博客所需的数据表  知识点：  使用 SQLAlchemy 连接数据库，创建数据表。 掌握数据之间一对一、一对多、多对多的关系并转化为对应的 SQLAlchemy 描述。 使用 SQLAlchemy 进行 CURD 操作。 使用 Faker 生成测试数据">
+<meta name="keywords" content="SQLAlchemy">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Ansible系列（二）">
-<meta property="og:url" content="https://yuanblq.github.io/2018/10/13/Ansible系列（二）/index.html">
+<meta property="og:title" content="SQLAlchemy（一）">
+<meta property="og:url" content="https://yuanblq.github.io/2018/11/23/SQLAlchemy（一）/index.html">
 <meta property="og:site_name" content="Yuan">
-<meta property="og:description" content="清单配置详解 Ansible 的“清单”文件就像是黄页电话本。有了它，我们就能和各个主机进行通话交流。">
+<meta property="og:description" content="目标 创建一个博客所需的数据表  知识点：  使用 SQLAlchemy 连接数据库，创建数据表。 掌握数据之间一对一、一对多、多对多的关系并转化为对应的 SQLAlchemy 描述。 使用 SQLAlchemy 进行 CURD 操作。 使用 Faker 生成测试数据">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://pages-ncdn-1253600859.cos.ap-shanghai.myqcloud.com/Others/%E5%85%AC%E4%BC%97%E5%8F%B7%E4%BA%8C%E7%BB%B4%E7%A0%81.jpeg">
-<meta property="og:updated_time" content="2018-10-12T09:10:20.000Z">
+<meta property="og:updated_time" content="2019-01-23T06:36:09.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Ansible系列（二）">
-<meta name="twitter:description" content="清单配置详解 Ansible 的“清单”文件就像是黄页电话本。有了它，我们就能和各个主机进行通话交流。">
-<meta name="twitter:image" content="https://pages-ncdn-1253600859.cos.ap-shanghai.myqcloud.com/Others/%E5%85%AC%E4%BC%97%E5%8F%B7%E4%BA%8C%E7%BB%B4%E7%A0%81.jpeg">
+<meta name="twitter:title" content="SQLAlchemy（一）">
+<meta name="twitter:description" content="目标 创建一个博客所需的数据表  知识点：  使用 SQLAlchemy 连接数据库，创建数据表。 掌握数据之间一对一、一对多、多对多的关系并转化为对应的 SQLAlchemy 描述。 使用 SQLAlchemy 进行 CURD 操作。 使用 Faker 生成测试数据">
 
 
 
@@ -130,13 +128,13 @@
 
 
 
-  <link rel="canonical" href="https://yuanblq.github.io/2018/10/13/Ansible系列（二）/">
+  <link rel="canonical" href="https://yuanblq.github.io/2018/11/23/SQLAlchemy（一）/">
 
 
 
 
 
-  <title> Ansible系列（二） | Yuan </title>
+  <title> SQLAlchemy（一） | Yuan </title>
 </head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -284,7 +282,7 @@
   
 
   <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://yuanblq.github.io/2018/10/13/Ansible系列（二）/">
+    <link itemprop="mainEntityOfPage" href="https://yuanblq.github.io/2018/11/23/SQLAlchemy（一）/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Yuan">
@@ -305,7 +303,7 @@
             
             
               
-                Ansible系列（二）
+                SQLAlchemy（一）
               
             
           </h1>
@@ -320,8 +318,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-13T17:07:07+08:00">
-                2018-10-13
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-23T14:27:52+08:00">
+                2018-11-23
               </time>
             
 
@@ -360,7 +358,7 @@
 
           
           
-             <span id="/2018/10/13/Ansible系列（二）/" class="leancloud_visitors" data-flag-title="Ansible系列（二）">
+             <span id="/2018/11/23/SQLAlchemy（一）/" class="leancloud_visitors" data-flag-title="SQLAlchemy（一）">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -389,41 +387,54 @@
       
 
       
-        <p>清单配置详解</p>
-<p>Ansible 的“清单”文件就像是黄页电话本。有了它，我们就能和各个主机进行通话交流。</p>
+        <h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><blockquote>
+<p>创建一个博客所需的数据表</p>
+</blockquote>
+<p>知识点：</p>
+<ul>
+<li>使用 SQLAlchemy 连接数据库，创建数据表。</li>
+<li>掌握数据之间一对一、一对多、多对多的关系并转化为对应的 SQLAlchemy 描述。</li>
+<li>使用 SQLAlchemy 进行 CURD 操作。</li>
+<li>使用 Faker 生成测试数据</li>
+</ul>
 <a id="more"></a>
-<h3 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h3><p>像这种通讯联系本都会有一个功能 —— 分组，或者说“打标签”。这样无论再多的联系人（主机）我们都能很轻松地找到。</p>
-<p>Ansible 有一个自带的分组名称 —— all。</p>
-<p>没错就是字面意思。该分组包含“清单”中的所有联系人。通过这个关键字 <code>all</code> 我们可以同时对“清单”中所有的主机进行操作:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># /etc/ansible/hosts</span><br><span class="line"></span><br><span class="line">host01 ansible_host=x.x.x.x ansible_user=root</span><br><span class="line">host02 ansible_host=x.x.x.x ansible_user=root</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ansible all -m ping</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">host01 | SUCCESS =&gt; &#123;</span><br><span class="line">    &quot;changed&quot;: false,</span><br><span class="line">    &quot;ping&quot;: &quot;pong&quot;</span><br><span class="line">&#125;</span><br><span class="line">host02 | SUCCESS =&gt; &#123;</span><br><span class="line">    &quot;changed&quot;: false,</span><br><span class="line">    &quot;ping&quot;: &quot;pong&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>接下来，我们自己定义几个分组：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># /etc/ansible/hosts</span><br><span class="line"></span><br><span class="line">[Test]</span><br><span class="line">test01 ansible_host=x.x.x.x ansible_user=root</span><br><span class="line"></span><br><span class="line">[Prod]</span><br><span class="line">prod02 ansible_host=x.x.x.x ansible_user=root</span><br><span class="line">prod03 ansible_host=x.x.x.x ansible_user=root</span><br></pre></td></tr></table></figure>
-<p>上面，我们先定义了两个分组 <code>Test</code>，<code>Prod</code>。接下来我们就可以直接对整个组里的主机进行操作：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ansible Test -m ping</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">test01 | SUCCESS =&gt; &#123;</span><br><span class="line">    &quot;changed&quot;: false,</span><br><span class="line">    &quot;ping&quot;: &quot;pong&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ansible Prod -m ping</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">prod02 | SUCCESS =&gt; &#123;</span><br><span class="line">    &quot;changed&quot;: false,</span><br><span class="line">    &quot;ping&quot;: &quot;pong&quot;</span><br><span class="line">&#125;</span><br><span class="line">prod03 | SUCCESS =&gt; &#123;</span><br><span class="line">    &quot;changed&quot;: false,</span><br><span class="line">    &quot;ping&quot;: &quot;pong&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上面我们创建了两个分组 —— 测试组和生产组。我们现在可以分别操作这两个组，但是有些操作却是不区分测试组还是生产组的，怎么办呢？</p>
-<p>没错，再建一个同时包含这两个组所有主机的新分组。</p>
-<p>那如果每一个组包含的主机很多，这种做法效率就太低了，我们还有另一种方法 —— 嵌套。</p>
-<p>就是我们在新建的组里面直接添上其他的组名，不用一个个添上其他组内的主机名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># /etc/ansible/hosts</span><br><span class="line"></span><br><span class="line">[Test]</span><br><span class="line">test01 ansible_host=x.x.x.x ansible_user=root</span><br><span class="line"></span><br><span class="line">[Prod]</span><br><span class="line">prod02 ansible_host=x.x.x.x ansible_user=root</span><br><span class="line">prod03 ansible_host=x.x.x.x ansible_user=root</span><br><span class="line"></span><br><span class="line">[Basic]</span><br><span class="line">Test</span><br><span class="line">Prod</span><br></pre></td></tr></table></figure>
-<p>这样我们想对所有主机执行一些基础操作的时候，就可以直接操作 <code>Basic</code> 组。</p>
-<h3 id="YAML-语法"><a href="#YAML-语法" class="headerlink" title="YAML 语法"></a>YAML 语法</h3><p>以上“清单”的配置都是 ini 格式的写法，ansible 的“清单”还支持 YAML 格式的语法。</p>
-<p>为什么还要知道 YAML 语法格式的“清单”配置呢？</p>
-<p>后面介绍的 Ansible Playbook 配置使用的就是 YAML 语法，虽然“清单”对于 ini 和 YAML 两种语法都支持，但是我们使用同一种语法格式总是会舒服一点。当然这种舒服也是因人而异的，具体使用中哪个适合自己就是用哪个。</p>
-<p>下面列出几个 ini 和 YAML 两种格式的对比:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 最简单的 ini</span><br><span class="line">x.x.x.x</span><br><span class="line"></span><br><span class="line"># 对应的 YAML</span><br><span class="line">all:</span><br><span class="line">    hosts:</span><br><span class="line">        x.x.x.x</span><br></pre></td></tr></table></figure>
-<p>YAML 格式中，最上方的 <code>all</code> 就是之前我们所说的关键字，在 YAML 中必须把 <code>all</code> 写在最上方。这样才符合 <code>all</code> 这个关键字本身的地位嘛。</p>
-<p>接着来看其他几个格式对比:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># 简单分组的 ini 格式</span><br><span class="line">x.x.x.x</span><br><span class="line"></span><br><span class="line">[Ga]</span><br><span class="line">y.y.y.y</span><br><span class="line"></span><br><span class="line">[Gb]</span><br><span class="line">z.z.z.z</span><br><span class="line"></span><br><span class="line"># 对应的 YAML</span><br><span class="line">all:</span><br><span class="line">    hosts:</span><br><span class="line">        x.x.x.x</span><br><span class="line">    children:</span><br><span class="line">        Ga:</span><br><span class="line">            hosts:</span><br><span class="line">                y.y.y.y</span><br><span class="line">        Gb:</span><br><span class="line">            hosts:</span><br><span class="line">                z.z.z.z</span><br></pre></td></tr></table></figure></p>
-<p>可以看出，YAML 格式中定义“组”需要用到 <code>children</code> 关键字。</p>
-<p>再来看个嵌套分组的对比:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"># ini 格式</span><br><span class="line">[Ga]</span><br><span class="line">x.x.x.x</span><br><span class="line"></span><br><span class="line">[Gb]</span><br><span class="line">y.y.y.y</span><br><span class="line"></span><br><span class="line">[Gc]</span><br><span class="line">Ga</span><br><span class="line">Gb</span><br><span class="line"></span><br><span class="line"># 对应的 YAML 格式</span><br><span class="line">all:</span><br><span class="line">    children:</span><br><span class="line">        Gc:</span><br><span class="line">            children:</span><br><span class="line">                Ga:</span><br><span class="line">                    hosts:</span><br><span class="line">                        x.x.x.x</span><br><span class="line">                Gb:</span><br><span class="line">                    hosts:</span><br><span class="line">                        y.y.y.y</span><br></pre></td></tr></table></figure></p>
-<p>最后我们再来看一个指定 port、name 的两个格式对比:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># ini 格式</span><br><span class="line">x.x.x.x</span><br><span class="line">host01 ansible_host=y.y.y.y ansible_port=22</span><br><span class="line"></span><br><span class="line"># 对应的 YAML 格式</span><br><span class="line">all:</span><br><span class="line">    hosts:</span><br><span class="line">        x.x.x.x</span><br><span class="line">        host01:</span><br><span class="line">            ansible_host: y.y.y.y</span><br><span class="line">            ansible_port: 22</span><br></pre></td></tr></table></figure></p>
-<p>YAML 语法其实也不是很难，只是把一些逻辑上的层级关系用缩进的形式表现了出来，想要查找学习更多关于“清单”的内容，可以参见<a href="https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html" target="_blank" rel="noopener">官网文档。</a></p>
-<p><strong>P.S.</strong> 关注我的公众号，第一时间接收更新提醒。</p>
-<div align="center"><br><img src="https://pages-ncdn-1253600859.cos.ap-shanghai.myqcloud.com/Others/%E5%85%AC%E4%BC%97%E5%8F%B7%E4%BA%8C%E7%BB%B4%E7%A0%81.jpeg" width="320" alt="公众号二维码" align="center/"><br></div>
+<p>环境：</p>
+<ul>
+<li>Python==3.6.8</li>
+<li>SQLAlchemy==1.2.16</li>
+<li>Psycopg2==2.7.6.1</li>
+<li>faker==1.0.1</li>
+</ul>
+<h2 id="连接与创建"><a href="#连接与创建" class="headerlink" title="连接与创建"></a>连接与创建</h2><p>使用 docker 启动一个 postgres 容器：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># docker run --rm --name one-postgres -p 5432:5432 -e POSTGRES_PASSWORD=123456 -d postgres</span><br></pre></td></tr></table></figure></p>
+<p>进入容器，使用命令创建一个名叫 mydb 的数据库：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># docker exec -it one-postgres bash</span><br><span class="line"># createdb -U postgres mydb</span><br></pre></td></tr></table></figure></p>
+<p>现在可以访问下刚创建的数据库，验证有没有创建成功：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># psql -U postgres mydb</span><br></pre></td></tr></table></figure></p>
+<p>如果一切顺利，会返回该信息，并成功进入 mydb 数据库：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">psql (11.1 (Debian 11.1-1.pgdg90+1))</span><br><span class="line">Type &quot;help&quot; for help.</span><br><span class="line"></span><br><span class="line">mydb=#</span><br></pre></td></tr></table></figure></p>
+<p>最后一行也可能是（意味着当前操作数据库用户非超级用户）：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mydb=&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="ORM-连接"><a href="#ORM-连接" class="headerlink" title="ORM 连接"></a>ORM 连接</h2><p>要想使用 ORM，必须先实现类与表的映射。</p>
+<p>在 SQLAlchemy 中，使用 Declarative 系统来处理这种映射关系。一般情况，我们只需创建一个基于此的一个基类，然后描述我们自己类与表的关系：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; from sqlalchemy.ext.declarative import declarative_base</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; Base = declarative_base()</span><br></pre></td></tr></table></figure></p>
+<p>这个 <code>Base</code> 就是我们要继承的基类，现在我们创建一个 User 类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class User(Base):</span><br><span class="line">    __tablename__ = &apos;users&apos;</span><br><span class="line"></span><br><span class="line">    id = Column(Integer, primary_key=True)</span><br><span class="line">    name = Column(String(64), nullable=False, index=True)</span><br><span class="line">    password = Column(String(64))</span><br><span class="line"></span><br><span class="line">    def __repr__(self):</span><br><span class="line">        return &apos;&lt;User (%s)&gt;&apos; % self.name</span><br></pre></td></tr></table></figure></p>
+<p>其中 <code>__tablename__</code> 是必须的，另外还需要一个为 <code>primary key</code> 的 <code>Column</code>。</p>
+<blockquote>
+<p><strong>Note</strong></p>
+<p>QLAlchemy 的 <code>Base</code> 基类不会对映射表做任何约束，反而鼓励使用者根据实际情况自定义最小基类，比如可以这么做：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&gt; from sqlalchemy.ext.declarative import declared_attr</span><br><span class="line">&gt; </span><br><span class="line">&gt; class MyMixin(object):</span><br><span class="line">&gt; </span><br><span class="line">&gt;     @declared_attr</span><br><span class="line">&gt;     def __tablename__(cls):</span><br><span class="line">&gt;         return cls.__name__.lower()</span><br><span class="line">&gt; </span><br><span class="line">&gt;     __table_args__ = &#123;&apos;mysql_engine&apos;: &apos;InnoDB&apos;&#125;</span><br><span class="line">&gt;     __mapper_args__= &#123;&apos;always_refresh&apos;: True&#125;</span><br><span class="line">&gt; </span><br><span class="line">&gt;     id =  Column(Integer, primary_key=True)</span><br><span class="line">&gt; </span><br><span class="line">&gt; class MyModel(MyMixin, Base):</span><br><span class="line">&gt;     name = Column(String(1000))</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<blockquote>
+<p>因为在 SQLAlchemy 的 <code>Base</code> 中没有定义任何 <code>__tablename__</code>、<code>__table_args__</code> 等等这些约束，所以在继承的时候顺讯没有关系，也可以这么写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; class MyModel(Base, MyMixin):</span><br><span class="line">&gt;     name = Column(String(1000))</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<blockquote>
+<p>但是如果继承的两个类含有同样的属性，那么根据 Python 该属性由写在前面的那个类决定。</p>
+</blockquote>
+<p>当我们的类构建完之后，Declarative 系统会把所有的 <code>Column</code> 对象替换成叫 <code>desciptors</code> 的特殊 Python 访问器。这个过程就叫做 <code>instrumentation</code>。</p>
+<p>之后，该映射类就能给我们提供从数据库中持久化和载入 <code>column</code> 的 SQL 上下文。</p>
+<p>除此之外，该映射类还是一个普通的 Python 类，我们依旧可以在里面定义属性，方法等等。</p>
+<p>在 SQLAlchemy 的 <code>Declarative</code> 系统对定义的映射类描述阶段，会创建一个 <code>Table</code> 对象并和这个 <code>Table</code> 对象一起构建一个 <code>Mapper</code> 对象。这个 <code>Mapper</code> 对象一般不会用到，但当我们需要的时候，能从中获取大量的映射信息。</p>
+<p><code>Table</code> 对象是 <code>MetaData</code> 集合的一员。使用 <code>Declarative</code> 系统的时候，<code>MetaData</code> 对象属性能直接通过 <code>.metadata</code> 属性访问。</p>
+<p>现在，我们使用 SQLALchemy 连接数据库：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; from sqlalchemy import create_engine</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; engine = create_engine(&apos;postgresql+psycopg2://postgres:123456@localhost:5432/mydb&apos;)</span><br></pre></td></tr></table></figure></p>
+<p>然后调用 <code>MetaData.create_all()</code> 方法，传入 <code>Engine</code> 对象：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; Base.metadata.create_all(engine)</span><br></pre></td></tr></table></figure></p>
+<p>我们去数据库看看有没有创建对应的表：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mydb=# \dt</span><br><span class="line">         List of relations</span><br><span class="line"> Schema | Name  | Type  |  Owner</span><br><span class="line">--------+-------+-------+----------</span><br><span class="line"> public | users | table | postgres</span><br><span class="line">(1 row)</span><br></pre></td></tr></table></figure></p>
+<p>查看对应的表结构：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mydb=# \d users</span><br><span class="line">                                    Table &quot;public.users&quot;</span><br><span class="line">  Column  |         Type          | Collation | Nullable |              Default</span><br><span class="line">----------+-----------------------+-----------+----------+-----------------------------------</span><br><span class="line"> id       | integer               |           | not null | nextval(&apos;users_id_seq&apos;::regclass)</span><br><span class="line"> name     | character varying(64) |           | not null |</span><br><span class="line"> password | character varying(64) |           |          |</span><br><span class="line">Indexes:</span><br><span class="line">    &quot;users_pkey&quot; PRIMARY KEY, btree (id)</span><br><span class="line">    &quot;ix_users_name&quot; btree (name)</span><br></pre></td></tr></table></figure></p>
+<p>成功！</p>
+
       
     </div>
 
@@ -452,7 +463,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Ansible/" rel="tag"># Ansible</a>
+            <a href="/tags/SQLAlchemy/" rel="tag"># SQLAlchemy</a>
           
         </div>
       
@@ -465,8 +476,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/11/Ansible系列（一）/" rel="next" title="Ansible系列（一）">
-                <i class="fa fa-chevron-left"></i> Ansible系列（一）
+              <a href="/2018/11/20/Pandas（三）/" rel="next" title="Pandas（三）">
+                <i class="fa fa-chevron-left"></i> Pandas（三）
               </a>
             
           </div>
@@ -475,8 +486,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/10/16/Ansible系列（三）/" rel="prev" title="Ansible系列（三）">
-                Ansible系列（三） <i class="fa fa-chevron-right"></i>
+              <a href="/2018/11/25/Pandas（四）/" rel="prev" title="Pandas（四）">
+                Pandas（四） <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -624,7 +635,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#分组"><span class="nav-number">1.</span> <span class="nav-text">分组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#YAML-语法"><span class="nav-number">2.</span> <span class="nav-text">YAML 语法</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#目标"><span class="nav-number">1.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#连接与创建"><span class="nav-number">2.</span> <span class="nav-text">连接与创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ORM-连接"><span class="nav-number">3.</span> <span class="nav-text">ORM 连接</span></a></li></ol></div>
             
 
           </div>
