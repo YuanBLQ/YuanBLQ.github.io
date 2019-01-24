@@ -1,0 +1,992 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="SQLAlchemy,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Yuan" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="目标 使用 SQLAlchemy 连接数据库，创建数据表使用 SQLAlchemy 实现插入数据、查询数据的操作">
+<meta name="keywords" content="SQLAlchemy">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQLAlchemy（二）">
+<meta property="og:url" content="https://yuanblq.github.io/2019/12/20/SQLAlchemy（二）/index.html">
+<meta property="og:site_name" content="Yuan">
+<meta property="og:description" content="目标 使用 SQLAlchemy 连接数据库，创建数据表使用 SQLAlchemy 实现插入数据、查询数据的操作">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-01-24T03:17:56.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SQLAlchemy（二）">
+<meta name="twitter:description" content="目标 使用 SQLAlchemy 连接数据库，创建数据表使用 SQLAlchemy 实现插入数据、查询数据的操作">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://yuanblq.github.io/2019/12/20/SQLAlchemy（二）/">
+
+
+
+
+
+  <title> SQLAlchemy（二） | Yuan </title>
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?c6ca950bfc34c4509d0199a9d95b605c";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=62805963";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yuan</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://yuanblq.github.io/2019/12/20/SQLAlchemy（二）/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Yuan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yuan">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                SQLAlchemy（二）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-20T14:40:48+08:00">
+                2019-12-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/12/20/SQLAlchemy（二）/" class="leancloud_visitors" data-flag-title="SQLAlchemy（二）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><blockquote>
+<p>使用 SQLAlchemy 连接数据库，创建数据表<br>使用 SQLAlchemy 实现插入数据、查询数据的操作</p>
+</blockquote>
+<a id="more"></a>
+<p>环境：</p>
+<ul>
+<li>Python==3.6.8</li>
+<li>SQLAlchemy==1.2.16</li>
+<li>Psycopg2==2.7.6.1</li>
+<li>faker==1.0.1</li>
+</ul>
+<h2 id="插入一条数据"><a href="#插入一条数据" class="headerlink" title="插入一条数据"></a>插入一条数据</h2><p>现在，我们可以直接使用 ORM 来操作数据了，先来插入一条数据：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; ed_user = User(name=&apos;ed&apos;, password=&apos;123456&apos;)</span><br><span class="line">&gt;&gt;&gt; ed_user.name</span><br><span class="line">&apos;ed&apos;</span><br><span class="line">&gt;&gt;&gt; ed_user.password</span><br><span class="line">&apos;123456&apos;</span><br><span class="line">&gt;&gt;&gt; str(ed_user.id)</span><br><span class="line">&apos;None&apos;</span><br></pre></td></tr></table></figure></p>
+<p>虽然我们没有指定 <code>id</code> 的值，但是 <code>id</code> 仍然有个默认值，SQLAlchemy 的 <code>instrumentation</code> 会在初次访问某个属性的时候赋上默认值。如果已经赋上的值，则会直接使用之前赋予旳值。</p>
+<p>这时，我们查一下数据库，看看数据有没有存进去：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mydb=# SELECT * FROM users;</span><br><span class="line"> id | name | password</span><br><span class="line">----+------+----------</span><br><span class="line">(0 rows)</span><br></pre></td></tr></table></figure></p>
+<p>？？？</p>
+<p>怎么回事？肯定是漏了哪一步。</p>
+<p>SQLAlchemy 是通过 <code>Session</code> 来和数据库交流通信的。</p>
+<p>有两种时机来定义 <code>Session</code>：</p>
+<p>一、<code>create_engine()</code> 之后<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; from sqlalchemy.orm import sessionmaker</span><br><span class="line">&gt;&gt;&gt; Session = sessionmaker(bind=engine)</span><br></pre></td></tr></table></figure></p>
+<p>二、<code>create_engine()</code> 之前<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; Session = sessionmaker()</span><br><span class="line">...</span><br><span class="line">&gt;&gt;&gt; Session.configure(bind=engine)</span><br></pre></td></tr></table></figure></p>
+<p>然后在需要和数据库交流的时候，可以直接实例化 <code>Session</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; session = Session()</span><br></pre></td></tr></table></figure></p>
+<p>在把数据存入数据库之前，需要先将对象数据加入 <code>Session</code> 之中，可以调用 <code>Session</code> 的 <code>add()</code> 方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; ed_user = User(name=&apos;ed&apos;, password=&apos;123456&apos;)</span><br><span class="line">&gt;&gt;&gt; session.add(ed_user)</span><br></pre></td></tr></table></figure></p>
+<p>这时候我们再去查数据库：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mydb=# SELECT * FROM users;</span><br><span class="line"> id | name | password</span><br><span class="line">----+------+----------</span><br><span class="line">(0 rows)</span><br></pre></td></tr></table></figure></p>
+<p>没错，数据库其实还不知道有这数据，这个时候，该对象存在于 <code>Session</code> 中，处于 pending 状态，还没有 SQL 语句发送给数据库，<code>Session</code> 只有在一定的时候才会去发送 SQL 持久化数据（这个过程称为 flush）。</p>
+<p>我们现在通过 ORM 来查询下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>our_user = session.query(User).filter_by(name=<span class="string">'ed'</span>).first()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>our_user</span><br><span class="line">&lt;User (ed)&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>ed_user <span class="keyword">is</span> our_user</span><br><span class="line"><span class="keyword">True</span></span><br></pre></td></tr></table></figure></p>
+<p>Query 查询返回的结果对象居然和之前的对象一样。实际上 <code>Session</code> 发现返回的对象其实和之前对象引用的是内部映射对象中的同一行数据，所以返回的对象其实是同一个内存上的数据。</p>
+<p>这个概念称为 ORM 的 <code>identity map</code>，这能确保一个 <code>Session</code> 上的所有特定行的操作都是操作的同样数据。<code>Session</code> 中指定 <code>primary key</code> 的对象，所有 SQL 查询都会只返回同样的 Python 对象，如果想新建一个已存在的 <code>primary key</code> 对象也是会直接报错的。</p>
+<p>上述用户的密码太简单了，我们可以直接这样更改：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; ed_user.password = &apos;f8s7ccs&apos;</span><br></pre></td></tr></table></figure></p>
+<p><code>Session</code> 对象还能检测到 <code>ed_user</code> 被修改了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; session.dirty</span><br><span class="line">IdentitySet([&lt;User (ed)&gt;])</span><br></pre></td></tr></table></figure></p>
+<p>我们再往 <code>Session</code> 添加一条数据：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">session.add(User(name=&apos;n&apos;, password=&apos;123&apos;))</span><br></pre></td></tr></table></figure></p>
+<p>我们可以通过 <code>Session</code> 的 <code>new</code> 属性获知还有哪些处于 pending 状态的对象：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>session.new</span><br><span class="line">IdentitySet([&lt;User (n)&gt;])</span><br></pre></td></tr></table></figure></p>
+<p>以上，所有操作的都是存在 <code>Session</code> 中的数据，现在，终于到了我们梦寐以求的时刻 —— 插入数据库。</p>
+<p>通过 <code>Session</code> 的 <code>commit()</code> 方法，将所有的数据持久化进数据库：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; session.commit()</span><br></pre></td></tr></table></figure></p>
+<p>现在我们去数据库瞅瞅：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mydb=# SELECT * FROM users;</span><br><span class="line"> id | name | password</span><br><span class="line">----+------+----------</span><br><span class="line">  1 | ed   | f8s7ccs</span><br><span class="line">  2 | n    | 123</span><br><span class="line">(2 rows)</span><br></pre></td></tr></table></figure></p>
+<p>完美。</p>
+<p>当 <code>Session</code> 将数据插入数据库之后，这些对象属性的值都能立马获取。</p>
+<p>在 <code>commit()</code> 之后，会开启一个新的事务，所以所有的内部映射对象都会重新加载。SQLAlchemy 默认会在访问本次事务的时候，从上一次事务中刷新数据。</p>
+<h2 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h2><p>当 <code>Session</code> 对象使用 <code>query()</code> 方法时，会创建一个 <code>Query</code> 对象。</p>
+<p>一、<code>query()</code> 可以接受模型类作为参数，将返回该模型类的实例对象：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> instance <span class="keyword">in</span> session.query(User).order_by(User.id):</span><br><span class="line"><span class="meta">... </span>    print(instance.id, instance.name)</span><br><span class="line"></span><br><span class="line"><span class="number">1</span> ed</span><br><span class="line"><span class="number">2</span> n</span><br><span class="line"><span class="number">3</span> tom</span><br></pre></td></tr></table></figure></p>
+<p>二、<code>query()</code> 也可以接受模型类的字段属性作为参数，返回这些属性值的 tuple：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> id, name <span class="keyword">in</span> session.query(User.id, User.name):</span><br><span class="line"><span class="meta">... </span>    print(id, name)</span><br><span class="line"></span><br><span class="line"><span class="number">1</span> ed</span><br><span class="line"><span class="number">2</span> n</span><br><span class="line"><span class="number">3</span> tom</span><br></pre></td></tr></table></figure></p>
+<p>上面返回的 tuple 可以是命名 tule，也可以是 <code>KeydTuple</code>，长得和字典差不多。属性的话 key 就是属性名字，类的话就是类名：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> row <span class="keyword">in</span> session.query(User, User.name).all():</span><br><span class="line"><span class="meta">... </span>    print(row.User, row.name)</span><br><span class="line"></span><br><span class="line">&lt;User (ed)&gt; ed</span><br><span class="line">&lt;User (n)&gt; n</span><br><span class="line">&lt;User (tom)&gt; tom</span><br></pre></td></tr></table></figure></p>
+<p>当然，如果不想使用上面这些默认的名称，也可以通过 <code>label()</code> 来自定义名字：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> row <span class="keyword">in</span> session.query(User.name.label(<span class="string">'user_name'</span>)).all():</span><br><span class="line"><span class="meta">... </span>    print(row.user_name)</span><br><span class="line"></span><br><span class="line">ed</span><br><span class="line">n</span><br><span class="line">tom</span><br></pre></td></tr></table></figure></p>
+<p>而，对于整个类名的自定义命名则需要使用 <code>aliased()</code> 方法：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sqlalchemy.orm <span class="keyword">import</span> aliased</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>user_alias = aliased(User, name=<span class="string">'user_alias'</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> row <span class="keyword">in</span> session.query(user_alias, user_alias.name).all():</span><br><span class="line"><span class="meta">... </span>    print(row.user_alias, row.name)</span><br><span class="line"></span><br><span class="line">&lt;User (ed)&gt; ed</span><br><span class="line">&lt;User (n)&gt; n</span><br><span class="line">&lt;User (tom)&gt; tom</span><br></pre></td></tr></table></figure></p>
+<p><code>Query</code> 的 <code>LIMIT</code> 和 <code>OFFSET</code> 操作，都可以直接使用 Python 的切片实现，同时还可以搭配 <code>ORDER_BY</code> 使用：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> u <span class="keyword">in</span> session.query(User).order_by(-User.id)[<span class="number">1</span>:<span class="number">3</span>]:</span><br><span class="line"><span class="meta">... </span>    print(u.id)</span><br><span class="line"></span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">2</span></span><br></pre></td></tr></table></figure></p>
+<p>过滤操作有两种：</p>
+<p>一、可以通过 <code>filter_by()</code> 传入关键字参数来实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; for u in session.query(User).filter_by(name=&apos;tom&apos;):</span><br><span class="line">...     print(u.id)</span><br><span class="line"></span><br><span class="line">3</span><br></pre></td></tr></table></figure></p>
+<p>二、通过 <code>filter()</code> 传入类的映射属性实现：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; for u in session.query(User).filter(User.name==&apos;tom&apos;):</span><br><span class="line">...     print(u.id)</span><br><span class="line"></span><br><span class="line">3</span><br></pre></td></tr></table></figure></p>
+<p>可以看见，第二种过滤方法更灵活。其传入的是 Python 的操作符。</p>
+<p>常用的操作符有以下几种：</p>
+<ul>
+<li>equals：<code>query.filter(User.name==&#39;tom&#39;)</code></li>
+<li>not equals：<code>query.filter(User.name!=&#39;tom&#39;)</code></li>
+<li>like：<code>query.filter(User.name.like(&#39;%to%&#39;))</code></li>
+<li>ilike：<code>query.filter(User.name.ilike(&#39;%to%&#39;))</code></li>
+<li>in：<ul>
+<li><code>query.filter(User.name.in_([&#39;tom&#39;, &#39;ed&#39;]))</code></li>
+<li><code>query.filter(User.name.in_(session.query(User.name).filter(User.name.like(&#39;%to%&#39;)))</code></li>
+</ul>
+</li>
+<li>not in：<code>query.filter(~User.name.in_([&#39;tom&#39;, &#39;ed&#39;]))</code></li>
+<li>is null：<ul>
+<li><code>query.filter(User.name==None)</code></li>
+<li><code>query.filter(User.name.is_(None))</code></li>
+</ul>
+</li>
+<li>is not null：<ul>
+<li><code>query.filter(User.name!=None)</code></li>
+<li><code>query.filter(User.name.isnot(None))</code></li>
+</ul>
+</li>
+<li>and：<code>from sqlalchemy import and_</code><ul>
+<li><code>query.filter(and_(User.name==&#39;tom&#39;, User.id==2))</code></li>
+<li><code>query.filter(User.name==&#39;tom&#39;, User.id==2)</code></li>
+<li><code>query.filter(User.name==&#39;tom&#39;).filter(User.id==2)</code></li>
+</ul>
+</li>
+<li>or：<code>from sqlalchemy import or_</code><ul>
+<li><code>query.filter(or_(User.name==&#39;tom&#39;, User.id==2))</code></li>
+</ul>
+</li>
+<li>match：<code>query.filter(User.name.match(&#39;tom&#39;))</code></li>
+</ul>
+<h2 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h2><p>一般就分两种：对象列表、对象：</p>
+<ul>
+<li><code>all()</code>：返回对象列表</li>
+<li><code>first()</code>：返回第一个对象</li>
+<li><code>one()</code>：返回一个对象，如果该 query 为空或者 不止一个对象都会报错</li>
+<li><code>one_or_none()</code>：返回一个对象，query 为空返回 None，多个对象还是会报错</li>
+<li><code>scalar()</code>：返回一个对象，会先调用 <code>one()</code>，获取对象，然后返回第一列的数据，query 为空返回 None，多个对象报错</li>
+</ul>
+<h2 id="使用字符SQL"><a href="#使用字符SQL" class="headerlink" title="使用字符SQL"></a>使用字符SQL</h2><p><code>Query</code> 通过 <code>text()</code> 方法，可以接受文字字符串，大部分的 <code>Query</code> 方法都支持：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sqlalchemy <span class="keyword">import</span> text</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> user <span class="keyword">in</span> session.query(User).\</span><br><span class="line"><span class="meta">... </span>            filter(text(<span class="string">'id&lt;224'</span>)).\</span><br><span class="line"><span class="meta">... </span>            order_by(text(<span class="string">'id'</span>)).all():</span><br><span class="line"><span class="meta">... </span>    print(user.name)</span><br><span class="line"></span><br><span class="line">ed</span><br><span class="line">n</span><br><span class="line">tom</span><br></pre></td></tr></table></figure></p>
+<p><code>text()</code> 里面还可以传递变量。变量名前面只需加上 <code>:</code>，然后在配合 <code>params()</code> 方法即可：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>session.query(User).filter(text(<span class="string">'id&lt;:value and name=:name'</span>)).\</span><br><span class="line"><span class="meta">... </span>        params(value=<span class="number">224</span>, name=<span class="string">'tom'</span>).order_by(User.id).one()</span><br><span class="line"></span><br><span class="line">&lt;User (tom)&gt;</span><br></pre></td></tr></table></figure></p>
+<p>如果想直接使用完整的 SQL 语句可以在 <code>from_statement()</code> 中使用 <code>text()</code>：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>session.query(User).from_statement(</span><br><span class="line"><span class="meta">... </span>            text(<span class="string">"SELECT * FROM users where name=:name"</span>)).\</span><br><span class="line"><span class="meta">... </span>            params(name=<span class="string">'tom'</span>).all()</span><br><span class="line"></span><br><span class="line">[&lt;User (tom)&gt;]</span><br></pre></td></tr></table></figure></p>
+<p>另外，可能会有这么一种情况：当我们处理复杂案例时，可能会碰到多个映射类有重复的列名，或者还会有些匿名的 ORM 结构。我们可以使用 <code>TextClause.columns()</code> 方法指定具体列所对应的 ORM 映射：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>stmt = text(<span class="string">'SELECT name, id, password FROM user where name=:name'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>stmt = stmt.columns(User.name, User.id, User.password)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>session.query(User).from_statement(stmt).params(name=<span class="string">'ed'</span>).all()</span><br><span class="line"></span><br><span class="line">[&lt;User (ed)&gt;]</span><br></pre></td></tr></table></figure></p>
+<h2 id="计数"><a href="#计数" class="headerlink" title="计数"></a>计数</h2><p>简单的 <code>Query</code> 计数可以直接使用 <code>count()</code>：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>session.query(User).filter(User.name.like(<span class="string">'%ed'</span>)).count()</span><br><span class="line"></span><br><span class="line"><span class="number">1</span></span><br></pre></td></tr></table></figure></p>
+<p>但是这段语句会翻译成如下的 SQL 命令去执行：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">count</span>(*) <span class="keyword">AS</span> count_1</span><br><span class="line"><span class="keyword">FROM</span> (<span class="keyword">SELECT</span> users.id <span class="keyword">AS</span> users_id,</span><br><span class="line">                users.name <span class="keyword">AS</span> users_name,</span><br><span class="line">                users.fullname <span class="keyword">AS</span> users_fullname,</span><br><span class="line">                users.password <span class="keyword">AS</span> users_password</span><br><span class="line"><span class="keyword">FROM</span> <span class="keyword">users</span></span><br><span class="line"><span class="keyword">WHERE</span> users.name <span class="keyword">LIKE</span> ?) <span class="keyword">AS</span> anon_1</span><br><span class="line">(<span class="string">'%ed'</span>,)</span><br></pre></td></tr></table></figure></p>
+<p>SQLAlchemy 总是会把我们的查询作为子集，然后再从这里面计算行数。</p>
+<p>有时候我们可能需要更明确的指定需要计数的内容，<code>func.count()</code> 表达式就可以完成：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sqlalchemy <span class="keyword">import</span> func</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>session.query(func.count(User.name), User.name).group_by(User.name).all()</span><br><span class="line"></span><br><span class="line">[(<span class="number">1</span>, <span class="string">'n'</span>), (<span class="number">1</span>, <span class="string">'tom'</span>), (<span class="number">1</span>, <span class="string">'ed'</span>)]</span><br></pre></td></tr></table></figure></p>
+<p>如果我们想实现简单的 <code>SELECT count(*) FROM table</code>，可以这么做：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>session.query(func.count(<span class="string">'*'</span>)).select_from(User).scalar()</span><br><span class="line"></span><br><span class="line"><span class="number">3</span></span><br></pre></td></tr></table></figure></p>
+<p>还可以再简化，当我们直接以 <code>User</code> 主键来计数，<code>select_from()</code> 都可以省略不写：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>session.query(func.count(User.id)).scalar()</span><br><span class="line"></span><br><span class="line"><span class="number">3</span></span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/SQLAlchemy/" rel="tag"># SQLAlchemy</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/13/SQLAlchemy（一）/" rel="next" title="SQLAlchemy（一）">
+                <i class="fa fa-chevron-left"></i> SQLAlchemy（一）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yNzg4NS80NDYy"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Yuan">
+          <p class="site-author-name" itemprop="name">Yuan</p>
+           
+              <p class="site-description motion-element" itemprop="description">interesting</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/YuanBLQ/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#目标"><span class="nav-number">1.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插入一条数据"><span class="nav-number">2.</span> <span class="nav-text">插入一条数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查询"><span class="nav-number">3.</span> <span class="nav-text">查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#返回值"><span class="nav-number">4.</span> <span class="nav-text">返回值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用字符SQL"><span class="nav-number">5.</span> <span class="nav-text">使用字符SQL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#计数"><span class="nav-number">6.</span> <span class="nav-text">计数</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yuan</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"> 本站访问量 </i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("DLXhFvD0nnv6rhu9LFUhmVPP-gzGzoHsz", "xyEKUkd6XbgqcNvCNUkCf7eB");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
