@@ -140,6 +140,80 @@
   </entry>
   
   <entry>
+    <title>Pandas合并操作（merge）</title>
+    <link href="https://yuanblq.github.io/2019/03/07/Pandas%E5%90%88%E5%B9%B6%E6%93%8D%E4%BD%9C%EF%BC%88merge%EF%BC%89/"/>
+    <id>https://yuanblq.github.io/2019/03/07/Pandas合并操作（merge）/</id>
+    <published>2019-03-07T15:36:20.000Z</published>
+    <updated>2019-03-07T15:41:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Pandas 常用的合并方法有 <code>join</code>，<code>merge</code>，<code>concat</code> 三种，本文我们来看看 <code>merge</code> 的用法。</p>
+<a id="more"></a>
+<h3 id="merge"><a href="#merge" class="headerlink" title="merge"></a>merge</h3><p>函数签名：</p>
+<p><code>left_data.merge(right_data, how=&#39;inner&#39;, on=None, left_on=None, right_on=None, left_index=False, right_index=False, sort=False, suffixes=(&#39;_x&#39;, &#39;_y&#39;), copy=True, indicator=False, validate=None)</code></p>
+<p><code>merge</code> 操作和数据库中的 <code>join</code> 操作类似。</p>
+<p><code>merge</code> 操作的可以是索引也可以是列。如果操作的是列，那么会忽略掉 DataFrame 的索引，否则无论操作的是索引对索引还是索引对列，索引都会传递过去的。</p>
+<h3 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h3><p>看过之前那篇 <code>Pandas合并操作 — join</code> 的话，相信 <code>merge</code> 里面的大部分参数大家都已经很熟悉了。</p>
+<h4 id="right-data"><a href="#right-data" class="headerlink" title="right_data"></a>right_data</h4><p>和 <code>left_data</code> 进行合并操作的 DataFrame 或者命名的 Series。</p>
+<h4 id="how"><a href="#how" class="headerlink" title="how"></a>how</h4><p>合并的方式：left、right、outer、inner。</p>
+<ul>
+<li>left：使用 <code>left_data</code> 的键执行合并操作，类似于 SQL 的 <code>left outer join</code>，按键的顺序排序。</li>
+<li>right：使用 <code>right_data</code> 的键执行合并操作，类似于 SQL 的 <code>right outer join</code>，按键的顺序排序。</li>
+<li>outer：使用左右两侧数据所有的键进行合并操作，类似于 SQL 的 <code>full outer join</code>，按字典顺序排序。</li>
+<li>inner：使用两侧数据键的交集进行合并操作，类似 SQL 的 <code>inner join</code>，按左侧数据的键顺序排序。</li>
+</ul>
+<h4 id="on"><a href="#on" class="headerlink" title="on"></a>on</h4><p>可接收单个字符串（也即是只按这列/索引合并）也可以接收一个列表（按这几个列/索引合并）。</p>
+<p>不使用默认索引，而是按照 <code>on</code> 参数指定的列名或者索引进行合并操作。<code>on</code> 指定的名字必须在左右两侧的数据中都能找到，不然潘大叔会傻掉的，直接把错误扔给你去处理。</p>
+<h4 id="left-on"><a href="#left-on" class="headerlink" title="left_on"></a>left_on</h4><p><code>left_data</code> 的哪个或哪些列/索引用来作为合并操作的基准。</p>
+<h4 id="right-on"><a href="#right-on" class="headerlink" title="right_on"></a>right_on</h4><p><code>right_data</code> 的哪个或哪些列/索引用来作为合并操作的基准。</p>
+<p><strong><code>left_on</code> 和 <code>right_on</code> 需要搭配使用，上面的 <code>on</code> 参数是左右同名的列名或索引，如果想操作的左右两个数据的列名或者索引不一样，就需要使用 <code>left_on</code> 和 <code>right_on</code> 参数。</strong></p>
+<h4 id="left-index"><a href="#left-index" class="headerlink" title="left_index"></a>left_index</h4><p>默认 <code>False</code>，是否使用 <code>left_data</code> 的索引来执行合并操作。如果是多层索引 <code>right_data</code> 也需要有同样层数的多级索引</p>
+<h4 id="right-index"><a href="#right-index" class="headerlink" title="right_index"></a>right_index</h4><p>默认 <code>False</code>，是否使用 <code>right_data</code> 的索引来执行合并操作。如果是多层索引 <code>left_data</code> 也需要有同样层数的多级索引</p>
+<p><strong>如果 <code>left_index=True</code> 或者 <code>right_index=True</code>，那么另一边的数据要么也使用索引，要么也可以使用上面的 <code>left_on</code> 或者 <code>right_on</code> 来指定对应的列或索引。</strong></p>
+<h4 id="sort"><a href="#sort" class="headerlink" title="sort"></a>sort</h4><p>是否按照 key 在字典中的字母顺序对结果排序（默认 <code>False</code>）。</p>
+<h4 id="suffixes"><a href="#suffixes" class="headerlink" title="suffixes"></a>suffixes</h4><p>合并的时候如果有相同的列名，是否通过增加后缀区分（默认 <code>(&#39;_x&#39;, &#39;_y&#39;)</code>）。</p>
+<p><code>(False, False)</code> 表示如果有重复的列名就报错。</p>
+<h4 id="copy"><a href="#copy" class="headerlink" title="copy"></a>copy</h4><p>默认 <code>True</code>，如果设置为 <code>False</code>，会在操作的过程中尽可能的减少复制操作。</p>
+<h4 id="indicator"><a href="#indicator" class="headerlink" title="indicator"></a>indicator</h4><p>默认 <code>False</code>，如果为 <code>True</code>，会增加一列叫做 <code>_merge</code> 的数据，表示每一行进行合并操作的类型。</p>
+<p>如果设置为字符串，则用这个作为新增的列名。</p>
+<p>一共有这几个合并类型：</p>
+<ul>
+<li><code>left_only</code>，最终 key 只存在于 <code>left_data</code></li>
+<li><code>right_only</code>，最终 key 只存在于 <code>right_data</code></li>
+<li><code>both</code>，最终 key 在 <code>left_data</code> 和 <code>right_data</code> 中都有</li>
+</ul>
+<h4 id="validate"><a href="#validate" class="headerlink" title="validate"></a>validate</h4><p>检测合并的类型：</p>
+<ul>
+<li><code>one_to_one</code> 或者 <code>1:1</code>，验证 key 在左右两侧数据中都是唯一的</li>
+<li><code>one_to_many</code> 或者 <code>1:m</code>，验证 key 在左侧数据中是唯一的</li>
+<li><code>many_to_one</code> 或者 <code>m:1</code>，验证 key 在右侧数据中是唯一的</li>
+<li><code>many_to_many</code> 或者 <code>m:m</code>，不做验证</li>
+</ul>
+<h3 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h3><p>返回合并后的数据。</p>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; a = pd.DataFrame(&#123;&apos;ID&apos;: [1, 2, 3, 4, 5], &apos;name&apos;: [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;]&#125;)</span><br><span class="line">&gt;&gt;&gt; b = pd.DataFrame(&#123;&apos;ID&apos;: [2, 3, 4, 5], &apos;name&apos;: [&apos;p2&apos;, &apos;p3&apos;, &apos;p4&apos;, &apos;e&apos;]&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; a</span><br><span class="line">   ID name</span><br><span class="line">0   1    a</span><br><span class="line">1   2    b</span><br><span class="line">2   3    c</span><br><span class="line">3   4    d</span><br><span class="line">4   5    e</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; b</span><br><span class="line">   ID name</span><br><span class="line">0   2   p2</span><br><span class="line">1   3   p3</span><br><span class="line">2   4   p4</span><br><span class="line">3   5    e</span><br></pre></td></tr></table></figure>
+<h4 id="on-1"><a href="#on-1" class="headerlink" title="on"></a>on</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; a.merge(b)</span><br><span class="line">   ID name</span><br><span class="line">0   5    e</span><br></pre></td></tr></table></figure>
+<p>如果不指定 <code>on</code>、<code>left_on</code>、<code>right_on</code>、<code>left_index</code>、<code>right_index</code>，那么默认会把左右两侧数据所有相同的列名作为 merge key，必须所有相同的列对应的值都一样才可以。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; b = pd.DataFrame(&#123;&apos;ID&apos;: [2, 3, 4, 5], &apos;city&apos;: [&apos;p2&apos;, &apos;p3&apos;, &apos;p4&apos;, &apos;e&apos;]&#125;)</span><br><span class="line">&gt;&gt;&gt; a.merge(b)</span><br><span class="line">   ID name city</span><br><span class="line">0   2    b   p2</span><br><span class="line">1   3    c   p3</span><br><span class="line">2   4    d   p4</span><br><span class="line">3   5    e    e</span><br></pre></td></tr></table></figure>
+<p>如上，如果只有一列 <code>ID</code> 名字相同，则只合并 <code>ID</code> 对应值相同的行。</p>
+<h4 id="left-on-right-on"><a href="#left-on-right-on" class="headerlink" title="left_on / right_on"></a>left_on / right_on</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; a.merge(b, left_on=&apos;name&apos;, right_on=&apos;city&apos;)</span><br><span class="line">   ID_x name  ID_y city</span><br><span class="line">0     5    e     5    e</span><br></pre></td></tr></table></figure>
+<p>以 <code>a</code> 的 <code>name</code> 列和 <code>b</code> 的 <code>city</code> 列作合并操作，因为只有值为 <code>e</code> 的数据是相同的，所以最后就剩下了这么一行。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Pandas 常用的合并方法有 &lt;code&gt;join&lt;/code&gt;，&lt;code&gt;merge&lt;/code&gt;，&lt;code&gt;concat&lt;/code&gt; 三种，本文我们来看看 &lt;code&gt;merge&lt;/code&gt; 的用法。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="知识点" scheme="https://yuanblq.github.io/categories/%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
+    
+    
+      <category term="Pandas" scheme="https://yuanblq.github.io/tags/Pandas/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Pandas合并操作（join）</title>
     <link href="https://yuanblq.github.io/2019/02/14/Pandas%E5%90%88%E5%B9%B6%E6%93%8D%E4%BD%9C%EF%BC%88join%EF%BC%89/"/>
     <id>https://yuanblq.github.io/2019/02/14/Pandas合并操作（join）/</id>
@@ -4455,107 +4529,6 @@ RuntimeError:
     </summary>
     
       <category term="知识点" scheme="https://yuanblq.github.io/categories/%E7%9F%A5%E8%AF%86%E7%82%B9/"/>
-    
-    
-      <category term="Python" scheme="https://yuanblq.github.io/tags/Python/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Django+uWSGI+Nginx部署</title>
-    <link href="https://yuanblq.github.io/2018/04/04/Django-uWSGI-Nginx%E9%83%A8%E7%BD%B2/"/>
-    <id>https://yuanblq.github.io/2018/04/04/Django-uWSGI-Nginx部署/</id>
-    <published>2018-04-04T08:16:00.000Z</published>
-    <updated>2018-04-04T08:25:51.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>最近在玩微信小程序，但是测试的时候想和 Django 后端通信时出现了问题。</p>
-<p>微信小程序的服务器域名配置文档中写到：</p>
-<blockquote>
-<p>服务器域名请在 小程序后台-设置-开发设置-服务器域名 中进行配置，配置时需要注意：  </p>
-<ul>
-<li>域名只支持 https (request、uploadFile、downloadFile) 和 wss (connectSocket) 协议；  </li>
-<li>域名不能使用 IP 地址或 localhost，且不能带端口号；</li>
-</ul>
-</blockquote>
-<p>这就尴尬了，所以可以采用 Nginx “隐藏”端口号，并搭建本地 https。</p>
-<a id="more"></a>
-<h2 id="安装uwsgi"><a href="#安装uwsgi" class="headerlink" title="安装uwsgi"></a>安装uwsgi</h2><h3 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h3><p>如果 <code>pip install uwsgi</code> 失败，很可能是没有安装 Python 的开发环境包，如果是 Debian 类型的系统直接 <code>apt-get install pythonX.Y-dev</code> 即可。</p>
-<h3 id="Hello-World"><a href="#Hello-World" class="headerlink" title="Hello World"></a>Hello World</h3><p>随便在哪里创建一个 <code>test.py</code> 文件：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">application</span><span class="params">(env, start_response)</span>:</span></span><br><span class="line">    start_response(<span class="string">'200 OK'</span>, [(<span class="string">'Content-Type'</span>, <span class="string">'text/html'</span>)])</span><br><span class="line">    <span class="keyword">return</span> [<span class="string">b"Hello World"</span>] <span class="comment"># python3</span></span><br><span class="line">    <span class="comment">#return ["Hello World"] # python2</span></span><br></pre></td></tr></table></figure></p>
-<p>然后再该文件所在位置执行：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uwsgi --http :8000 --wsgi-file test.py</span><br></pre></td></tr></table></figure></p>
-<p>这样，在浏览器输入 <code>yourdomain.com:8000</code> 即可看见写有 <code>Hello World</code> 的页面了。</p>
-<ul>
-<li><code>--http :8000</code> 表示使用 <code>http</code> 协议，端口号 <code>8000</code></li>
-<li><code>wsgi-file test.py</code> 表示载入指定的 <code>test.py</code> 文件</li>
-</ul>
-<p>如果顺利完成这一步，那么 <code>浏览器 &lt;-&gt; uWSGI &lt;-&gt; Python</code> 这条路就走通了！</p>
-<h3 id="接入-Django"><a href="#接入-Django" class="headerlink" title="接入 Django"></a>接入 Django</h3><p><code>cd your-Django-project-dir</code> 进入你的 Django 项目文件夹。</p>
-<p>上面是直接指定某个 Python 文件，现在，我们只需指定某个项目模块即可：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uwsgi --http :8000 --module your-Django-project.wsgi</span><br></pre></td></tr></table></figure></p>
-<p>同样，打开浏览器输入 <code>yourdomain.com:8000</code> 即可看见我们的 Django 项目页面了。</p>
-<p>如果顺利完成这一步，那么 <code>浏览器 &lt;-&gt; uWSGI &lt;-&gt; Django</code> 这条路就走通了！</p>
-<h2 id="加入-nginx"><a href="#加入-nginx" class="headerlink" title="加入 nginx"></a>加入 nginx</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>安装完 <code>nginx</code> 后，确保 <code>nginx</code> 监听的是 80 端口，然后在浏览器输入 <code>yourdomain.com</code> 就能看到 <code>nginx</code> 默认的 <code>Welcome to nginx</code> 页面了。<br><img src="https://pages-ncdn-1253600859.cossh.myqcloud.com/Django/deploy/20180403152217.png" alt="Welcome to nginx"></p>
-<p>如果顺利完成这一步，那么 <code>浏览器 &lt;-&gt; nginx</code> 这条路就走通了！</p>
-<h3 id="配置-nginx"><a href="#配置-nginx" class="headerlink" title="配置 nginx"></a>配置 nginx</h3><h4 id="处理静态文件"><a href="#处理静态文件" class="headerlink" title="处理静态文件"></a>处理静态文件</h4><p>安装完 <code>nginx</code> 之后应该在类似 <code>/etc/nginx/</code> 目录下有一个叫做 <code>uwsgi_params</code> 的文件，把它拷贝至 Django 项目的目录下。如果没有 <code>uwsgi_params</code> 文件，可以从<a href="https://github.com/nginx/nginx/blob/master/conf/uwsgi_params" target="_blank" rel="noopener">这里</a>复制一份。</p>
-<p>现在我们在 <code>/etc/nginx/sites-available/</code> 文件夹下创建一个 <code>yourdomain_nginx.conf</code> 的文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"># yourdomain_nginx.conf</span><br><span class="line"></span><br><span class="line"># the upstream component nginx needs to connect to</span><br><span class="line">upstream django &#123;</span><br><span class="line">    # server unix:///path/to/your/mysite/mysite.sock; # for a file socket</span><br><span class="line">    server 127.0.0.1:8001; # for a web port socket (we&apos;ll use this first)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># configuration of the server</span><br><span class="line">server &#123;</span><br><span class="line">    # the port your site will be served on</span><br><span class="line">    listen      8000;</span><br><span class="line">    # the domain name it will serve for</span><br><span class="line">    server_name yourdomain.com; # substitute your machine&apos;s IP address or FQDN</span><br><span class="line">    charset     utf-8;</span><br><span class="line"></span><br><span class="line">    # max upload size</span><br><span class="line">    client_max_body_size 75M;   # adjust to taste</span><br><span class="line"></span><br><span class="line">    # Django media</span><br><span class="line">    location /media  &#123;</span><br><span class="line">        alias /path/to/your/mysite/media;  # your Django project&apos;s media files - amend as required</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    location /static &#123;</span><br><span class="line">        alias /path/to/your/mysite/static; # your Django project&apos;s static files - amend as required</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    # Finally, send all non-media requests to the Django server.</span><br><span class="line">    location / &#123;</span><br><span class="line">        uwsgi_pass  django;</span><br><span class="line">        include     /path/to/your/mysite/uwsgi_params; # the uwsgi_params file you installed</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这个文件告诉 <code>nginx</code> 去处理我们 Django 项目的一些静态文件（media, static）。</p>
-<p>然后我们创建一个软连接：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -s /etc/nginx/sites-available/yourdomain_nginx.conf  /etc/nginx/sites-enabled/</span><br></pre></td></tr></table></figure></p>
-<p>如果之前没有添加过 Django 静态文件夹配置的话，在 <code>settings.py</code> 文件中添加：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 文件夹的位置需要和 yourdomain_nginx.conf 中配置的一样</span><br><span class="line">STATIC_ROOT = os.path.join(BASE_DIR, &quot;static/&quot;)</span><br></pre></td></tr></table></figure></p>
-<p>然后执行：<code>python manage.py collectstatic</code> 将静态文件搜集进这个文件夹</p>
-<p>现在重启 <code>nginx</code>: <code>/etc/init.d/nginx restart</code></p>
-<p>在浏览器中输入 <code>http://www.yourdomain.com:8000/static/admin/js/autocomplete.js</code>，应该能看见这个 js 文件的内容。（你可能没有这个文件，视不同版本 Django 而定，你可以访问你自己的某个静态文件）<br><img src="https://pages-ncdn-1253600859.cossh.myqcloud.com/Django/deploy/20180403154812.png" alt="静态文件"></p>
-<p>如果顺利完成这一步，那么 <code>浏览器 &lt;-&gt; nginx &lt;-&gt; 静态文件</code> 这条路就走通了！</p>
-<h4 id="处理-uwsgi-链接（TCP-socket）"><a href="#处理-uwsgi-链接（TCP-socket）" class="headerlink" title="处理 uwsgi 链接（TCP socket）"></a>处理 uwsgi 链接（TCP socket）</h4><p>在 <code>yourdomain_nginx.conf</code> 文件中的这段代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">upstream django &#123;</span><br><span class="line">    # server unix:///path/to/your/mysite/mysite.sock; # for a file socket</span><br><span class="line">    server 127.0.0.1:8001; # for a web port socket (we&apos;ll use this first)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">location / &#123;</span><br><span class="line">        uwsgi_pass  django;</span><br><span class="line">        include     /your-Django-project-dir/uwsgi_params; # the uwsgi_params file you installed</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>告诉了 <code>nginx</code> 去处理 <code>uwsgi</code> 过来的 <code>request</code>。</p>
-<p>现在你在之前的 <code>test.py</code> 目录下执行：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uwsgi --socket :8001 --wsgi-file test.py</span><br></pre></td></tr></table></figure></p>
-<p>然后打开浏览器访问 <code>yourdomain.com:8000</code> 就能看见 <code>test.py</code> 中的 <code>Hello World</code> 了。</p>
-<p>这时，<code>浏览器 &lt;-&gt; nginx &lt;-&gt; socket &lt;-&gt; uwsgi &lt;-&gt; Python</code> 这条路就走通了！</p>
-<h4 id="处理-uwsgi-链接（unix-socket）"><a href="#处理-uwsgi-链接（unix-socket）" class="headerlink" title="处理 uwsgi 链接（unix socket）"></a>处理 uwsgi 链接（unix socket）</h4><p>在上面的 <code>yourdomain_nginx.conf</code> 文件中，配置 sock 文件位置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">upstream django &#123;</span><br><span class="line">    server unix:///path/to/your/mysite/mysite.sock;</span><br><span class="line">    # server 127.0.0.1:8001;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>重启 <code>nginx</code></p>
-<p>启动 <code>uWSGI</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uwsgi --socket mysite.sock --wsgi-file test.py</span><br></pre></td></tr></table></figure></p>
-<p>打开浏览器，访问 <code>yourdomain.com:8000</code> 就能看见 <code>test.py</code> 中的 <code>Hello World</code> 了。</p>
-<blockquote>
-<p><strong>注意：</strong><br>这里由于存在多个“用户”读写同一个文件（mysite.sock），所以可能会在 <code>uwsgi</code> 或者 <code>nginx</code> 中报权限不足的错误。<br>如果在 <code>nginx</code> 的错误日志中（/var/log/nginx/error.log）出现 <code>connect() to unix:///path/to/your/mysite/mysite.sock failed (13: Permission denied)</code>，你可以这么启动 <code>uwsgi</code>：<br><code>uwsgi --socket mysite.sock --wsgi-file test.py --chmod-socket=666</code>  </p>
-<p>由于我是在 Docker 中跑的，启动 <code>uwsgi</code> 的时候一直报 <code>uwsgi bind(): Operation not permitted [core/socket.c line 230]</code> 这个权限的错误。<br>这是因为 <code>sock</code> 文件存放的位置在 Docker 的挂载路径中，从而导致了权限的问题，只需把 <code>sock</code> 文件存在其他位置即可。</p>
-</blockquote>
-<h2 id="Django-uWSGI-NGINX"><a href="#Django-uWSGI-NGINX" class="headerlink" title="Django + uWSGI + NGINX"></a>Django + uWSGI + NGINX</h2><p>现在我们把这三个连接到一起：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uwsgi --socket mysite.sock --module mysite.wsgi</span><br></pre></td></tr></table></figure></p>
-<p>打开浏览器，访问 <code>yourdomain.com</code> 就能看见 Django 的 Hello World 页面了。<br><img src="https://pages-ncdn-1253600859.cossh.myqcloud.com/Django/deploy/20180404154538.png" alt="Django 首页"></p>
-<h2 id="uWSGI-配置"><a href="#uWSGI-配置" class="headerlink" title="uWSGI 配置"></a>uWSGI 配置</h2><p>uWSGI 启动的时候可以添加一些个性化配置，可以在项目文件夹下新建 <code>yourdomain_uwsgi.ini</code> 文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"># yourdomain_uwsgi.ini file</span><br><span class="line">[uwsgi]</span><br><span class="line"></span><br><span class="line"># Django 项目根目录（绝对路径）</span><br><span class="line">chdir           = /path/to/your/project</span><br><span class="line"># Django 项目的 wsgi 文件</span><br><span class="line">module          = project.wsgi</span><br><span class="line"># Python 虚拟环境路径（绝对路径）</span><br><span class="line"># home            = /path/to/virtualenv</span><br><span class="line"></span><br><span class="line"># 是否为主进程</span><br><span class="line">master          = true</span><br><span class="line"># 最多工作进程数</span><br><span class="line">processes       = 4</span><br><span class="line"># sock 文件路径（绝对路径）</span><br><span class="line">socket          = /path/to/your/project/mysite.sock</span><br><span class="line"># 之前讲的权限问题，在这边设置合适的权限</span><br><span class="line"># chmod-socket    = 664</span><br><span class="line"># 退出时，清除环境</span><br><span class="line">vacuum          = true</span><br><span class="line"># uwsgi pid 文件存放路径</span><br><span class="line">pidfile         = /uwsgi_conf/uwsgi.pid</span><br><span class="line"># uwsgi log 文件存放路径（不添加则前台进程，加上后会转为后台进程）</span><br><span class="line">daemonize       = /uwsgi_conf/uwsgi.log</span><br></pre></td></tr></table></figure></p>
-<p><code>uwsgi</code> 配置文件写完后，启动：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uwsgi --ini yourdomain_uwsgi.ini</span><br></pre></td></tr></table></figure></p>
-<h2 id="利用-NGINX-配置本地-HTTPS"><a href="#利用-NGINX-配置本地-HTTPS" class="headerlink" title="利用 NGINX 配置本地 HTTPS"></a>利用 NGINX 配置本地 HTTPS</h2><h3 id="生成证书"><a href="#生成证书" class="headerlink" title="生成证书"></a>生成证书</h3><p>首先需要确认已经安装 <code>OpenSSL</code></p>
-<p>装完后，执行以下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>req：处理证书签署请求。</li>
-<li>x509：生成自签名证书。</li>
-<li>nodes：跳过为证书设置密码的阶段，这样 Nginx 才可以直接打开证书。</li>
-<li>days 365：证书有效期为一年。</li>
-<li>newkey rsa:2048：生成一个新的私钥，采用的算法是2048位的 RSA。</li>
-<li>keyout：新生成的私钥文件为当前目录下的 server.key。</li>
-<li>out：新生成的证书文件为当前目录下的 server.crt。</li>
-</ul>
-<p>然后会让你填写一些信息，其中最重要的就是 <code>Common Name (e.g. server FQDN or YOUR name) []:</code></p>
-<p>你可以填上你的域名（本地 hosts 中随意的”假”域名）或者 ip。</p>
-<p>最后得到这两个文件：<code>example.crt</code>， <code>example.key</code>。</p>
-<h3 id="配置-HTTPS"><a href="#配置-HTTPS" class="headerlink" title="配置 HTTPS"></a>配置 HTTPS</h3><p>将下面的代码加到之前 <code>yourdomain_nginx.conf</code> 的最后面（别忘了修改你对应的文件位置）：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen 443 ssl http2;</span><br><span class="line">    server_name  yourdomain;</span><br><span class="line"></span><br><span class="line">    ssl                      on;</span><br><span class="line">    ssl_certificate          /path/to/your/server.crt;</span><br><span class="line">    ssl_certificate_key      /path/to/your/server.key;</span><br><span class="line"></span><br><span class="line">    ssl_session_timeout  5m;</span><br><span class="line"></span><br><span class="line">    ssl_ciphers HIGH:!aNULL:!MD5;</span><br><span class="line">    ssl_protocols SSLv3 TLSv1 TLSv1.1 TLSv1.2;</span><br><span class="line">    ssl_prefer_server_ciphers   on;</span><br><span class="line"></span><br><span class="line">    location / &#123;</span><br><span class="line">        uwsgi_pass  django;</span><br><span class="line">        include     /path/to/your/uwsgi_params;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>重启 <code>nginx</code>，在浏览器中输入 <code>https://yourdomain.com</code>，即可看见之前的页面，不过这个 https 认证浏览器会认为是不安全的，对于本地测试完全不用在意。<br><img src="https://pages-ncdn-1253600859.cossh.myqcloud.com/Django/deploy/20180404160902.png" alt="https 页面"></p>
-<p>好了，我要去玩微信小程序了。</p>
-<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="http://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html" target="_blank" rel="noopener">uWSGI 文档</a><br><a href="https://github.com/docker/compose/issues/3211#issuecomment-201503053" target="_blank" rel="noopener">Docker 跨容器挂载</a><br><a href="http://www.ruanyifeng.com/blog/2018/02/nginx-docker.html" target="_blank" rel="noopener">阮一峰 https 配置</a>  </p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;最近在玩微信小程序，但是测试的时候想和 Django 后端通信时出现了问题。&lt;/p&gt;
-&lt;p&gt;微信小程序的服务器域名配置文档中写到：&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;服务器域名请在 小程序后台-设置-开发设置-服务器域名 中进行配置，配置时需要注意：  &lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;域名只支持 https (request、uploadFile、downloadFile) 和 wss (connectSocket) 协议；  &lt;/li&gt;
-&lt;li&gt;域名不能使用 IP 地址或 localhost，且不能带端口号；&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;这就尴尬了，所以可以采用 Nginx “隐藏”端口号，并搭建本地 https。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Django" scheme="https://yuanblq.github.io/categories/Django/"/>
     
     
       <category term="Python" scheme="https://yuanblq.github.io/tags/Python/"/>

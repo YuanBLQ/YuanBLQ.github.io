@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
-  <meta name="keywords" content="Django,WebSocket,">
+  <meta name="keywords" content="Pandas,">
 
 
 
@@ -89,18 +89,18 @@
 
 
 
-<meta name="description" content="安装可以直接在 PyPI 上获取 Channels —— 安装，只需运行： 1pip install -U channels 安装完之后，你需要把 Channels 添加到你 settings 的 INSTALLED_APPS 中： 12345678INSTALLED_APPS = [    &apos;django.contrib.auth&apos;,    &apos;django.contrib.contenttype">
-<meta name="keywords" content="Django,WebSocket">
+<meta name="description" content="Pandas 常用的合并方法有 join，merge，concat 三种，本文我们来看看 merge 的用法。">
+<meta name="keywords" content="Pandas">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Django也能玩实时 —— chapter 3">
-<meta property="og:url" content="https://yuanblq.github.io/2017/08/07/channel-part3/index.html">
+<meta property="og:title" content="Pandas合并操作（merge）">
+<meta property="og:url" content="https://yuanblq.github.io/2019/03/07/Pandas合并操作（merge）/index.html">
 <meta property="og:site_name" content="Yuan">
-<meta property="og:description" content="安装可以直接在 PyPI 上获取 Channels —— 安装，只需运行： 1pip install -U channels 安装完之后，你需要把 Channels 添加到你 settings 的 INSTALLED_APPS 中： 12345678INSTALLED_APPS = [    &apos;django.contrib.auth&apos;,    &apos;django.contrib.contenttype">
+<meta property="og:description" content="Pandas 常用的合并方法有 join，merge，concat 三种，本文我们来看看 merge 的用法。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-09-20T15:36:58.000Z">
+<meta property="og:updated_time" content="2019-03-07T15:41:44.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Django也能玩实时 —— chapter 3">
-<meta name="twitter:description" content="安装可以直接在 PyPI 上获取 Channels —— 安装，只需运行： 1pip install -U channels 安装完之后，你需要把 Channels 添加到你 settings 的 INSTALLED_APPS 中： 12345678INSTALLED_APPS = [    &apos;django.contrib.auth&apos;,    &apos;django.contrib.contenttype">
+<meta name="twitter:title" content="Pandas合并操作（merge）">
+<meta name="twitter:description" content="Pandas 常用的合并方法有 join，merge，concat 三种，本文我们来看看 merge 的用法。">
 
 
 
@@ -128,13 +128,13 @@
 
 
 
-  <link rel="canonical" href="https://yuanblq.github.io/2017/08/07/channel-part3/">
+  <link rel="canonical" href="https://yuanblq.github.io/2019/03/07/Pandas合并操作（merge）/">
 
 
 
 
 
-  <title> Django也能玩实时 —— chapter 3 | Yuan </title>
+  <title> Pandas合并操作（merge） | Yuan </title>
 </head>
 
 <body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -282,7 +282,7 @@
   
 
   <article class="post post-type-normal " itemscope="" itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://yuanblq.github.io/2017/08/07/channel-part3/">
+    <link itemprop="mainEntityOfPage" href="https://yuanblq.github.io/2019/03/07/Pandas合并操作（merge）/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Yuan">
@@ -303,7 +303,7 @@
             
             
               
-                Django也能玩实时 —— chapter 3
+                Pandas合并操作（merge）
               
             
           </h1>
@@ -318,8 +318,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-07T15:59:02+08:00">
-                2017-08-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-07T23:36:20+08:00">
+                2019-03-07
               </time>
             
 
@@ -341,8 +341,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/文档/" itemprop="url" rel="index">
-                    <span itemprop="name">文档</span>
+                  <a href="/categories/知识点/" itemprop="url" rel="index">
+                    <span itemprop="name">知识点</span>
                   </a>
                 </span>
 
@@ -358,7 +358,7 @@
 
           
           
-             <span id="/2017/08/07/channel-part3/" class="leancloud_visitors" data-flag-title="Django也能玩实时 —— chapter 3">
+             <span id="/2019/03/07/Pandas合并操作（merge）/" class="leancloud_visitors" data-flag-title="Pandas合并操作（merge）">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -387,17 +387,58 @@
       
 
       
-        <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>可以直接在 PyPI 上获取 Channels —— 安装，只需运行：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install -U channels</span><br></pre></td></tr></table></figure>
-<p>安装完之后，你需要把 <code>Channels</code> 添加到你 settings 的 <code>INSTALLED_APPS</code> 中：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">INSTALLED_APPS = [</span><br><span class="line">    <span class="string">'django.contrib.auth'</span>,</span><br><span class="line">    <span class="string">'django.contrib.contenttypes'</span>,</span><br><span class="line">    <span class="string">'django.contrib.sessions'</span>,</span><br><span class="line">    <span class="string">'django.contrib.sites'</span>,</span><br><span class="line">    ...</span><br><span class="line">    <span class="string">'channels'</span>,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+        <p>Pandas 常用的合并方法有 <code>join</code>，<code>merge</code>，<code>concat</code> 三种，本文我们来看看 <code>merge</code> 的用法。</p>
 <a id="more"></a>
-<p>就这样！完成之后，<code>Channels</code> 会自己集成到 Django，并且接管 <code>runserver</code> 命令。详情见 <a href="http://channels.readthedocs.io/en/latest/getting-started.html" target="_blank" rel="noopener">Getting Started with Channels</a>。</p>
-<blockquote>
-<p><strong>注意</strong><br>注意其他会替换/重载 <code>runserver</code> 命令的第三方 app。Channels 提供了一个独立的 <code>runserver</code> 命令，可能会引起冲突。有这么一个冲突的例子：<a href="https://github.com/evansd/whitenoise" target="_blank" rel="noopener">whitenoise</a> 的 <a href="https://github.com/evansd/whitenoise/issues/77" target="_blank" rel="noopener">whitenoise.runserver_nostatic</a>。为了解决这个问题，可以尝试把 <code>channels</code> 移到你 <code>INSTALLED——APPS</code> 的最上面，或者把其他冲突的 app 删了。</p>
-</blockquote>
-<h2 id="安装最新的开发版"><a href="#安装最新的开发版" class="headerlink" title="安装最新的开发版"></a>安装最新的开发版</h2><p>要想安装最新的开发版 Channels，克隆它的仓库，切换到仓库，更改仓库文件夹，然后安装到你的虚拟环境中：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> git@github.com:django/channels.git</span><br><span class="line">$ <span class="built_in">cd</span> channels</span><br><span class="line">$ &lt;activate your project’s virtual environment&gt;</span><br><span class="line">(environment) $ pip install -e .  <span class="comment"># . 表示当前仓库</span></span><br></pre></td></tr></table></figure>
+<h3 id="merge"><a href="#merge" class="headerlink" title="merge"></a>merge</h3><p>函数签名：</p>
+<p><code>left_data.merge(right_data, how=&#39;inner&#39;, on=None, left_on=None, right_on=None, left_index=False, right_index=False, sort=False, suffixes=(&#39;_x&#39;, &#39;_y&#39;), copy=True, indicator=False, validate=None)</code></p>
+<p><code>merge</code> 操作和数据库中的 <code>join</code> 操作类似。</p>
+<p><code>merge</code> 操作的可以是索引也可以是列。如果操作的是列，那么会忽略掉 DataFrame 的索引，否则无论操作的是索引对索引还是索引对列，索引都会传递过去的。</p>
+<h3 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h3><p>看过之前那篇 <code>Pandas合并操作 — join</code> 的话，相信 <code>merge</code> 里面的大部分参数大家都已经很熟悉了。</p>
+<h4 id="right-data"><a href="#right-data" class="headerlink" title="right_data"></a>right_data</h4><p>和 <code>left_data</code> 进行合并操作的 DataFrame 或者命名的 Series。</p>
+<h4 id="how"><a href="#how" class="headerlink" title="how"></a>how</h4><p>合并的方式：left、right、outer、inner。</p>
+<ul>
+<li>left：使用 <code>left_data</code> 的键执行合并操作，类似于 SQL 的 <code>left outer join</code>，按键的顺序排序。</li>
+<li>right：使用 <code>right_data</code> 的键执行合并操作，类似于 SQL 的 <code>right outer join</code>，按键的顺序排序。</li>
+<li>outer：使用左右两侧数据所有的键进行合并操作，类似于 SQL 的 <code>full outer join</code>，按字典顺序排序。</li>
+<li>inner：使用两侧数据键的交集进行合并操作，类似 SQL 的 <code>inner join</code>，按左侧数据的键顺序排序。</li>
+</ul>
+<h4 id="on"><a href="#on" class="headerlink" title="on"></a>on</h4><p>可接收单个字符串（也即是只按这列/索引合并）也可以接收一个列表（按这几个列/索引合并）。</p>
+<p>不使用默认索引，而是按照 <code>on</code> 参数指定的列名或者索引进行合并操作。<code>on</code> 指定的名字必须在左右两侧的数据中都能找到，不然潘大叔会傻掉的，直接把错误扔给你去处理。</p>
+<h4 id="left-on"><a href="#left-on" class="headerlink" title="left_on"></a>left_on</h4><p><code>left_data</code> 的哪个或哪些列/索引用来作为合并操作的基准。</p>
+<h4 id="right-on"><a href="#right-on" class="headerlink" title="right_on"></a>right_on</h4><p><code>right_data</code> 的哪个或哪些列/索引用来作为合并操作的基准。</p>
+<p><strong><code>left_on</code> 和 <code>right_on</code> 需要搭配使用，上面的 <code>on</code> 参数是左右同名的列名或索引，如果想操作的左右两个数据的列名或者索引不一样，就需要使用 <code>left_on</code> 和 <code>right_on</code> 参数。</strong></p>
+<h4 id="left-index"><a href="#left-index" class="headerlink" title="left_index"></a>left_index</h4><p>默认 <code>False</code>，是否使用 <code>left_data</code> 的索引来执行合并操作。如果是多层索引 <code>right_data</code> 也需要有同样层数的多级索引</p>
+<h4 id="right-index"><a href="#right-index" class="headerlink" title="right_index"></a>right_index</h4><p>默认 <code>False</code>，是否使用 <code>right_data</code> 的索引来执行合并操作。如果是多层索引 <code>left_data</code> 也需要有同样层数的多级索引</p>
+<p><strong>如果 <code>left_index=True</code> 或者 <code>right_index=True</code>，那么另一边的数据要么也使用索引，要么也可以使用上面的 <code>left_on</code> 或者 <code>right_on</code> 来指定对应的列或索引。</strong></p>
+<h4 id="sort"><a href="#sort" class="headerlink" title="sort"></a>sort</h4><p>是否按照 key 在字典中的字母顺序对结果排序（默认 <code>False</code>）。</p>
+<h4 id="suffixes"><a href="#suffixes" class="headerlink" title="suffixes"></a>suffixes</h4><p>合并的时候如果有相同的列名，是否通过增加后缀区分（默认 <code>(&#39;_x&#39;, &#39;_y&#39;)</code>）。</p>
+<p><code>(False, False)</code> 表示如果有重复的列名就报错。</p>
+<h4 id="copy"><a href="#copy" class="headerlink" title="copy"></a>copy</h4><p>默认 <code>True</code>，如果设置为 <code>False</code>，会在操作的过程中尽可能的减少复制操作。</p>
+<h4 id="indicator"><a href="#indicator" class="headerlink" title="indicator"></a>indicator</h4><p>默认 <code>False</code>，如果为 <code>True</code>，会增加一列叫做 <code>_merge</code> 的数据，表示每一行进行合并操作的类型。</p>
+<p>如果设置为字符串，则用这个作为新增的列名。</p>
+<p>一共有这几个合并类型：</p>
+<ul>
+<li><code>left_only</code>，最终 key 只存在于 <code>left_data</code></li>
+<li><code>right_only</code>，最终 key 只存在于 <code>right_data</code></li>
+<li><code>both</code>，最终 key 在 <code>left_data</code> 和 <code>right_data</code> 中都有</li>
+</ul>
+<h4 id="validate"><a href="#validate" class="headerlink" title="validate"></a>validate</h4><p>检测合并的类型：</p>
+<ul>
+<li><code>one_to_one</code> 或者 <code>1:1</code>，验证 key 在左右两侧数据中都是唯一的</li>
+<li><code>one_to_many</code> 或者 <code>1:m</code>，验证 key 在左侧数据中是唯一的</li>
+<li><code>many_to_one</code> 或者 <code>m:1</code>，验证 key 在右侧数据中是唯一的</li>
+<li><code>many_to_many</code> 或者 <code>m:m</code>，不做验证</li>
+</ul>
+<h3 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h3><p>返回合并后的数据。</p>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; a = pd.DataFrame(&#123;&apos;ID&apos;: [1, 2, 3, 4, 5], &apos;name&apos;: [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;, &apos;e&apos;]&#125;)</span><br><span class="line">&gt;&gt;&gt; b = pd.DataFrame(&#123;&apos;ID&apos;: [2, 3, 4, 5], &apos;name&apos;: [&apos;p2&apos;, &apos;p3&apos;, &apos;p4&apos;, &apos;e&apos;]&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; a</span><br><span class="line">   ID name</span><br><span class="line">0   1    a</span><br><span class="line">1   2    b</span><br><span class="line">2   3    c</span><br><span class="line">3   4    d</span><br><span class="line">4   5    e</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; b</span><br><span class="line">   ID name</span><br><span class="line">0   2   p2</span><br><span class="line">1   3   p3</span><br><span class="line">2   4   p4</span><br><span class="line">3   5    e</span><br></pre></td></tr></table></figure>
+<h4 id="on-1"><a href="#on-1" class="headerlink" title="on"></a>on</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; a.merge(b)</span><br><span class="line">   ID name</span><br><span class="line">0   5    e</span><br></pre></td></tr></table></figure>
+<p>如果不指定 <code>on</code>、<code>left_on</code>、<code>right_on</code>、<code>left_index</code>、<code>right_index</code>，那么默认会把左右两侧数据所有相同的列名作为 merge key，必须所有相同的列对应的值都一样才可以。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; b = pd.DataFrame(&#123;&apos;ID&apos;: [2, 3, 4, 5], &apos;city&apos;: [&apos;p2&apos;, &apos;p3&apos;, &apos;p4&apos;, &apos;e&apos;]&#125;)</span><br><span class="line">&gt;&gt;&gt; a.merge(b)</span><br><span class="line">   ID name city</span><br><span class="line">0   2    b   p2</span><br><span class="line">1   3    c   p3</span><br><span class="line">2   4    d   p4</span><br><span class="line">3   5    e    e</span><br></pre></td></tr></table></figure>
+<p>如上，如果只有一列 <code>ID</code> 名字相同，则只合并 <code>ID</code> 对应值相同的行。</p>
+<h4 id="left-on-right-on"><a href="#left-on-right-on" class="headerlink" title="left_on / right_on"></a>left_on / right_on</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; a.merge(b, left_on=&apos;name&apos;, right_on=&apos;city&apos;)</span><br><span class="line">   ID_x name  ID_y city</span><br><span class="line">0     5    e     5    e</span><br></pre></td></tr></table></figure>
+<p>以 <code>a</code> 的 <code>name</code> 列和 <code>b</code> 的 <code>city</code> 列作合并操作，因为只有值为 <code>e</code> 的数据是相同的，所以最后就剩下了这么一行。</p>
 
       
     </div>
@@ -427,9 +468,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Django/" rel="tag"># Django</a>
-          
-            <a href="/tags/WebSocket/" rel="tag"># WebSocket</a>
+            <a href="/tags/Pandas/" rel="tag"># Pandas</a>
           
         </div>
       
@@ -442,8 +481,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/08/06/channel-part2/" rel="next" title="Django也能玩实时 —— chapter 2">
-                <i class="fa fa-chevron-left"></i> Django也能玩实时 —— chapter 2
+              <a href="/2019/02/14/Pandas合并操作（join）/" rel="next" title="Pandas合并操作（join）">
+                <i class="fa fa-chevron-left"></i> Pandas合并操作（join）
               </a>
             
           </div>
@@ -452,8 +491,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/08/12/channel-part4/" rel="prev" title="Django也能玩实时 —— chapter 4⅓">
-                Django也能玩实时 —— chapter 4⅓ <i class="fa fa-chevron-right"></i>
+              <a href="/2019/12/20/SQLAlchemy（二）/" rel="prev" title="SQLAlchemy（二）">
+                SQLAlchemy（二） <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -601,7 +640,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装最新的开发版"><span class="nav-number">2.</span> <span class="nav-text">安装最新的开发版</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#merge"><span class="nav-number">1.</span> <span class="nav-text">merge</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数"><span class="nav-number">2.</span> <span class="nav-text">参数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#right-data"><span class="nav-number">2.1.</span> <span class="nav-text">right_data</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#how"><span class="nav-number">2.2.</span> <span class="nav-text">how</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#on"><span class="nav-number">2.3.</span> <span class="nav-text">on</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#left-on"><span class="nav-number">2.4.</span> <span class="nav-text">left_on</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#right-on"><span class="nav-number">2.5.</span> <span class="nav-text">right_on</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#left-index"><span class="nav-number">2.6.</span> <span class="nav-text">left_index</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#right-index"><span class="nav-number">2.7.</span> <span class="nav-text">right_index</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sort"><span class="nav-number">2.8.</span> <span class="nav-text">sort</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#suffixes"><span class="nav-number">2.9.</span> <span class="nav-text">suffixes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#copy"><span class="nav-number">2.10.</span> <span class="nav-text">copy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#indicator"><span class="nav-number">2.11.</span> <span class="nav-text">indicator</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#validate"><span class="nav-number">2.12.</span> <span class="nav-text">validate</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#返回值"><span class="nav-number">3.</span> <span class="nav-text">返回值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子"><span class="nav-number">4.</span> <span class="nav-text">例子</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#on-1"><span class="nav-number">4.1.</span> <span class="nav-text">on</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#left-on-right-on"><span class="nav-number">4.2.</span> <span class="nav-text">left_on / right_on</span></a></li></ol></li></ol></div>
             
 
           </div>
